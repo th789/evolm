@@ -1,0 +1,6 @@
+{
+    "stop_tokens": [],
+    "answer_extraction_format": "boxed",
+    "input_wrapper": "<<<input>>>",
+    "system_prompt": null
+}

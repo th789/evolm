@@ -1,0 +1,54 @@
+export HF_TOKEN=<your huggingface token>
+export WANDB_API_KEY=<your wandb api key>
+export WANDB_ENTITY=<your wandb entity>
+export WANDB_PROJECT=<your wandb project>
+
+actor_lr=1e-6
+critic_lr=1e-5
+kl=0.0001
+ep=8
+
+data_src_dir=/path/to/data/rl   #! <-- change this
+log_dir=/path/to/logs
+project_name=<your project name>
+
+model_path=zhenting/myllama-4B-160BT-cpt-MixedFW8FM42-sftep1-sampled500k_first100k_qwen7b
+model_name=$(basename "$model_path")
+run_name=${model_name}-rlep${ep}-last250k
+checkpoint_dir=/path/to/verl_out/checkpoints/${run_name}
+
+PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
+    data.train_files=${data_src_dir}/mathaug/sampled_500k_balanced_last_250k.parquet \
+    data.val_files=${data_src_dir}/gsm8k/test.parquet \
+    data.train_batch_size=2048 \
+    data.max_prompt_length=1024 \
+    data.max_response_length=1024 \
+    data.filter_overlong_prompts=True \
+    actor_rollout_ref.model.path=$model_path \
+    actor_rollout_ref.actor.optim.lr=$actor_lr \
+    actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.1 \
+    actor_rollout_ref.actor.ppo_mini_batch_size=2048 \
+    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=16 \
+    actor_rollout_ref.actor.checkpoint.contents=['model','optimizer','extra','hf_model'] \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=32 \
+    actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
+    actor_rollout_ref.rollout.gpu_memory_utilization=0.6 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=32 \
+    critic.optim.lr=$critic_lr \
+    critic.optim.lr_warmup_steps_ratio=0.1 \
+    critic.model.path=$model_path \
+    critic.ppo_micro_batch_size_per_gpu=16 \
+    algorithm.kl_ctrl.kl_coef=$kl \
+    trainer.logger=['console','wandb'] \
+    trainer.project_name=$project_name \
+    trainer.experiment_name=$run_name \
+    trainer.val_before_train=True \
+    trainer.default_hdfs_dir=null \
+    trainer.n_gpus_per_node=4 \
+    trainer.nnodes=1 \
+    trainer.save_freq=100 \
+    trainer.test_freq=100 \
+    trainer.default_local_dir=$checkpoint_dir \
+    trainer.max_actor_ckpt_to_keep=2 \
+    trainer.max_critic_ckpt_to_keep=2 \
+    trainer.total_epochs=$ep 2>&1 | tee ${log_dir}/${run_name}.log

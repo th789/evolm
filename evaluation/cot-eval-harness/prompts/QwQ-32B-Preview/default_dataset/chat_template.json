@@ -1,0 +1,4 @@
+{
+    "user": "Solve the following problem efficiently and clearly.\n\nPlease reason step by step, and put your final answer within \\boxed{}.\n\nProblem: <<<wrapped_input>>>\n\n",
+    "assistant": "<<<output>>>\n\n"
+}

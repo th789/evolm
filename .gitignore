@@ -1,0 +1,14 @@
+**/downloaded_and_converted_ckpts_from_hf
+**/lit_out
+**/llamafactory_out
+**/wandb
+**/__pycache__
+**/.ipynb_checkpoints
+**/.pytest_cache
+**/.vscode
+**/.DS_Store
+**/logs
+**/tmp
+**/tmp_trainer
+**/figs
+**/out

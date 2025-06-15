@@ -1,0 +1,11 @@
+{
+    "stop_tokens": [
+        "Human",
+        "Human:",
+        "Assistant",
+        "Assistant:"
+    ],
+    "answer_extraction_format": "both",
+    "input_wrapper": "<<<input>>>",
+    "system_prompt": null
+}

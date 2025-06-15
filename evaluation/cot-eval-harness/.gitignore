@@ -1,0 +1,11 @@
+**/figs
+**/out
+**/output
+**/outputs
+**/tmp
+**/c2c
+**/satori
+**/backup
+**/logs
+**/*.egg-info
+augmented_GSM8K_MATH_SFT-unfiltered.jsonl

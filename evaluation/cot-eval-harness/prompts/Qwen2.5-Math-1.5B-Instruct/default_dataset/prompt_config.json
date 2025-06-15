@@ -1,0 +1,6 @@
+{
+    "stop_tokens": [],
+    "answer_extraction_format": "boxed",
+    "input_wrapper": "<<<input>>>",
+    "system_prompt": "Please reason step by step, and put your final answer within \\boxed{}."
+}
