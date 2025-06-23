@@ -1,7 +1,6 @@
 # EvoLM: In Search of Lost Language Model Training Dynamics
 
-> [Project Page](https://zhentingqi.github.io/internal/projects/EvoLM/)
-> [Paper](https://arxiv.org/pdf/2506.16029)
+> [Project Page](https://zhentingqi.github.io/internal/projects/EvoLM/); [Paper](https://arxiv.org/pdf/2506.16029); [arXiv](https://arxiv.org/abs/2506.16029)
 
 An Integrated Framework for LLM Pre-training, Continued Pre-training, Supervised Fine-tuning, Reinforcement Learning, and Evaluation
 
