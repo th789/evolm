@@ -8,13 +8,14 @@ dist
 .venv
 .vscode
 
-# data
+# data and models
 data
 datasets
 !litgpt/data
 !tests/data
 checkpoints
 out
+models
 logs
 wandb
 events.out.tfevents*
