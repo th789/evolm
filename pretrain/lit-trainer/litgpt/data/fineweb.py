@@ -8,12 +8,12 @@ from torch.utils.data import DataLoader
 
 from litgpt.tokenizer import Tokenizer
 from litgpt.data import DataModule
-
+from private.access import fineweb_pretrain_folder
 
 @dataclass
 class FineWeb(DataModule):
     """The FineWeb data module for pretraining."""
-    data_path: Union[str, Path] = Path("/path/to/pretrain")  #! <-- change this path (make sure that there is a 'train' folder under this path)
+    data_path: Union[str, Path] = Path(fineweb_pretrain_folder)  #! <-- change this path (make sure that there is a 'train' folder under this path)
     """The path to the data directory, containing two folders 'train' and 'val'
     which are the output of the preprocessing step. The path can also be a remote path (e.g., s3://)."""
     val_split_fraction: float = 0.0005
