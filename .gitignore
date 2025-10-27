@@ -1,3 +1,5 @@
+# .gitignore for the evolm project
+
 **/downloaded_and_converted_ckpts_from_hf
 **/lit_out
 **/llamafactory_out
@@ -13,5 +15,8 @@
 **/figs
 **/out
 **/models
+
 pretrain/lit-trainer/run_exp_fas_lit_trainer.py
 pretrain/lit-trainer/run_exp_fas_lit_trainer_old.py
+
+finetune/llama-factory/data/metamathqa.json
