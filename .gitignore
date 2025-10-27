@@ -14,3 +14,4 @@
 **/out
 **/models
 pretrain/lit-trainer/run_exp_fas_lit_trainer.py
+pretrain/lit-trainer/run_exp_fas_lit_trainer_old.py
