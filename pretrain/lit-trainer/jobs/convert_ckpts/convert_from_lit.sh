@@ -1,4 +1,15 @@
-model_dir=/path/to/pretrained/ckpt
+# model_dir=/path/to/pretrained/ckpt
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay1.0-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.1-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.01-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.001-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.0001-seed42
+
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay1.0-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.1-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.01-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.001-seed42
+model_dir=models/pretrained/llama-1B-20BT-weightdecay0.0001-seed42
 
 name=final
 lit_ckpt_dir=$model_dir/$name
