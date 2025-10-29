@@ -20,3 +20,4 @@ pretrain/lit-trainer/run_exp_fas_lit_trainer.py
 pretrain/lit-trainer/run_exp_fas_lit_trainer_old.py
 
 finetune/llama-factory/data/metamathqa.json
+finetune/llama-factory/run_exp_fas_llamafactory.py
