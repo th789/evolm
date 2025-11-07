@@ -10,7 +10,7 @@ import random
 from tqdm import tqdm, trange
 from vllm import LLM, SamplingParams
 from time import time
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, PreTrainedModel
 from typing import Optional
 from functools import partial
 
@@ -29,7 +29,6 @@ def load_model(model_ckpt_dir, api, max_model_len, tensor_parallel_size, model_s
             enable_prefix_caching=True,
         )
     elif api == "hf":
-        raise NotImplementedError("HF API not supported")
         
         model = AutoModelForCausalLM.from_pretrained(
             model_ckpt_dir,
@@ -92,6 +91,138 @@ def prepare_prompt(
     return prompt
 
 
+
+#used for api == "hf" case in generate_responses_hf()
+def remove_ending_EOS_tokens(tokens, tokenizer):
+    '''
+    tokens: torch.Tensor of shape [n], generated tokens for one sequence (not batched)
+    tokenizer: modeltokenizer
+    '''
+    # Find the first occurrence of the set of EOS tokens at the end
+    last_non_EOS_index = (tokens != tokenizer.eos_token_id).nonzero()[-1].item()
+    # Keep everything up to that, removing all the EOS tokens
+    new_tokens = tokens[:last_non_EOS_index + 1]
+    return new_tokens
+
+
+
+#used for api == "hf" case in generate_responses()
+def generate_responses_hf(
+    batch_prompt: list[str],
+    model,
+    tokenizer,
+    **gen_kwargs
+):
+    
+    ##### Tokenize the batch of prompts
+    model_inputs = tokenizer(batch_prompt, return_tensors="pt", padding=True)
+    model_inputs = {key: value.to(device) for key, value in model_inputs.items()}
+
+    ##### Prepare generation parameters
+    generation_config = {
+        "num_return_sequences": gen_kwargs["num_generations"],
+        "max_new_tokens": gen_kwargs["max_new_tokens"],
+        "repetition_penalty": gen_kwargs["repetition_penalty"],
+        "pad_token_id": tokenizer.pad_token_id,
+        "eos_token_id": tokenizer.eos_token_id,
+        }
+    # Set temperature and do_sample in generation_config
+    if gen_kwargs["temperature"] > 0:
+        generation_config["do_sample"] = True # Use sampling if temperature > 0
+        generation_config["temperature"] = gen_kwargs["temperature"]
+    if gen_kwargs["temperature"] == 0:
+        generation_config["do_sample"] = False # Use greedy decoding if temperature = 0
+    
+    # Add stop tokens to generation_config
+    if gen_kwargs.get("stop_tokens"):
+        generation_config["stop_strings"] = gen_kwargs["stop_tokens"]
+    
+    # Add bad words to generation_config
+    if gen_kwargs.get("bad_words"):
+        bad_word_ids = []
+        for bad_word in gen_kwargs["bad_words"]:
+            bad_ids = tokenizer.encode(bad_word, add_special_tokens=False)
+            bad_word_ids.append(bad_ids)
+        generation_config["bad_words_ids"] = bad_word_ids
+
+    ##### Generate outputs
+    with torch.no_grad():
+        generated_ids = model.generate(
+            **model_inputs,
+            **generation_config,
+            tokenizer=tokenizer, #necessary for stop_strings arg in generation_config
+        )
+
+    ##### Decode output tokens + format output text
+    # Extract only the newly generated tokens (remove input tokens)
+    input_lengths = model_inputs["input_ids"].shape[1]
+    generated_texts = []
+    generated_tokens = []
+
+    # Reshape outputs if num_return_sequences > 1
+    # print('Decoding output tokens...')
+    if gen_kwargs["num_generations"] > 1:
+        # More than one generation per prompt
+        batch_size = len(batch_prompt)
+        generated_ids = generated_ids.view(batch_size, gen_kwargs["num_generations"], -1)
+        
+        # for i in tqdm(range(batch_size), desc='Decoding output tokens for batch'):
+        for i in range(batch_size):
+            prompt_generations = []
+            token_generations = []
+            for j in range(gen_kwargs["num_generations"]):
+                # Extract only new tokens, remove tokens of input prompt
+                new_tokens = generated_ids[i, j, input_lengths:]
+                new_tokens = remove_ending_EOS_tokens(new_tokens, tokenizer) #for text generation, remove all EOS tokens at the end -- matches vllm output
+                # Decode
+                text = tokenizer.decode(
+                    new_tokens, 
+                    skip_special_tokens=gen_kwargs["skip_special_tokens"]
+                )
+                prompt_generations.append(text)
+                new_tokens = torch.cat([new_tokens, torch.tensor([tokenizer.eos_token_id], device=new_tokens.device)]) #for tokens, keep one EOS token at the end -- matches vllm output
+                token_generations.append(new_tokens.tolist()) 
+            generated_texts.append(prompt_generations)
+            generated_tokens.append(token_generations)
+
+    else:
+        # Single generation per prompt
+        for i, (input_ids, output_ids) in enumerate(zip(model_inputs["input_ids"], generated_ids)):
+            # Extract only new tokens, remove tokens of input prompt
+            new_tokens = output_ids[input_lengths:]
+            new_tokens = remove_ending_EOS_tokens(new_tokens, tokenizer) #for text generation, remove all EOS tokens at the end -- matches vllm output
+            text = tokenizer.decode(
+                new_tokens, 
+                skip_special_tokens=gen_kwargs["skip_special_tokens"]
+            )
+            generated_texts.append([text])
+            new_tokens = torch.cat([new_tokens, torch.tensor([tokenizer.eos_token_id], device=new_tokens.device)]) #for tokens, keep one EOS token at the end -- matches vllm output
+            generated_tokens.append(new_tokens.tolist())
+
+    ##### Create batch_output containing prompts, generated texts, and generated tokens
+    #create list of dictionaries, each dictionary is a prompt, its generated texts, and its generated tokens
+    batch_output = []
+    for i in range(len(batch_prompt)):
+        if gen_kwargs["num_generations"] > 1:
+            prompt_dict = {
+                'prompt': batch_prompt[i], 
+                'outputs_text': generated_texts[i],
+                'outputs_tokens': generated_tokens[i]
+                }
+
+        if gen_kwargs["num_generations"] == 1: #different list formatting for single generation
+            prompt_dict = {
+                'prompt': [batch_prompt[i]], 
+                'outputs_text': generated_texts[i],
+                'outputs_tokens': [generated_tokens[i]]
+                }
+        batch_output.append(prompt_dict)
+
+    return batch_output
+
+
+
+
 def generate_responses(
     api,
     batch_prompt: list[str],
@@ -118,20 +249,15 @@ def generate_responses(
             use_tqdm=True
         )
     elif api == "hf":
-        raise NotImplementedError("HF API not supported")
-    
-        model_inputs = tokenizer(batch_prompt, return_tensors="pt", padding=True)
-        model_inputs = {key: value.to(device) for key, value in model_inputs.items()}
+        assert isinstance(model, PreTrainedModel)
         
-        with torch.no_grad():
-            generated_ids = model.generate(
-                **model_inputs,
-                max_new_tokens=gen_kwargs["max_new_tokens"]
+        batch_output = generate_responses_hf(
+            batch_prompt=batch_prompt,
+            model=model,
+            tokenizer=tokenizer,
+            **gen_kwargs
             )
-        
-        generated_ids = [
-            output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
-        ]
+
     else:
         raise NotImplementedError(f"API {api} not supported")
     
@@ -251,7 +377,13 @@ def main(args):
         pprint(f"Model is taking exam: {test_dataset_name}")
         pprint('-' * 42)
         results = []
-        with tqdm(total=num_batches, disable=True) as pbar:
+
+        if args.api=='vllm': #don't show progress bar for vllm, it has its own progress bar
+            disable_pbar = True
+        if args.api=='hf': #show progress bar for hf
+            disable_pbar = False
+
+        with tqdm(total=num_batches, disable=disable_pbar) as pbar:
             for batch_idx in range(num_batches):
                 batch_id = id_as_batches[batch_idx]
                 batch_problem = problem_as_batches[batch_idx]
@@ -269,12 +401,23 @@ def main(args):
                     tokenizer,
                     **gen_kwargs
                 )
-                for output in batch_output:
-                    assert len(output.outputs) == gen_kwargs["num_generations"]
-                    candidates = [o.text for o in output.outputs]
-                    token_cnts = [len(o.token_ids) for o in output.outputs]
-                    batch_candidates.append(candidates)
-                    batch_token_cnts.append(token_cnts)
+
+                if args.api == "vllm":
+                    for output in batch_output:
+                        assert len(output.outputs) == gen_kwargs["num_generations"]
+                        candidates = [o.text for o in output.outputs]
+                        token_cnts = [len(o.token_ids) for o in output.outputs]
+                        batch_candidates.append(candidates)
+                        batch_token_cnts.append(token_cnts)
+                if args.api == "hf":
+                    for output in batch_output:
+                        #"output" variable is a dictionary with keys: prompt, outputs_text, outputs_tokens
+                        assert len(output['outputs_text']) == gen_kwargs["num_generations"]
+                        candidates = output['outputs_text']
+                        token_cnts = [len(o) for o in output['outputs_tokens']]
+                        batch_candidates.append(candidates)
+                        batch_token_cnts.append(token_cnts)
+                
                 assert len(batch_candidates) == len(batch_token_cnts) == len(batch_id)
                 
                 # Save responses
