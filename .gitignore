@@ -16,6 +16,9 @@
 **/out
 **/models
 
+common/scripts/scratch
+common/scripts/run_exp_fas_data.py
+
 pretrain/lit-trainer/run_exp_fas_lit_trainer.py
 pretrain/lit-trainer/run_exp_fas_lit_trainer_old.py
 

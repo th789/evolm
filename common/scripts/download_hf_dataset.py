@@ -32,4 +32,31 @@ print("Data will be saved to:", storage_dir)
 # )
 # -----------------------------------
 
+
+# ----------- finefineweb -----------
+
+# #finefineweb-sample
+# snapshot_download(
+#     repo_id="m-a-p/FineFineWeb-sample",
+#     local_dir=f"{storage_dir}/finefineweb-sample",   #! <-- change this to your local dir for saving the dataset
+#     repo_type="dataset",
+#     force_download=False,  # Set to True to re-download if needed
+#     max_workers=64,
+# )
+
+#finefineweb -- get full math dataset
+#rename finefineweb-sample/mathematics folder to avoid overwriting
+# allow_patterns = ["mathematics/*"]
+# snapshot_download(
+#     repo_id="m-a-p/FineFineWeb",
+#     local_dir=f"{storage_dir}/finefineweb-sample",   #! <-- change this to your local dir for saving the dataset
+#     repo_type="dataset",
+#     force_download=False,  # Set to True to re-download if needed
+#     allow_patterns=allow_patterns,
+#     max_workers=64,
+# )
+
+# -----------------------------------
+
+
 print("\n Data download complete!")
