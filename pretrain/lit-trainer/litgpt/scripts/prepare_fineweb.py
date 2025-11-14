@@ -1,22 +1,14 @@
 # Copyright Lightning AI. Licensed under the Apache License 2.0, see LICENSE file.
 
 import os
-print('Imported os')
 import time
-print('Imported time')
 import traceback
-print('Imported traceback')
 from pathlib import Path
-print('Imported Path from pathlib')
 from lightning_utilities.core.imports import RequirementCache
-print('Imported RequirementCache from lightning_utilities.core.imports')
 
 from litgpt.tokenizer import Tokenizer
-print('Imported Tokenizer from litgpt.tokenizer')
 from litgpt.utils import CLI, extend_checkpoint_dir
-print('Imported CLI and extend_checkpoint_dir from litgpt.utils')
 from litgpt.litdata.processing.data_processor import DataChunkRecipe, DataProcessor
-print('Imported DataChunkRecipe and DataProcessor from litgpt.litdata.processing.data_processor')
 
 
 class FinewebDataRecipe(DataChunkRecipe):
