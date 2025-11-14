@@ -17,6 +17,7 @@ from litgpt.data.tinystories import TinyStories
 from litgpt.data.openwebtext import OpenWebText
 from litgpt.data.microllama import MicroLlama
 from litgpt.data.fineweb import FineWeb
+from litgpt.data.finefineweb import FineFineWeb
 from litgpt.data.finemath import FineMath
 from litgpt.data.codepretrain import CodePretrain
 from litgpt.data.stackedu import StackEdu
@@ -52,9 +53,10 @@ __all__ = [
     "TextFiles",
     "TinyLlama",
     "TinyStories",
-    "MicroLlama"
+    "MicroLlama",
     "get_sft_collate_fn",
     "FineWeb",
+    "FineFineWeb",
     "FineMath",
     "CodePretrain",
     "StackEdu",
