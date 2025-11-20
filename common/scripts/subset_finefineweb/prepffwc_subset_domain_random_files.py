@@ -52,22 +52,28 @@ def main():
         help="Domain in FineFineWeb for which to obtain subset"
         )
     parser.add_argument(
+        "--percent_doi", type=float, required=True,
+        help="Percentage of tokens from domain of interest (math) in subset"
+        )
+    parser.add_argument(
         "--storage_dir", type=str, 
         help=(
             "Directory where FineFineWeb sample files with token counts are stored + where output will be saved. "
             "Note: {storage_dir}/ffw_counted/{domain}/{domain}_XXXXXX.jsonl files should exist. "
-            "{storage_dir}/ffw_mysubset_20BT/{domain}_XXXXXX.parquet files will be created."
+            "{storage_dir}/ffw_mysubset20BT/mathematics{percent_doi}/{domain}_XXXXXX.parquet files will be created."
         ),
         default=storage_dir
         )
+
     args = parser.parse_args()
 
     domain = args.domain
     storage_dir = args.storage_dir
+    percent_doi = args.percent_doi
 
 
     #get number of tokens desired for this domain
-    num_tokens_dict = json.load(open("evolm/common/scripts/ffw_sample_num_tokens_llama2_for_mysubset_20BT.json"))
+    num_tokens_dict = json.load(open(f"evolm/common/scripts/subset_finefineweb/ffw_desired_num_tokens_llama2_mysubset20BT_mathematics{percent_doi}.json"))
     n_tokens_desired = num_tokens_dict[domain]
 
     print(f"\nDomain: {domain}")
@@ -76,13 +82,13 @@ def main():
 
     #create list of document indices with random order
     print('\nShuffling file indices...')
-    domain_data = pd.read_json("evolm/common/scripts/ffw_sample_domain_info.json", lines=True)
+    domain_data = pd.read_json("evolm/common/scripts/subset_finefineweb/ffw_sample_domain_info.json", lines=True)
     n_files_for_domain = domain_data[domain_data['domain'] == domain]['n_json_files'].item()
     file_idxs_shuffled = shuffle_indices(n_files_for_domain) #indices range from 0 to (n_files_for_domain-1)
     print(f"   # files for domain: {n_files_for_domain}")
 
     #set up directory to save output parquetfiles
-    output_dir = f"{storage_dir}/ffw_mysubset_20BT"
+    output_dir = f"{storage_dir}/ffw_mysubset20BT/mathematics{percent_doi}"
     os.makedirs(output_dir, exist_ok=True)
 
     #intitalize tracking
@@ -162,7 +168,7 @@ def main():
     #save info about this domain to json file
     file_path = os.path.abspath(__file__) #path of current file
     current_dir = os.path.dirname(file_path) #directory of current file
-    domain_info_file = f"{current_dir}/ffw_domain_info_mysubset_20BT.json"
+    domain_info_file = f"{current_dir}/ffw_domain_info_mysubset20BT_mathematics{percent_doi}.json"
     with open(domain_info_file, "a", encoding="utf-8") as f:
         domain_info_subset = {
             'domain': domain,
@@ -172,6 +178,7 @@ def main():
             'n_tokens_desired': n_tokens_desired,
             }
         f.write(json.dumps(domain_info_subset, ensure_ascii=False) + "\n")
+    print(f"Saved domain info at {domain_info_file}")
 
 
     #print run time info
