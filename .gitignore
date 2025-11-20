@@ -17,14 +17,10 @@
 **/models
 
 common/scripts/scratch
-common/scripts/run_exp_fas_data.py
 
-pretrain/lit-trainer/run_exp_fas_lit_trainer.py
-pretrain/lit-trainer/run_exp_fas_lit_trainer_old.py
+pretrain/models
 
 finetune/llama-factory/data/metamathqa.json
-finetune/llama-factory/run_exp_fas_llamafactory.py
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev
-evaluation/cot-eval-harness/run_exp_fas_eval_cot.py
