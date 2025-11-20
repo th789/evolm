@@ -513,11 +513,35 @@ class BaseWorker:
 
         self.cache_chunks_dir = _get_cache_dir()
 
-        if os.path.exists(self.cache_chunks_dir):
-            # clean up the cache chunks dir folder to avoid previous json files from interfering with the current run
-            shutil.rmtree(self.cache_chunks_dir, ignore_errors=True)
-
-        os.makedirs(self.cache_chunks_dir, exist_ok=True)
+        # Only worker 0 should delete/recreate the cache directory to avoid race conditions
+        # Other workers wait for the directory to be ready
+        is_worker_0 = self.worker_index == 0
+        
+        if is_worker_0:
+            # Worker 0: delete and recreate the directory
+            if os.path.exists(self.cache_chunks_dir):
+                # clean up the cache chunks dir folder to avoid previous json files from interfering with the current run
+                shutil.rmtree(self.cache_chunks_dir, ignore_errors=True)
+                # Wait for deletion to be fully visible (important for NFS)
+                for _ in range(100):
+                    if not os.path.exists(self.cache_chunks_dir):
+                        break
+                    sleep(0.1)
+            
+            os.makedirs(self.cache_chunks_dir, exist_ok=True)
+        else:
+            # Other workers: wait for worker 0 to create the directory
+            max_retries = 100
+            for attempt in range(max_retries):
+                if os.path.exists(self.cache_chunks_dir) and os.path.isdir(self.cache_chunks_dir):
+                    break
+                sleep(0.1)  # Wait 100ms before retrying
+            else:
+                raise RuntimeError(f"Worker {self.worker_index}: Cache directory {self.cache_chunks_dir} was not created by worker 0 after {max_retries} attempts")
+        
+        # Final verification that directory exists (for all workers)
+        if not os.path.exists(self.cache_chunks_dir) or not os.path.isdir(self.cache_chunks_dir):
+            raise RuntimeError(f"Cache directory {self.cache_chunks_dir} does not exist or is not a directory")
 
         if isinstance(self.data_recipe, DataTransformRecipe):
             return
