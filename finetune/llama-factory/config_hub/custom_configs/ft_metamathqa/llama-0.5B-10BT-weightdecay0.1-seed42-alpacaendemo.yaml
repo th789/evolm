@@ -20,7 +20,7 @@ preprocessing_num_workers: 16
 # output_dir: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo
 output_dir: llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo
 logging_steps: 10
-save_steps: 1000
+save_steps: 20000
 plot_loss: false
 overwrite_output_dir: true
 
