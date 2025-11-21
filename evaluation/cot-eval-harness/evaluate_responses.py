@@ -84,6 +84,7 @@ def main(args):
         
         majority_model_solution_correctness_list = []
         correct_model_solution_existence_list = []
+        correct_at_k_ratio_list = []
         best_orm_score_model_solution_correctness_list = []
         best_prm_score_model_solution_correctness_list = []
         orm_score_mean_list = []
@@ -202,6 +203,8 @@ def main(args):
                 #! Record statistics
                 majority_model_solution_correctness_list.append(model_responses[majority_index]["correctness"])
                 correct_model_solution_existence_list.append(correct_answer_existence)
+                if correct_answer_existence:
+                    correct_at_k_ratio_list.append(correct_answer_ratio)
                 best_orm_score_model_solution_correctness_list.append(model_responses[best_orm_score_index]["correctness"] if best_orm_score_index is not None else None)
                 best_prm_score_model_solution_correctness_list.append(model_responses[best_prm_score_index]["correctness"] if best_prm_score_index is not None else None)
                 orm_score_mean_list.append(orm_score_mean)
@@ -215,6 +218,7 @@ def main(args):
         #! Save overall evaluation results
         majority_voting_acc = avg(replace_None(majority_model_solution_correctness_list, replacement=False))
         pass_at_k_acc = avg(replace_None(correct_model_solution_existence_list, replacement=False))
+        correct_ratio_at_k_acc = avg(correct_at_k_ratio_list) if len(correct_at_k_ratio_list) > 0 else None
         best_orm_acc = avg(replace_None(best_orm_score_model_solution_correctness_list, replacement=False)) if orm is not None else None
         best_prm_acc = avg(replace_None(best_prm_score_model_solution_correctness_list, replacement=False)) if prm is not None else None
         avg_orm_score = avg(replace_None(orm_score_mean_list, replacement=0.0)) if orm is not None else None
@@ -225,6 +229,7 @@ def main(args):
         pprint("-" * 42)
         pprint(f"Maj@{num_generations} acc: {majority_voting_acc}")
         pprint(f"Pass@{num_generations} acc: {pass_at_k_acc}")
+        pprint(f"Correct Ratio@{num_generations} acc: {correct_ratio_at_k_acc}")
         pprint(f"Best ORM score acc: {best_orm_acc}")
         pprint(f"Best PRM score acc: {best_prm_acc}")
         pprint(f"Average ORM score: {avg_orm_score}")
@@ -235,6 +240,7 @@ def main(args):
             "num_generations": num_generations,
             "majority_voting_acc": majority_voting_acc,
             "pass_at_k_acc": pass_at_k_acc,
+            "correct_ratio_at_k_acc": correct_ratio_at_k_acc,
             "best_orm_acc": best_orm_acc,
             "best_prm_acc": best_prm_acc,
             "avg_orm_score": avg_orm_score,
@@ -251,6 +257,7 @@ def main(args):
                 "num_generations_per_problem": num_generations,
                 "majority_voting_acc": majority_voting_acc,
                 "pass_at_k_acc": pass_at_k_acc,
+                "correct_ratio_at_k_acc": correct_ratio_at_k_acc,
                 "best_orm_acc": best_orm_acc,
                 "best_prm_acc": best_prm_acc,
                 "avg_orm_score": avg_orm_score,

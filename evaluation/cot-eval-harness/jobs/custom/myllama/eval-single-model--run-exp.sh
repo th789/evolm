@@ -3,9 +3,9 @@
 #pass in directory of model to be evaluated as first argument to this bash script
 #pass in dataset to be evaluated as second argument to this bash script
 model_ckpt_dir=$1 
-# dataset_name=$2 #options: dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
+dataset_name=$2 #options: dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
 
-set up env
+# set up env
 module load python
 module load cuda/12.9.1-fasrc01
 mamba activate lm-eval-cot-og
@@ -43,8 +43,8 @@ function collect_responses__greedy() {
         --max_model_len 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 64 \
-        --api hf \
+        --batch_size 500 \
+        --api vllm \
         # --force
 
 }
@@ -65,8 +65,8 @@ function collect_responses__n16() {
         --max_model_len 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 32 \
-        --api hf \
+        --batch_size 500 \
+        --api vllm \
         # --force
 
 }
@@ -123,21 +123,21 @@ export CUDA_VISIBLE_DEVICES=0
 start_time=$(date +%s)
 echo "Start time:  $(date -d @$start_time)"
 
-dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
+# dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
 prompt_config_file=prompts/myllama/default_dataset/prompt_config.json
 orm_ckpt_dir=Skywork/Skywork-Reward-Llama-3.1-8B-v0.2
 
 #greedy
 model_id_for_saving=$(basename "$model_ckpt_dir")--greedy
-printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
-collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+# printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
+# collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for greedy, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 
 #n16
 model_id_for_saving=$(basename "$model_ckpt_dir")--n16
-printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
-collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+# printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
+# collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for n16, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 
@@ -146,6 +146,8 @@ elapsed=$(( end_time - start_time ))
 echo ""
 echo "Start time:  $(date -d @$start_time)"
 echo "End time:    $(date -d @$end_time)"
-echo "Elapsed time: ${elapsed} seconds"
+minutes=$((elapsed / 60))
+seconds=$((elapsed % 60))
+echo "Elapsed time: ${minutes}min ${seconds}sec"
 echo "Complete!"
 
