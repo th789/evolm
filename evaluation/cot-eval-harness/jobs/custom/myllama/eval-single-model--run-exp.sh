@@ -1,9 +1,12 @@
 #!/bin/bash
 
-#pass in directory of model to be evaluated as first argument to this bash script
-#pass in dataset to be evaluated as second argument to this bash script
+#pass in arguments to this bash script
+# 1. directory of model to be evaluated
+# 2. dataset to be evaluated
+# 3. output root directory
 model_ckpt_dir=$1 
 dataset_name=$2 #options: dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
+OUT_ROOT=$3 #options: OUT_ROOT=eval_output, OUT_ROOT=eval_output/ffw
 
 # set up env
 module load python
@@ -25,7 +28,8 @@ mamba activate lm-eval-cot-og
 
 
 # OUT_ROOT=/path/to/eval_out/outputs
-OUT_ROOT=eval_output
+# OUT_ROOT=eval_output
+# OUT_ROOT=eval_output/ffw
 
 function collect_responses__greedy() {
     dataset_name=$1
@@ -129,15 +133,15 @@ orm_ckpt_dir=Skywork/Skywork-Reward-Llama-3.1-8B-v0.2
 
 #greedy
 model_id_for_saving=$(basename "$model_ckpt_dir")--greedy
-# printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
-# collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
+collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for greedy, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 
 #n16
 model_id_for_saving=$(basename "$model_ckpt_dir")--n16
-# printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
-# collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
+collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for n16, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 

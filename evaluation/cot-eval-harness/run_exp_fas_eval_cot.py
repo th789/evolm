@@ -38,22 +38,34 @@ def dict2options(single_args: dict) -> tuple[list[str], list[str]]:
     return options_str, name_str
 
 
-### Note on functions for experiments
-# exp00_setup_XXX functions: define main command + sbatch options
-# run_exp00_XXX functions: define experiment arguments + run each experiment using exp00_setup_XXX
-def run_bash_script(bash_script: str, 
-                    job_name: str,
-                    log_file: str,
-                    device: str,
-                    n_nodes: str = '1',
-                    n_tasks: str = '1',
-                    n_gpus: str = '2',
-                    n_tasks_per_node: str = '2',
-                    cpus_per_task: str = '24',
-                    time_hrs: str = '2',
-                    time_days: str = '7',
-                    memory_gb: str = '64',
-                    ):
+
+def run_bash_script_written_in_terminal(bash_script: str, 
+                               job_name: str,
+                               log_file: str,
+                               partition: str,
+                               n_nodes: str = None,
+                               n_tasks: str = None,
+                               n_tasks_per_node: str = None,
+                               cpus_per_task: str = None,
+                               n_gpus_any: str = None,
+                               n_gpus_a100: str = None,
+                               n_gpus_a100_80gb: str = None,
+                               time_mins: str = None,
+                               time_hrs: str = None,
+                               time_days: str = None,
+                               memory_gb: str = None,
+                               ):
+
+
+    """
+    Notes
+    - bash_script is written in the terminal, provided full bash script as a string
+    - when writing bash_script in the terminal
+        - use $FILENAME to indicate the temporary file that will be created by the bash script
+        - use heredoc to contain the file --> sbatch runs on a new line after the heredoc,  see example bash script in run_exp_fas_lit_traininer.py, run_exp05...() -- (causes EOF ; sbatch syntax error)
+    """
+
+    ### handle log file
     # remove existing log file
     os.system('rm -f ' + log_file)
 
@@ -63,92 +75,114 @@ def run_bash_script(bash_script: str,
         if not os.path.isdir(f'logs/{log_folder}'):
             os.makedirs(f'logs/{log_folder}')
     
-    # bash script is defined in each experiment's run_expXX_XXX() function
-
-    # sbatch options
-    # nodes_to_exclude = 'holygpu8a31505,holygpu8a25306,holygpu8a25104'  #nodes to exclude from job scheduling, ran into errors    
-    nodes_to_exclude = 'holygpu8a27301'  #nodes to exclude from job scheduling, ran into errors    
-
+    ### bash script is written in each experiment's run_expXX_XXX() function -- writes a file called FILENAME
     
-    if device=='n_gpus_a100_sxm4_80gb':
-        sbatch_options = (
-            f'sbatch '
-            f'--job-name={job_name} '
-            f'--partition=seas_gpu,serial_requeue,gpu_requeue '
-            f'--nodes={n_nodes} '
-            f'--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus} '
-            f'--ntasks-per-node={n_tasks_per_node} '
-            f'--cpus-per-task={cpus_per_task} '
-            f'--time={time_days}-0{time_hrs}:00 '
-            f'--mem={memory_gb}gb '
-            f'--error=logs/{log_file}_jobid%j '
-            f'--output=logs/{log_file}_jobid%j '
-            f'--exclude={nodes_to_exclude} '
-            f'$FILENAME'
-        )
-    if device=='n_gpus_a100':
-        sbatch_options = (
-            f'sbatch '
-            f'--job-name={job_name} '
-            f'--partition=seas_gpu,serial_requeue,gpu_requeue,gpu '
-            f'--nodes={n_nodes} '
-            f'--gres=gpu:{n_gpus} '
-            f'--constraint=a100 '
-            f'--ntasks-per-node={n_tasks_per_node} '
-            f'--cpus-per-task={cpus_per_task} '
-            f'--time={time_days}-0{time_hrs}:00 '
-            f'--mem={memory_gb}gb '
-            f'--error=logs/{log_file}_jobid%j '
-            f'--output=logs/{log_file}_jobid%j '
-            f'--exclude={nodes_to_exclude} '
-            f'$FILENAME'
-        )
-    if device=='n_gpus_test':
-        sbatch_options = (
-            f'sbatch '
-            f'--job-name={job_name} '
-            f'--partition=gpu_test '
-            f'--nodes={n_nodes} '
-            f'--gres=gpu:{n_gpus} '
-            f'--ntasks-per-node={n_tasks_per_node} '
-            f'--cpus-per-task={cpus_per_task} '
-            f'--time={time_days}-0{time_hrs}:00 '
-            f'--mem={memory_gb}gb '
-            f'--error=logs/{log_file}_jobid%j '
-            f'--output=logs/{log_file}_jobid%j '
-            f'--exclude={nodes_to_exclude} '
-            f'$FILENAME'
-        )
-    if device=='seas_cpu':
-        sbatch_options = (
-            f'sbatch '
-            f'--job-name={job_name} '
-            f'--partition=seas_compute '
-            f'--nodes={n_nodes} '
-            f'--ntasks={n_tasks} '
-            f'--cpus-per-task={cpus_per_task} '
-            f'--time=0-0{time_hrs}:00 '
-            f'--mem={memory_gb}gb '
-            f'--error=logs/{log_file}_jobid%j '
-            f'--output=logs/{log_file}_jobid%j '
-            f'--exclude=h{nodes_to_exclude} '
-            f'$FILENAME'
-        )
+    ### sbatch options
+    flags = [
+        f"--job-name={job_name}",
+        f"--partition={partition}",
+        f"--error=logs/{log_file}_jobid%j",
+        f"--output=logs/{log_file}_jobid%j",
+    ]
 
-    # run two commands above in order; remove temp file later
-    full_cmd = f'{bash_script} ; {sbatch_options}'
-    
+    #nodes and tasks
+    flags.append(f"--nodes={n_nodes}") if n_nodes else None
+    flags.append(f"--ntasks={n_tasks}") if n_tasks else None
+    flags.append(f"--ntasks-per-node={n_tasks_per_node}") if n_tasks_per_node else None
+    flags.append(f"--cpus-per-task={cpus_per_task}") if cpus_per_task else None
+    #specify gpus
+    flags.append(f"--gres=gpu:{n_gpus_any}") if n_gpus_any else None  #any gpu
+    flags.append(f"--gres=gpu:{n_gpus_a100} --constraint=a100") if n_gpus_a100 else None  #a100 gpu
+    flags.append(f"--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus_a100_80gb}") if n_gpus_a100_80gb else None #a100-sxm4-80gb gpu
+    flags.append(f"--exclude=holygpu8a31505,holygpu8a25306,holygpu8a25104") if n_gpus_any or n_gpus_a100 or n_gpus_a100_80gb else None
+    #time: can specify only minutes, only days, only hours, or any combo of the three
+    time_days = time_days if time_days is not None else '0'
+    time_hrs = time_hrs if time_hrs is not None else '0'
+    time_mins = time_mins if time_mins is not None else '0'
+    flags.append(f"--time={time_days}-0{time_hrs}:0{time_mins}")
+    #memory
+    flags.append(f"--mem={memory_gb}gb") if memory_gb else None
+
+    sbatch_options = "sbatch " + " ".join(flags)
+
+    ### run full command, submit job with sbatch on a new line after the heredoc
+    full_cmd = f"{bash_script}\n{sbatch_options} $FILENAME"
     os.system(full_cmd)
 
 
 
-    
 
-#exp01 -- finetune llama models -- finetune 0.5B-10BT and 1B-20BT (pretrained on fineweb dataset) on metamathqa dataset
-#note
-#sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4
-def run_exp01_eval_cot():
+def run_bash_script_provided(bash_script: str, 
+                               job_name: str,
+                               log_file: str,
+                               partition: str,
+                               n_nodes: str = None,
+                               n_tasks: str = None,
+                               n_tasks_per_node: str = None,
+                               cpus_per_task: str = None,
+                               n_gpus_any: str = None,
+                               n_gpus_a100: str = None,
+                               n_gpus_a100_80gb: str = None,
+                               time_mins: str = None,
+                               time_hrs: str = None,
+                               time_days: str = None,
+                               memory_gb: str = None,
+                               ):
+    """
+    Notes
+    - bash_script is already written, provide path to .sh file as a string
+    """
+
+    ### handle log file
+    # remove existing log file
+    os.system('rm -f ' + log_file)
+
+    #if log file has a folder, check if folder exists (if not, create folder)
+    log_folder = os.path.split(log_file)[0]
+    if log_folder != '':
+        if not os.path.isdir(f'logs/{log_folder}'):
+            os.makedirs(f'logs/{log_folder}')
     
+    ### bash script path is provided
+    
+    ### sbatch options
+    flags = [
+        f"--job-name={job_name}",
+        f"--partition={partition}",
+        f"--error=logs/{log_file}_jobid%j",
+        f"--output=logs/{log_file}_jobid%j",
+    ]
+
+    #nodes and tasks
+    flags.append(f"--nodes={n_nodes}") if n_nodes else None
+    flags.append(f"--ntasks={n_tasks}") if n_tasks else None
+    flags.append(f"--ntasks-per-node={n_tasks_per_node}") if n_tasks_per_node else None
+    flags.append(f"--cpus-per-task={cpus_per_task}") if cpus_per_task else None
+    #specify gpus
+    flags.append(f"--gres=gpu:{n_gpus_any}") if n_gpus_any else None  #any gpu
+    flags.append(f"--gres=gpu:{n_gpus_a100} --constraint=a100") if n_gpus_a100 else None  #a100 gpu
+    flags.append(f"--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus_a100_80gb}") if n_gpus_a100_80gb else None #a100-sxm4-80gb gpu
+    flags.append(f"--exclude=holygpu8a31505,holygpu8a25306,holygpu8a25104") if n_gpus_any or n_gpus_a100 or n_gpus_a100_80gb else None
+    #time: can specify only minutes, only days, only hours, or any combo of the three
+    time_days = time_days if time_days is not None else '0'
+    time_hrs = time_hrs if time_hrs is not None else '0'
+    time_mins = time_mins if time_mins is not None else '0'
+    flags.append(f"--time={time_days}-0{time_hrs}:0{time_mins}")
+    #memory
+    flags.append(f"--mem={memory_gb}gb") if memory_gb else None
+
+    sbatch_options = "sbatch " + " ".join(flags)
+
+    ### run full command, submit job with sbatch on a new line after the heredoc
+    full_cmd = f"{sbatch_options} {bash_script}"
+    os.system(full_cmd)
+
+
+
+
+#exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
+def run_exp01_eval_cot():
+    ##### expA: models pretrained on fineweb dataset
     # 0.5B models
     # model_dirs=[
     #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa",
@@ -158,71 +192,42 @@ def run_exp01_eval_cot():
     #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa",
     # ]
 
-
     # 1B models
-    model_dirs=[
-        "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa",
-        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-metamathqa",
-        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-metamathqa",
-        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-metamathqa",
-        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-metamathqa",
-    ]
+    # model_dirs=[
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa",
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-metamathqa",
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-metamathqa",
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-metamathqa",
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-metamathqa",
+    # ]
 
     datasets = [
-        # "MATHLevel1",
-        # "MATHLevel2",
-        # "MATHLevel3",
-        # "MATHLevel4",
+        "GSM8KPlatinum",
+        "MATHLevel1",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
         "MATHHard",
-        # "CRUXEval",
-        # "BoardgameQA500",
-        # "TabMWP",
-        # "StrategyQA500",
+        "CRUXEval",
+        "BoardgameQA500",
+        "TabMWP",
+        "StrategyQA500",
     ]
 
+    for model_dir, dataset in product(model_dirs, datasets):
 
-    combinations = product(model_dirs, datasets)
+        out_root = "eval_output"
+        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
 
-    for model_dir, dataset in combinations:
+        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
 
-        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset}"
-
-        job_name = os.path.basename(model_dir) + "_" + dataset
-        log_file = f"exp01_eval_ft_models/log_{job_name}"
-        n_gpus = "1"
-        time_days = "0"
-        time_hrs = "2"
-        memory_gb = "64"
-        nodes_to_exclude = "holygpu8a27301"
-
-
-        # remove existing log file
-        os.system('rm -f ' + log_file)
-
-        #if log file has a folder, check if folder exists (if not, create folder)
-        log_folder = os.path.split(log_file)[0]
-        if log_folder != '':
-            if not os.path.isdir(f'logs/{log_folder}'):
-                os.makedirs(f'logs/{log_folder}')
-
-        sbatch_str = (
-            f'sbatch '
-            f'--job-name={job_name} '
-            # f'--partition=seas_gpu,serial_requeue,gpu_requeue,gpu '
-            # f'--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus} '
-            f'--partition=gpu_test '
-            f'--gres=gpu:{n_gpus} '
-            f'--time={time_days}-0{time_hrs}:00 '
-            f'--mem={memory_gb}gb '
-            f'--error=logs/{log_file}_jobid%j '
-            f'--output=logs/{log_file}_jobid%j '
-            f'--exclude={nodes_to_exclude} '
-            f'{bash_script}'
-        )
-
-        # full_cmd = f'{bash_script} ; {sbatch_options}'
-        
-        os.system(sbatch_str)
+        run_bash_script_provided(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f"exp01_eval_ft_models/log_{job_name}",
+            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64' #need to test this! can prob use this for 0.5B or 1B models -- BUT change settings in bash script depending on model size
+            )
 
         print(f'job_name = {job_name}')  
 
@@ -230,13 +235,59 @@ def run_exp01_eval_cot():
 
 
 
+def run_exp02_eval_cot_ffw_models():
 
+    ##### expB: models pretrained on finefineweb dataset, my subsets
+    #### changed output directory in bash scriptfrom eval_output to eval_output/ffw
+    percent_doi = 0.01 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+
+    model_dirs=[
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa"
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.001-seed42-metamathqa"
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.01-seed42-metamathqa"
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.1-seed42-metamathqa"
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay1.0-seed42-metamathqa"        
+        ]
+
+
+    ##### datasets -- used for both expA and expB
+    datasets = [
+        "GSM8KPlatinum",
+        "MATHLevel1",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
+        "MATHHard",
+        "CRUXEval",
+        "BoardgameQA500",
+        "TabMWP",
+        "StrategyQA500",
+    ]
+
+
+    for model_dir, dataset in product(model_dirs, datasets):
+
+        out_root = "eval_output/ffw"
+        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
+
+        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
+
+        run_bash_script_provided(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f"exp02_eval_ft_models_pretrained_on_ffw/log_{job_name}",
+            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64'
+            )
+
+        print(f'job_name = {job_name}')  
 
 
 
 if __name__ == "__main__":
     
-    run_exp01_eval_cot()
+    # run_exp01_eval_cot()
+    run_exp02_eval_cot_ffw_models()
 
 
 
