@@ -190,6 +190,7 @@ def run_exp01_eval_cot():
     #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa",
     #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa",
     #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa",
+    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa",
     # ]
 
     # 1B models
@@ -199,6 +200,7 @@ def run_exp01_eval_cot():
     #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-metamathqa",
     #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-metamathqa",
     #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-metamathqa",
+    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-metamathqa",
     # ]
 
     datasets = [
@@ -239,14 +241,14 @@ def run_exp02_eval_cot_ffw_models():
 
     ##### expB: models pretrained on finefineweb dataset, my subsets
     #### changed output directory in bash scriptfrom eval_output to eval_output/ffw
-    percent_doi = 0.01 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+    percent_doi = 0.1 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
 
     model_dirs=[
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa"
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.001-seed42-metamathqa"
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.01-seed42-metamathqa"
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.1-seed42-metamathqa"
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay1.0-seed42-metamathqa"        
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.001-seed42-metamathqa",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.01-seed42-metamathqa",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.1-seed42-metamathqa", 
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay1.0-seed42-metamathqa",        
         ]
 
 
@@ -277,7 +279,7 @@ def run_exp02_eval_cot_ffw_models():
             job_name=job_name,
             log_file=f"exp02_eval_ft_models_pretrained_on_ffw/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64'
+            n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64'
             )
 
         print(f'job_name = {job_name}')  
@@ -287,7 +289,7 @@ def run_exp02_eval_cot_ffw_models():
 if __name__ == "__main__":
     
     # run_exp01_eval_cot()
-    run_exp02_eval_cot_ffw_models()
+    # run_exp02_eval_cot_ffw_models()
 
 
 

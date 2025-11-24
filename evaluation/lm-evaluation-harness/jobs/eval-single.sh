@@ -1,11 +1,13 @@
-export WANDB_API_KEY=<your wandb api key>
-export WANDB_ENTITY=<your wandb entity>
-export WANDB_PROJECT=<your wandb project>
+export WANDB_API_KEY='b10df87569c5fdcef6d7b86acf29819b378fe28d'
+export WANDB_ENTITY='th789-harvard'
+export WANDB_PROJECT='overtraining'
 export CUDA_VISIBLE_DEVICES=0
 
-zeroshot_tasks="hellaswag,winogrande,piqa,openbookqa,arc_easy,arc_challenge,mathqa"
+# zeroshot_tasks="hellaswag,winogrande,piqa,openbookqa,arc_easy,arc_challenge,mathqa"
+zeroshot_tasks="hellaswag,winogrande"
 
-model_id="Qwen/Qwen3-1.7B"
+# model_id="Qwen/Qwen3-1.7B"
+model_id="/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-0.5B-10BT-weightdecay0.1-seed42/final-hf"
 model_name=$(basename "$model_id")
 
 lm_eval --model vllm \
