@@ -321,6 +321,7 @@ def run_exp02_pretrain_llama():
         f'\nmodule load python'
         f'\nmamba activate litgpt-e'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nexport FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics0.01_litgpt/pretrain" ' #specify any path for ffw -- since this experiment does not actually use ffw
         f'\nsrun litgpt pretrain {bash_script_args}" > $FILENAME' #note ending quote
         )
         return bash_script_complete
@@ -329,39 +330,26 @@ def run_exp02_pretrain_llama():
     # #0.5B models
     # single_args = {
     #     'config': [
-    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml'
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
     #                ]
     # }
     #1B models
     # single_args = {
     #     'config': [
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.1-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.0-seed42.yaml'
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.1-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay10.0-seed42.yaml',
     #                ]
     # }
     ### ----------------------------------------------------------------------
-
-
-    ### ----------- pretrain models on FineFineWeb, my subset 20BT -----------
-    # #1B models
-    # single_args = {
-    #     'config': [
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-ffwmysubset20BT-weightdecay0.0001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-ffwmysubset20BT-weightdecay0.001-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-ffwmysubset20BT-weightdecay0.01-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-ffwmysubset20BT-weightdecay0.1-seed42.yaml',
-    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-ffwmysubset20BT-weightdecay1.0-seed42.yaml'
-    #                ]
-    # }
-    ### ----------------------------------------------------------------------
-
 
 
     list_arg_combos, list_names = dict2options(single_args)
@@ -374,8 +362,8 @@ def run_exp02_pretrain_llama():
                         job_name=name,
                         log_file=f'exp02_pretrain_llama/log_{name}',
                         device='n_gpus_a100',
-                        # n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='3', memory_gb='64' #0.5B models
-                        n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='3', memory_gb='128' #1B models
+                        n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='1', memory_gb='64' #0.5B models
+                        # n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='128' #1B models
                         )
 
         print(f'job_name = {name}, options = {arg_combo}')  
@@ -574,7 +562,9 @@ cat > "$FILENAME" << 'EOF'
 module load python
 mamba activate litgpt-e
 
-model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{weight_decay}-seed42"
+# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{weight_decay}-seed42"
+# model_dir="models/pretrained/llama-0.5B-10BT-weightdecay10.0-seed42"
+model_dir="models/pretrained/llama-1B-20BT-weightdecay10.0-seed42"
 
 source /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh
 export FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics{percent_doi}_litgpt/pretrain"
@@ -594,8 +584,8 @@ EOF
 """     
         return bash_script_complete
 
-    percent_dois = [0.001] #options: [0.1, 0.05, 0.01, 0.005, 0.001]
-    weight_decays = [1.0] #options: [0.0001, 0.001, 0.01, 0.1, 1.0]
+    percent_dois = [0.005] #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+    weight_decays = [0.0001] #options: [0.0001, 0.001, 0.01, 0.1, 1.0]
 
     for percent_doi, weight_decay in product(percent_dois, weight_decays):
         bash_script = create_bash_script(percent_doi, weight_decay)
@@ -615,7 +605,7 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    # run_exp02_pretrain_llama()
+    run_exp02_pretrain_llama()
 
 
     # run_exp03_prepare_data_finefineweb() 
@@ -629,7 +619,7 @@ if __name__ == "__main__":
 
 
     #convert pretrained models to hf format for finetuning
-    run_exp05_convert_pretrained_models_to_hf_format() 
+    # run_exp05_convert_pretrained_models_to_hf_format() 
     
 
 
