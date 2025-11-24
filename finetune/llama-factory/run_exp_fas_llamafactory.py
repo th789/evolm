@@ -74,7 +74,8 @@ def run_bash_script(bash_script: str,
         sbatch_options = (
             f'sbatch '
             f'--job-name={job_name} '
-            f'--partition=seas_gpu,serial_requeue,gpu_requeue '
+            # f'--partition=seas_gpu,gpu,serial_requeue,gpu_requeue '
+            f'--partition=seas_gpu,gpu '
             f'--nodes={n_nodes} '
             f'--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus} '
             f'--ntasks-per-node={n_tasks_per_node} '
@@ -166,21 +167,23 @@ def run_exp01_finetune_llama():
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
     #0.5B models
-    # config_file_paths = [
+    config_file_paths = [
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
-    #    ]
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
+       ]
 
     # #1B models
     config_file_paths = [
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.001-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
-        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
-        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
     ]
 
 
@@ -272,10 +275,10 @@ def run_exp02_finetune_models_pretrained_on_finefineweb():
 
     # #1B models
     #argument to change
-    percent_doi = 0.05 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+    percent_doi = 0.001 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
     
     config_file_paths = [
-        f'config_hub/custom_configs/ft_metamathqa/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa.yaml',
+        # f'config_hub/custom_configs/ft_metamathqa/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa.yaml',
         f'config_hub/custom_configs/ft_metamathqa/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.001-seed42-metamathqa.yaml',
         f'config_hub/custom_configs/ft_metamathqa/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.01-seed42-metamathqa.yaml',
         f'config_hub/custom_configs/ft_metamathqa/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.1-seed42-metamathqa.yaml',
@@ -290,7 +293,7 @@ def run_exp02_finetune_models_pretrained_on_finefineweb():
 
         run_bash_script(bash_script=bash_script, 
                         job_name=name,
-                        log_file=f'run_exp02_finetune_models_pretrained_on_finefineweb/log_{name}',
+                        log_file=f'exp02_finetune_models_pretrained_on_finefineweb/log_{name}',
                         device='n_gpus_a100_sxm4_80gb',
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='0', time_hrs='8', memory_gb='64' #0.5B and 1B models
@@ -303,13 +306,61 @@ def run_exp02_finetune_models_pretrained_on_finefineweb():
 
 
 
+def run_exp03_vary_wd_during_ft():
+    
+    # bash script
+    def create_bash_script(config_file_path: str) -> str:
+        bash_script_complete = (
+        f'FILENAME=$(mktemp) ; '
+        f'echo "#!/bin/sh' #note starting quote
+        f'\nmodule load python'
+        f'\nmodule load cuda/12.9.1-fasrc01'
+        f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
+        )
+        return bash_script_complete
+    
+
+    # #1B models
+    wd_pretrain = 0.0001 #options[0.0001, 0.001, 0.01, 0.1, 1.0]
+
+    config_file_paths = [
+        f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.01.yaml',
+        f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.1.yaml',
+        # f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay1.0.yaml',
+    ]
+
+
+    #run each experiment, which has a different combination of arguments from single_args
+    for config_file_path in config_file_paths:
+        bash_script = create_bash_script(config_file_path)
+        name = os.path.splitext(os.path.basename(config_file_path))[0]
+
+        wd_ft = name.split('-')[-1][13:]
+        arg_combo_str = f"wd_pretrain{wd_pretrain}_wd_ft{wd_ft}"
+
+        run_bash_script(bash_script=bash_script, 
+                        job_name=arg_combo_str,
+                        log_file=f'exp03_vary_wd_during_ft/log_{name}',
+                        device='n_gpus_a100_sxm4_80gb',
+                        #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
+                        n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='0', time_hrs='6', memory_gb='64' #0.5B and 1B models
+                        )
+        #actual run times
+        #1B-20BT models, FT on metamathqa for 3 epochs -- 4 GPUs, 4.5 hours
+
+        print(f'job_name = {arg_combo_str}, full_model_name = {name}')  
+
+
+
 if __name__ == "__main__":
     # run_exp01_finetune_llama()
 
     # create_config_files_for_exp02() # create config files, does not submit jobs
+    # run_exp02_finetune_models_pretrained_on_finefineweb()
 
-    run_exp02_finetune_models_pretrained_on_finefineweb()
-
+    # run_exp03_vary_wd_during_ft()
 
 
 
