@@ -1,19 +1,48 @@
-export WANDB_API_KEY='b10df87569c5fdcef6d7b86acf29819b378fe28d'
-export WANDB_ENTITY='th789-harvard'
-export WANDB_PROJECT='overtraining'
+start_time=$(date +%s)
+echo "Start time:  $(date -d @$start_time)"
+
 export CUDA_VISIBLE_DEVICES=0
 
 # zeroshot_tasks="hellaswag,winogrande,piqa,openbookqa,arc_easy,arc_challenge,mathqa"
-zeroshot_tasks="hellaswag,winogrande"
+zeroshot_tasks="winogrande"
+# zeroshot_tasks="openbookqa,arc_easy,arc_challenge,mathqa"
 
-# model_id="Qwen/Qwen3-1.7B"
-model_id="/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-0.5B-10BT-weightdecay0.1-seed42/final-hf"
-model_name=$(basename "$model_id")
+#pretrained model
+model_id="/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-0.5B-10BT-weightdecay0.001-seed42/final-hf"
+# model_id="/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-1B-20BT-weightdecay0.1-seed42/final-hf"
+model_name=$(basename "$(dirname "$model_id")") #second to last folder of model_id
+subfolder=$(basename "$(dirname "$(dirname "$model_id")")") #third to last folder of model_id
+OUTPUT_DIR="./eval_output/pretrained/$subfolder/$model_name"
+
+
+#finetuned model
+# model_id="/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics0.1-weightdecay0.1-seed42-metamathqa"
+# model_name=$(basename "$model_id") #last folder of model_id
+# subfolder=$(basename "$(dirname "$model_id")") #second to last folder of model_id
+# OUTPUT_DIR="./eval_output/finetuned/$subfolder/$model_name"
+
+
+echo "---------------------------------------- Evaluating model----------------------------------------"
+echo "Model path: $model_id"
+echo "Model Name: $model_name"
+echo "Output Directory: $OUTPUT_DIR"
+echo "Zero-shot Tasks: $zeroshot_tasks"
 
 lm_eval --model vllm \
     --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6 \
     --tasks $zeroshot_tasks \
     --num_fewshot 0 \
-    --wandb_args name=lmeval-0shot-$model_name \
+    --output_path "$OUTPUT_DIR" \
     --batch_size auto
 
+echo "Results saved to: $OUTPUT_DIR"
+
+end_time=$(date +%s)
+elapsed=$(( end_time - start_time ))
+echo ""
+echo "Start time:  $(date -d @$start_time)"
+echo "End time:    $(date -d @$end_time)"
+minutes=$((elapsed / 60))
+seconds=$((elapsed % 60))
+echo "Elapsed time: ${minutes}min ${seconds}sec"
+echo "Complete!"

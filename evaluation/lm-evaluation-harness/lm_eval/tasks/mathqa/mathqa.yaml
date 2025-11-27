@@ -1,7 +1,13 @@
 tag:
   - math_word_problems
 task: mathqa
-dataset_path: math_qa
+# dataset_path: math_qa
+dataset_path: json
+dataset_kwargs:
+  data_files:
+    train: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/evaluation/lm-evaluation-harness/datasets/MathQA/train.json
+    validation: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/evaluation/lm-evaluation-harness/datasets/MathQA/dev.json
+    test: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/evaluation/lm-evaluation-harness/datasets/MathQA/test.json
 output_type: multiple_choice
 training_split: train
 validation_split: validation

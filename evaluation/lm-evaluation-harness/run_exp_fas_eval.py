@@ -181,166 +181,149 @@ def run_bash_script_provided(bash_script: str,
 
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
-def run_exp01_eval_cot():
+def run_exp01_eval_single_model_all_tasks():
+
+
     ##### expA: models pretrained on fineweb dataset
-    # 0.5B models
+    # model_size = "0.5B-10BT"
+    # model_sizes = ["0.5B-10BT", "1B-20BT"]
+    # model_sizes = ["0.5B-10BT"]
+    # wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
+    
+    #pretrained models
     # model_dirs=[
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa",
-    #     "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa",
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-{model_size}-weightdecay{wd}-seed42/final-hf" for model_size, wd in product(model_sizes, wd_lst)
     # ]
 
-    # 1B models
+    # #finetuned models
     # model_dirs=[
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay3.0-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-metamathqa",
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa" for model_size, wd in product(model_sizes, wd_lst)
     # ]
 
-    datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        "CRUXEval",
-        "BoardgameQA500",
-        "TabMWP",
-        "StrategyQA500",
-    ]
-
-    for model_dir, dataset in product(model_dirs, datasets):
-
-        out_root = "eval_output"
-        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
-
-        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
-
-        run_bash_script_provided(
-            bash_script=bash_script,
-            job_name=job_name,
-            log_file=f"exp01_eval_ft_models/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64' #need to test this! can prob use this for 0.5B or 1B models -- BUT change settings in bash script depending on model size
-            )
-
-        print(f'job_name = {job_name}')  
-
-
-
-
-
-def run_exp02_eval_cot_ffw_models():
 
     ##### expB: models pretrained on finefineweb dataset, my subsets
-    percent_doi = 0.1 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+    # wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
+    # percent_doi_lst = [0.001, 0.005, 0.01, 0.05, 0.1]
+    wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
+    percent_doi_lst = [0.001, 0.005, 0.01, 0.05, 0.1]
 
+    #pretrained models
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42/final-hf" for wd, percent_doi in product(wd_lst, percent_doi_lst)
+    # ]
+
+    # #finetuned models
     model_dirs=[
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.0001-seed42-metamathqa",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.001-seed42-metamathqa",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.01-seed42-metamathqa",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay0.1-seed42-metamathqa", 
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay1.0-seed42-metamathqa",        
-        ]
-
-
-    ##### datasets -- used for both expA and expB
-    datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        "CRUXEval",
-        "BoardgameQA500",
-        "TabMWP",
-        "StrategyQA500",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42-metamathqa" for wd, percent_doi in product(wd_lst, percent_doi_lst)
     ]
 
 
-    for model_dir, dataset in product(model_dirs, datasets):
+    for model_dir in model_dirs:
 
-        out_root = "eval_output/ffw"
-        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
+        bash_script = f"jobs/eval-single--run-exp.sh {model_dir}"
 
-        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
+        if "evolm/pretrain/lit-trainer/models" in model_dir:
+            job_name = "eval_pt_" + os.path.basename(os.path.dirname(model_dir)) #model name is second to last folder in model_dir
+        
+        elif "evolm/finetune/llama-factory/llamafactory_out" in model_dir:
+            job_name = "eval_ft_" + os.path.basename(model_dir) #model name is last folder in model_dir
 
         run_bash_script_provided(
             bash_script=bash_script,
             job_name=job_name,
-            log_file=f"exp02_eval_ft_models_pretrained_on_ffw/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64'
+            log_file=f"exp01_eval_models/log_{job_name}",
+            partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_a100='1', time_hrs='1', memory_gb='32'
+            # partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32'
             )
+        
+        #1B models: run in under 10 min
 
         print(f'job_name = {job_name}')  
 
 
 
-def run_exp03_eval_cot_models_vary_wd_during_ft():
 
-    ##### expC: start with pretrained models from exp01, vary wd during ft
-    wd_during_ft = 1.0 #options: [1.0, 0.1, 0.01]
+def run_exp01_eval_many_models_all_tasks():
 
-    model_dirs=[
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa-ftweightdecay{wd_during_ft}",      
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay0.001-seed42-metamathqa-ftweightdecay{wd_during_ft}",      
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay0.01-seed42-metamathqa-ftweightdecay{wd_during_ft}",      
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay0.1-seed42-metamathqa-ftweightdecay{wd_during_ft}",      
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay1.0-seed42-metamathqa-ftweightdecay{wd_during_ft}",      
-        ]
+    ###change model names in the bash script
+
+    bash_script = f"jobs/eval-multiple--run-exp.sh"
+
+    # #pretrained models -- change model name in the bash script
+    # job_name = "eval_model_multiple_exp01_pt_0.5B"
+    # job_name = "eval_model_multiple_exp01_pt_1B"
+
+    # #finetuned models -- change model name in the bash script
+    job_name = "eval_model_multiple_exp01_ft_0.5B"
+    # job_name = "eval_model_multiple_exp01_ft_1B"
+
+    run_bash_script_provided(
+        bash_script=bash_script,
+        job_name=job_name,
+        log_file=f"exp01_eval_models_multiple/log_{job_name}",
+        # partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32', #1B models
+        partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_a100_80gb='1', time_hrs='2', memory_gb='32', #1B models      
+        )
+        
+        #0.5B models: run in under 20 min
+        #1B models: run in under 10 min
+
+    print(f'job_name = {job_name}')  
 
 
-    ##### datasets -- used for both expA and expB
-    datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        "CRUXEval",
-        "BoardgameQA500",
-        "TabMWP",
-        "StrategyQA500",
-    ]
+import time
 
 
-    for model_dir, dataset in product(model_dirs, datasets):
+def run_exp01_eval_single_model_single_task():
 
-        out_root = "eval_output/vary_wd_during_ft"
-        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
+    ##### expA: models pretrained on fineweb dataset
 
-        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
+    model_size = "0.5B-10BT"
+    wd_lst = [0.001, 0.01, 0.1, 1.0] #full: [0.0001, 0.001, 0.01, 0.1, 1.0]
+    task_lst = ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]  #full: ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]
+
+    counter = 0
+    for wd, task in product(wd_lst, task_lst):
+        #pretrained
+        # model_dir = f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-{model_size}-weightdecay{wd}-seed42/final-hf"
+        #finetuned
+        model_dir = f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa"
+
+        bash_script = f"jobs/eval-single-model-and-task--run-exp.sh {model_dir} {task}"
+
+        if "evolm/pretrain/lit-trainer/models" in model_dir:
+            job_name = "eval_pt_" + os.path.basename(os.path.dirname(model_dir)) + "_" + task #model name is second to last folder in model_dir
+        
+        elif "evolm/finetune/llama-factory/llamafactory_out" in model_dir:
+            job_name = "eval_ft_" + os.path.basename(model_dir) + "_" + task #model name is last folder in model_dir
 
         run_bash_script_provided(
             bash_script=bash_script,
             job_name=job_name,
-            log_file=f"exp03_eval_cot_models_vary_wd_during_ft/log_{job_name}",
+            log_file=f"exp01_eval_single_model_single_task/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64'
+            # partition='gpu_test',
+            n_gpus_any='1', time_mins='30', memory_gb='32'
             )
 
         print(f'job_name = {job_name}')  
+        
+        ### if using gpu_test -- can only submit 2 jobs at a time
+        # counter += 1
+        # if counter % 2 == 0:
+        #     #wait for 5min
+        #     print(f'Counter = {counter}, waiting for 5min...')
+        #     time.sleep(300)
+
 
 
 if __name__ == "__main__":
-    
-    # run_exp01_eval_cot()
-    # run_exp02_eval_cot_ffw_models()
-    run_exp03_eval_cot_models_vary_wd_during_ft()
+    #exp01
+    # run_exp01_eval_single_model_single_task() #for exp01, 0.5B models -- one job: one model + one task
+    # run_exp01_eval_many_models_all_tasks() #for exp01, 1B models -- one job: multiple models + all tasks
 
-
+    #exp02
+    # run_exp01_eval_single_model_all_tasks() #for exp02, which only has 1B models
 
 
 

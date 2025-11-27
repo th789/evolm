@@ -24,3 +24,6 @@ finetune/llama-factory/data/metamathqa.json
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev
+
+evaluation/lm-evaluation-harness/datasets
+evaluation/lm-evaluation-harness/eval_output
