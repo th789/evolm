@@ -173,6 +173,7 @@ def run_exp01_finetune_llama():
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
     #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
        ]
 
@@ -183,6 +184,7 @@ def run_exp01_finetune_llama():
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
     ]
 
@@ -327,7 +329,7 @@ def run_exp03_vary_wd_during_ft():
 
     config_file_paths = [
         f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.01.yaml',
-        f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.1.yaml',
+        # f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.1.yaml',
         # f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay1.0.yaml',
     ]
 
@@ -360,6 +362,10 @@ if __name__ == "__main__":
     # create_config_files_for_exp02() # create config files, does not submit jobs
     # run_exp02_finetune_models_pretrained_on_finefineweb()
 
+    # import time
+    # wd_pretrain = 0.0001
+    # print(f"wd_pretrain = {wd_pretrain}")
+    # time.sleep(4 * 60 * 60) #sleep for 4 hours
     # run_exp03_vary_wd_during_ft()
 
 
