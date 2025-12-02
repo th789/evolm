@@ -8,6 +8,18 @@ model_ckpt_dir=$1
 dataset_name=$2 #options: dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
 OUT_ROOT=$3 #options: OUT_ROOT=eval_output, OUT_ROOT=eval_output/ffw
 
+start_time=$(date +%s)
+echo "Start time:  $(date -d @$start_time)"
+
+echo "=== Job Info ==="
+echo "Job ID: $SLURM_JOB_ID"
+echo "Node: $SLURMD_NODENAME"
+echo "Partition: $SLURM_JOB_PARTITION"
+echo ""
+echo "=== GPU Hardware ==="
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+nvidia-smi
+
 # set up env
 module load python
 module load cuda/12.9.1-fasrc01
@@ -124,8 +136,7 @@ export CUDA_VISIBLE_DEVICES=0
 
 
 
-start_time=$(date +%s)
-echo "Start time:  $(date -d @$start_time)"
+
 
 # dataset_name=GSM8KPlatinum,MATHLevel1,MATHLevel2,MATHLevel3,MATHLevel4,MATHHard,CRUXEval,BoardgameQA500,TabMWP,StrategyQA500
 prompt_config_file=prompts/myllama/default_dataset/prompt_config.json
