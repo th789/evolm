@@ -565,8 +565,8 @@ module load python
 mamba activate litgpt-e
 
 # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{weight_decay}-seed42"
-# model_dir="models/pretrained/llama-0.5B-10BT-weightdecay10.0-seed42"
-model_dir="models/pretrained/llama-1B-20BT-weightdecay10.0-seed42"
+model_dir="models/pretrained/llama-0.5B-10BT-weightdecay10.0-seed42"
+# model_dir="models/pretrained/llama-1B-20BT-weightdecay10.0-seed42"
 
 source /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh
 export FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics{percent_doi}_litgpt/pretrain"
@@ -607,7 +607,7 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    run_exp02_pretrain_llama()
+    # run_exp02_pretrain_llama()
 
 
     # run_exp03_prepare_data_finefineweb() 
@@ -621,7 +621,7 @@ if __name__ == "__main__":
 
 
     #convert pretrained models to hf format for finetuning
-    # run_exp05_convert_pretrained_models_to_hf_format() 
+    run_exp05_convert_pretrained_models_to_hf_format() 
     
 
 
