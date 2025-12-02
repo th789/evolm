@@ -180,65 +180,7 @@ def run_bash_script_provided(bash_script: str,
 
 
 
-#exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
-def run_exp01_eval_single_model_all_tasks():
 
-
-    ##### expA: models pretrained on fineweb dataset
-    # model_size = "0.5B-10BT"
-    # model_sizes = ["0.5B-10BT", "1B-20BT"]
-    # model_sizes = ["0.5B-10BT"]
-    # wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
-    
-    #pretrained models
-    # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-{model_size}-weightdecay{wd}-seed42/final-hf" for model_size, wd in product(model_sizes, wd_lst)
-    # ]
-
-    # #finetuned models
-    # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa" for model_size, wd in product(model_sizes, wd_lst)
-    # ]
-
-
-    ##### expB: models pretrained on finefineweb dataset, my subsets
-    # wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
-    # percent_doi_lst = [0.001, 0.005, 0.01, 0.05, 0.1]
-    wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
-    percent_doi_lst = [0.001, 0.005, 0.01, 0.05, 0.1]
-
-    #pretrained models
-    # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42/final-hf" for wd, percent_doi in product(wd_lst, percent_doi_lst)
-    # ]
-
-    # #finetuned models
-    model_dirs=[
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42-metamathqa" for wd, percent_doi in product(wd_lst, percent_doi_lst)
-    ]
-
-
-    for model_dir in model_dirs:
-
-        bash_script = f"jobs/eval-single--run-exp.sh {model_dir}"
-
-        if "evolm/pretrain/lit-trainer/models" in model_dir:
-            job_name = "eval_pt_" + os.path.basename(os.path.dirname(model_dir)) #model name is second to last folder in model_dir
-        
-        elif "evolm/finetune/llama-factory/llamafactory_out" in model_dir:
-            job_name = "eval_ft_" + os.path.basename(model_dir) #model name is last folder in model_dir
-
-        run_bash_script_provided(
-            bash_script=bash_script,
-            job_name=job_name,
-            log_file=f"exp01_eval_models/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_a100='1', time_hrs='1', memory_gb='32'
-            # partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32'
-            )
-        
-        #1B models: run in under 10 min
-
-        print(f'job_name = {job_name}')  
 
 
 
@@ -249,13 +191,23 @@ def run_exp01_eval_many_models_all_tasks():
 
     bash_script = f"jobs/eval-multiple--run-exp.sh"
 
-    # #pretrained models -- change model name in the bash script
-    # job_name = "eval_model_multiple_exp01_pt_0.5B"
-    # job_name = "eval_model_multiple_exp01_pt_1B"
+    ###expo01
+    # job_name = "eval_model_multiple_exp01_pt_1B" #pretrained models -- change model name in the bash script
+    # job_name = "eval_model_multiple_exp01_ft_1B" #finetuned models -- change model name in the bash script
 
-    # #finetuned models -- change model name in the bash script
-    job_name = "eval_model_multiple_exp01_ft_0.5B"
-    # job_name = "eval_model_multiple_exp01_ft_1B"
+    ###exp03
+    #pretrained models -- change model name in the bash script
+    job_name = "eval_model_multiple_exp02_pt_1B_percentdoi0.001" 
+    # job_name = "eval_model_multiple_exp02_pt_1B_percentdoi0.005" 
+    # job_name = "eval_model_multiple_exp02_pt_1B_percentdoi0.01" 
+    # job_name = "eval_model_multiple_exp02_pt_1B_percentdoi0.05" 
+    # job_name = "eval_model_multiple_exp02_pt_1B_percentdoi0.1"
+    #finetuned models -- change model name in the bash script
+    # job_name = "eval_model_multiple_exp02_ft_1B_percentdoi0.001" 
+    # job_name = "eval_model_multiple_exp02_ft_1B_percentdoi0.005" 
+    # job_name = "eval_model_multiple_exp02_ft_1B_percentdoi0.01" 
+    # job_name = "eval_model_multiple_exp02_ft_1B_percentdoi0.05" 
+    # job_name = "eval_model_multiple_exp02_ft_1B_percentdoi0.1" 
 
     run_bash_script_provided(
         bash_script=bash_script,
@@ -265,7 +217,6 @@ def run_exp01_eval_many_models_all_tasks():
         partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_a100_80gb='1', time_hrs='2', memory_gb='32', #1B models      
         )
         
-        #0.5B models: run in under 20 min
         #1B models: run in under 10 min
 
     print(f'job_name = {job_name}')  
@@ -279,8 +230,10 @@ def run_exp01_eval_single_model_single_task():
     ##### expA: models pretrained on fineweb dataset
 
     model_size = "0.5B-10BT"
-    wd_lst = [0.001, 0.01, 0.1, 1.0] #full: [0.0001, 0.001, 0.01, 0.1, 1.0]
-    task_lst = ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]  #full: ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]
+    # wd_lst = [0.001, 0.01, 0.1, 1.0] #full: [0.0001, 0.001, 0.01, 0.1, 1.0]
+    # task_lst = ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]  #full: ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]
+    wd_lst = [0.0001] #full: [0.0001, 0.001, 0.01, 0.1, 1.0]
+    task_lst = ["winogrande"]  #full: ["hellaswag", "winogrande", "piqa", "openbookqa", "arc_easy", "arc_challenge", "mathqa"]
 
     counter = 0
     for wd, task in product(wd_lst, task_lst):
@@ -301,9 +254,9 @@ def run_exp01_eval_single_model_single_task():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_single_model_single_task/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            # partition='gpu_test',
-            n_gpus_any='1', time_mins='30', memory_gb='32'
+            # partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            partition='gpu_test', #FOR SOME REASON, exps don't crash on gpu_test, but they often do on other partitions
+            n_gpus_any='1', time_hrs='1', memory_gb='32'
             )
 
         print(f'job_name = {job_name}')  
@@ -317,13 +270,85 @@ def run_exp01_eval_single_model_single_task():
 
 
 
+#exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
+def run_exp01_eval_single_model_all_tasks():
+
+
+    ##### exp01: models pretrained on fineweb dataset
+    model_sizes = ["0.5B-10BT"] #["0.5B-10BT", "1B-20BT"]
+    wd_lst = [10.0] #[0.0001, 0.001, 0.01, 0.1, 1.0, 3.0, 10.0]
+    
+    #pretrained models
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-{model_size}-weightdecay{wd}-seed42/final-hf" for model_size, wd in product(model_sizes, wd_lst)
+    # ]
+
+    # #finetuned models
+    model_dirs=[
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa" for model_size, wd in product(model_sizes, wd_lst)
+    ]
+
+
+    ##### exp02: models pretrained on finefineweb dataset, my subsets
+    # wd_lst = [0.0001, 0.001, 0.01, 0.1, 1.0]
+    # percent_doi_lst = [0.001, 0.005, 0.01, 0.05, 0.1]
+    # wd_lst = [1.0]
+    # percent_doi_lst = [0.005]
+
+    #pretrained models
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42/final-hf" for wd, percent_doi in product(wd_lst, percent_doi_lst)
+    # ]
+
+    # #finetuned models
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics{percent_doi}-weightdecay{wd}-seed42-metamathqa" for wd, percent_doi in product(wd_lst, percent_doi_lst)
+    # ]
+
+
+    ##### exp03: models finetuned with different wd -- only ft models
+    # wd_ft_lst = [0.1] #[1.0, 0.1, 0.01]
+    # wd_pt_lst = [0.0001, 0.01] #[0.0001, 0.001, 0.01, 0.1, 1.0, 3.0, 10.0]
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pt}-seed42-metamathqa-ftweightdecay{wd_ft}" for wd_pt, wd_ft in product(wd_pt_lst, wd_ft_lst)
+    # ]
+
+
+    for model_dir in model_dirs:
+
+        bash_script = f"jobs/eval-single--run-exp.sh {model_dir}"
+
+        if "evolm/pretrain/lit-trainer/models" in model_dir:
+            job_name = "eval_pt_" + os.path.basename(os.path.dirname(model_dir)) #model name is second to last folder in model_dir
+        
+        elif "evolm/finetune/llama-factory/llamafactory_out" in model_dir:
+            job_name = "eval_ft_" + os.path.basename(model_dir) #model name is last folder in model_dir
+
+        run_bash_script_provided(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f"exp01_eval_single_model_all_tasks/log_{job_name}",
+            # partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32'
+            # partition='seas_gpu,gpu', n_gpus_any='1', time_hrs='1', memory_gb='32'
+            partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32'
+            )
+        
+        #1B models: run in under 10 min
+
+        print(f'job_name = {job_name}')  
+
+
 if __name__ == "__main__":
     #exp01
     # run_exp01_eval_single_model_single_task() #for exp01, 0.5B models -- one job: one model + one task
     # run_exp01_eval_many_models_all_tasks() #for exp01, 1B models -- one job: multiple models + all tasks
 
-    #exp02
-    # run_exp01_eval_single_model_all_tasks() #for exp02, which only has 1B models
+    # wait for 5min
+    # time.sleep(700)
+
+    #exp02 -- pick one
+    # run_exp01_eval_many_models_all_tasks() #for exp02, 1B models -- one job: multiple models + all tasks -- not good because some evals fail and some succedd in same run
+    run_exp01_eval_single_model_all_tasks() #for exp02, which only has 1B models
 
 
 

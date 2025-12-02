@@ -7,6 +7,14 @@ model_id=$1
 start_time=$(date +%s)
 echo "Start time:  $(date -d @$start_time)"
 
+echo "=== Job Info ==="
+echo "Job ID: $SLURM_JOB_ID"
+echo "Node: $SLURMD_NODENAME"
+echo "Partition: $SLURM_JOB_PARTITION"
+echo ""
+echo "=== GPU Hardware ==="
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+nvidia-smi
 
 #set up env
 module load python
@@ -31,7 +39,7 @@ fi
 
 
 lm_eval --model vllm \
-    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6 \
+    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5 \
     --tasks $zeroshot_tasks \
     --num_fewshot 0 \
     --output_path "$OUTPUT_DIR" \
