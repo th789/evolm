@@ -67,7 +67,7 @@ def run_bash_script(bash_script: str,
 
     # sbatch options
     # nodes_to_exclude = 'holygpu8a31505,holygpu8a25306,holygpu8a25104'  #nodes to exclude from job scheduling, ran into errors    
-    nodes_to_exclude = 'holygpu8a27301'  #nodes to exclude from job scheduling, ran into errors    
+    nodes_to_exclude = 'holygpu8a27301,holygpu8a29201,holygpu8a31305,holygpu8a22405'  #nodes to exclude from job scheduling, ran into errors    
 
     
     if device=='n_gpus_a100_sxm4_80gb':
@@ -75,7 +75,7 @@ def run_bash_script(bash_script: str,
             f'sbatch '
             f'--job-name={job_name} '
             # f'--partition=seas_gpu,gpu,serial_requeue,gpu_requeue '
-            f'--partition=seas_gpu,gpu '
+            f'--partition=seas_gpu '
             f'--nodes={n_nodes} '
             f'--gres=gpu:nvidia_a100-sxm4-80gb:{n_gpus} '
             f'--ntasks-per-node={n_tasks_per_node} '
@@ -167,25 +167,25 @@ def run_exp01_finetune_llama():
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
     #0.5B models
-    config_file_paths = [
-    #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
-    #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
-    #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
-    #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
-    #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
-       ]
+    # config_file_paths = [
+    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
+    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
+    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
+    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
+    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
+    #    ]
 
-    # #1B models
+    # # #1B models
     config_file_paths = [
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.001-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
         # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
+        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
+        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
     ]
 
 
@@ -325,7 +325,7 @@ def run_exp03_vary_wd_during_ft():
     
 
     # #1B models
-    wd_pretrain = 0.0001 #options[0.0001, 0.001, 0.01, 0.1, 1.0]
+    wd_pretrain = 10.0 #options[0.0001, 0.001, 0.01, 0.1, 1.0, 3.0, 10.0]
 
     config_file_paths = [
         f'config_hub/custom_configs/ft_metamathqa/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pretrain}-seed42-metamathqa-ftweightdecay0.01.yaml',
@@ -362,11 +362,8 @@ if __name__ == "__main__":
     # create_config_files_for_exp02() # create config files, does not submit jobs
     # run_exp02_finetune_models_pretrained_on_finefineweb()
 
-    # import time
-    # wd_pretrain = 0.0001
-    # print(f"wd_pretrain = {wd_pretrain}")
-    # time.sleep(4 * 60 * 60) #sleep for 4 hours
-    # run_exp03_vary_wd_during_ft()
+    #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
+    run_exp03_vary_wd_during_ft()
 
 
 
