@@ -29,7 +29,7 @@ mamba activate lm-eval-cot-og
 ### --------------- NOTE ---------------
 # For 0.5B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
 # because vllm api cannot handle custom head size = 48
-        # --batch_size 64 \
+        # --batch_size 32 \
         # --api hf \
 
 # For 1B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
@@ -42,6 +42,8 @@ mamba activate lm-eval-cot-og
 # OUT_ROOT=/path/to/eval_out/outputs
 # OUT_ROOT=eval_output
 # OUT_ROOT=eval_output/ffw
+
+
 
 function collect_responses__greedy() {
     dataset_name=$1
@@ -57,10 +59,11 @@ function collect_responses__greedy() {
         --temperature 0.0 \
         --num_generations 1 \
         --max_model_len 2048 \
+        --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 32 \
+        --api hf \
         # --force
 
 }
@@ -79,10 +82,11 @@ function collect_responses__n16() {
         --temperature 1.0 \
         --num_generations 16 \
         --max_model_len 2048 \
+        --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 32 \
+        --api hf \
         # --force
 
 }
@@ -143,11 +147,11 @@ prompt_config_file=prompts/myllama/default_dataset/prompt_config.json
 orm_ckpt_dir=Skywork/Skywork-Reward-Llama-3.1-8B-v0.2
 
 #greedy
-model_id_for_saving=$(basename "$model_ckpt_dir")--greedy
-printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
-collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
-printf "\nRunning evaluate_responses for greedy, model=$model_ckpt_dir"
-evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
+# model_id_for_saving=$(basename "$model_ckpt_dir")--greedy
+# printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
+# collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+# printf "\nRunning evaluate_responses for greedy, model=$model_ckpt_dir"
+# evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 
 #n16
 model_id_for_saving=$(basename "$model_ckpt_dir")--n16

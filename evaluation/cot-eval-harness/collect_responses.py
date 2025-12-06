@@ -98,9 +98,20 @@ def remove_ending_EOS_tokens(tokens, tokenizer):
     tokens: torch.Tensor of shape [n], generated tokens for one sequence (not batched)
     tokenizer: modeltokenizer
     '''
-    # Find the first occurrence of the set of EOS tokens at the end
-    last_non_EOS_index = (tokens != tokenizer.eos_token_id).nonzero()[-1].item()
-    # Keep everything up to that, removing all the EOS tokens
+    # Handle edge cases: empty tensor or all EOS tokens
+    if tokens.numel() == 0:
+        # No tokens generated, return empty tensor
+        return tokens
+    
+    # Find indices of non-EOS tokens
+    non_EOS_indices = (tokens != tokenizer.eos_token_id).nonzero()
+    if non_EOS_indices.numel() == 0:
+        # All tokens are EOS tokens (model generated only EOS, likely immediate stop)
+        # Return empty tensor (no actual content)
+        return torch.tensor([], dtype=tokens.dtype, device=tokens.device)
+    
+    # Find the last non-EOS token and keep everything up to that
+    last_non_EOS_index = non_EOS_indices[-1].item()
     new_tokens = tokens[:last_non_EOS_index + 1]
     return new_tokens
 

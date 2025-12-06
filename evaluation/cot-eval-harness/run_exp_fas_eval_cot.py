@@ -184,15 +184,15 @@ def run_bash_script_provided(bash_script: str,
 def run_exp01_eval_cot():
     ##### expA: models pretrained on fineweb dataset
     # 0.5B models
-    # model_dirs=[
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa",
-    #     # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa",
-    # ]
+    model_dirs=[
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa",
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa",
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa",
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa",
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa",
+        # "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa",
+        "/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa",
+    ]
 
     # 1B models
     # model_dirs=[
@@ -207,15 +207,15 @@ def run_exp01_eval_cot():
 
     datasets = [
         "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
+        # "MATHLevel1",
+        # "MATHLevel2",
         "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        "CRUXEval",
-        "BoardgameQA500",
-        "TabMWP",
-        "StrategyQA500",
+        # "MATHLevel4",
+        # "MATHHard",
+        # "CRUXEval",
+        # "BoardgameQA500",
+        # "TabMWP",
+        # "StrategyQA500",
     ]
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -229,9 +229,9 @@ def run_exp01_eval_cot():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_ft_models/log_{job_name}",
-            # partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            partition='seas_gpu',
-            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64' #need to test this! can prob use this for 0.5B or 1B models -- BUT change settings in bash script depending on model size
+            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            # partition='seas_gpu',
+            n_gpus_a100_80gb='1', time_hrs='10', memory_gb='64' #change settings in bash script depending on model size
             )
 
         print(f'job_name = {job_name}')  
@@ -340,7 +340,7 @@ def run_exp03_eval_cot_models_vary_wd_during_ft():
 
 if __name__ == "__main__":
     
-    # run_exp01_eval_cot()
+    run_exp01_eval_cot()
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 
