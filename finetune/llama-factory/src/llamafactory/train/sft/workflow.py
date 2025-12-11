@@ -89,6 +89,20 @@ def run_sft(
         **metric_module,
     )
 
+    #print args to confirm weight decay during finetuning
+    print(" ******************* Check weight decay during finetuning ******************* ")
+
+    print("\nTraining args:")
+    print(training_args)
+
+    print("\nFinetuning args:")
+    print(finetuning_args)
+
+    print("\nTrainer args.weight_decay:", trainer.args.weight_decay)
+
+    print(" **************************************************************************** ")
+
+
     # Keyword arguments for `model.generate`
     gen_kwargs = generating_args.to_dict()
     gen_kwargs["eos_token_id"] = [tokenizer.eos_token_id] + tokenizer.additional_special_tokens_ids
@@ -109,6 +123,16 @@ def run_sft(
         trainer.save_state()
         if trainer.is_world_process_zero() and finetuning_args.plot_loss:
             plot_loss(training_args.output_dir, keys=["loss", "eval_loss", "eval_accuracy"])
+
+        #print args to confirm weight decay during finetuning
+        print(" ******************* Check weight decay during finetuning ******************* ")
+
+        print("\nParam groups:")
+
+        for i, group in enumerate(trainer.optimizer.param_groups):
+            print(f"Param group {i}: weight_decay = {group.get('weight_decay', None)}")         
+
+        print(" **************************************************************************** ")
 
     if training_args.predict_with_generate:
         tokenizer.padding_side = "left"  # use left-padding in generation

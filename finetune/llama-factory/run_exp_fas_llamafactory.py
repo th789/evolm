@@ -167,26 +167,30 @@ def run_exp01_finetune_llama():
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
     #0.5B models
-    # config_file_paths = [
-    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
-    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
-    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
-    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
-    # #     'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
-    #    ]
+    config_file_paths = [
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
+        'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.5-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
+        'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.5-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
+        # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
+       ]
 
     # # #1B models
-    config_file_paths = [
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.001-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
-        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
-        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
-    ]
+    # config_file_paths = [
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.001-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.5-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.5-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
+    #     # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
+    # ]
 
 
     #run each experiment, which has a different combination of arguments from single_args
@@ -363,7 +367,7 @@ if __name__ == "__main__":
     # run_exp02_finetune_models_pretrained_on_finefineweb()
 
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
-    run_exp03_vary_wd_during_ft()
+    # run_exp03_vary_wd_during_ft()
 
 
 
