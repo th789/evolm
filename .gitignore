@@ -21,6 +21,7 @@ common/scripts/scratch
 pretrain/models
 
 finetune/llama-factory/data/metamathqa.json
+finetune/llama-factory/data/hellaswag.json
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev
