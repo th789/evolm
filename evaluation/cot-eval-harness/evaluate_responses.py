@@ -218,7 +218,7 @@ def main(args):
         #! Save overall evaluation results
         majority_voting_acc = avg(replace_None(majority_model_solution_correctness_list, replacement=False))
         pass_at_k_acc = avg(replace_None(correct_model_solution_existence_list, replacement=False))
-        correct_ratio_at_k_acc = avg(correct_at_k_ratio_list) if len(correct_at_k_ratio_list) > 0 else None
+        correct_ratio_at_k_acc = avg(correct_at_k_ratio_list) if len(correct_at_k_ratio_list) > 0 else 0.0
         best_orm_acc = avg(replace_None(best_orm_score_model_solution_correctness_list, replacement=False)) if orm is not None else None
         best_prm_acc = avg(replace_None(best_prm_score_model_solution_correctness_list, replacement=False)) if prm is not None else None
         avg_orm_score = avg(replace_None(orm_score_mean_list, replacement=0.0)) if orm is not None else None
