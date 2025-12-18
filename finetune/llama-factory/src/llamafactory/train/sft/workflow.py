@@ -130,7 +130,39 @@ def run_sft(
         print("\nParam groups:")
 
         for i, group in enumerate(trainer.optimizer.param_groups):
-            print(f"Param group {i}: weight_decay = {group.get('weight_decay', None)}")         
+            print(f"Param group {i}: weight_decay = {group.get('weight_decay', None)}")   
+
+
+        # Build a mapping from parameter object to name for direct matches
+        param_to_name = {p: n for n, p in trainer.model.named_parameters()}
+        
+        # Build a mapping from tensor data pointer to name (for wrapped parameters)
+        # This works even when parameters are wrapped (e.g., PEFT/LoRA)
+        data_ptr_to_name = {}
+        for name, p in trainer.model.named_parameters():
+            if hasattr(p, 'data') and p.data is not None:
+                data_ptr_to_name[p.data.data_ptr()] = name
+
+        for i, group in enumerate(trainer.optimizer.param_groups):
+            print(f"\n=== Group {i} ===")
+            print("weight_decay:", group.get("weight_decay"))
+
+            names = []
+            for p in group["params"]:
+                # Try direct match first (works for unwrapped parameters)
+                if p in param_to_name:
+                    names.append(param_to_name[p])
+                # Try matching by underlying tensor data pointer (works for wrapped parameters)
+                elif hasattr(p, 'data') and p.data is not None:
+                    data_ptr = p.data.data_ptr()
+                    if data_ptr in data_ptr_to_name:
+                        names.append(data_ptr_to_name[data_ptr])
+
+            for name in names:
+                print(name)
+
+            print(f"total params: {len(names)}")
+
 
         print(" **************************************************************************** ")
 
