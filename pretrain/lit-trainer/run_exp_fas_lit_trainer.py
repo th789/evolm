@@ -141,6 +141,7 @@ def run_bash_script_simplified(bash_script: str,
                                time_hrs: str = None,
                                time_days: str = None,
                                memory_gb: str = None,
+                               dependency_job_id: str = None,
                                ):
     # remove existing log file
     os.system('rm -f ' + log_file)
@@ -204,6 +205,8 @@ def run_bash_script_simplified(bash_script: str,
     flags.append(f"--time={time_days}-0{time_hrs}:0{time_mins}")
     #memory
     flags.append(f"--mem={memory_gb}gb") if memory_gb else None
+    #dependency
+    flags.append(f"--dependency=afterok:{dependency_job_id}") if dependency_job_id else None
 
     sbatch_options = "sbatch " + " ".join(flags) + " " + "$FILENAME"
 
@@ -611,7 +614,7 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    # run_exp02_pretrain_llama()
+    run_exp02_pretrain_llama()
 
 
     # run_exp03_prepare_data_finefineweb() 
