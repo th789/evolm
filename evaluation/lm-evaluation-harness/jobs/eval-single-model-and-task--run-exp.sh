@@ -43,7 +43,7 @@ fi
 
 
 lm_eval --model vllm \
-    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6,max_model_len=2048,max_num_batched_tokens=4096 \
+    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6,max_model_len=2048,max_num_batched_tokens=2048 \
     --tasks $zeroshot_tasks \
     --num_fewshot 0 \
     --output_path "$OUTPUT_DIR" \
