@@ -253,85 +253,41 @@ def run_exp01_finetune_llama():
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
-        # f'\nexport LOCAL_SCRATCH="${{SLURM_TMPDIR:-/tmp/$USER/$SLURM_JOB_ID}}"' #added, start
-        # f'\necho $LOCAL_SCRATCH' #added, start
-        # f'\nmkdir -p "$LOCAL_SCRATCH"/{{hf,triton,torch_extensions,wandb}}'
-        # f'\nexport HF_HOME="$LOCAL_SCRATCH/hf"'
-        # f'\nexport HF_DATASETS_CACHE="$LOCAL_SCRATCH/hf/datasets"'
-        # f'\nexport TRANSFORMERS_CACHE="$LOCAL_SCRATCH/hf/transformers"'
-        # f'\nexport TRITON_CACHE_DIR="$LOCAL_SCRATCH/triton"'
-        # f'\nexport TORCH_EXTENSIONS_DIR="$LOCAL_SCRATCH/torch_extensions"'
-        # f'\nexport WANDB_DIR="$LOCAL_SCRATCH/wandb"' #added, end
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
         )
         return bash_script_complete
-    
-
-# export LOCAL_SCRATCH="${SLURM_TMPDIR:-/tmp/$USER/$SLURM_JOB_ID}"
-# mkdir -p "$LOCAL_SCRATCH"/{hf,triton,torch_extensions,wandb}
-# export HF_HOME="$LOCAL_SCRATCH/hf"
-# export HF_DATASETS_CACHE="$LOCAL_SCRATCH/hf/datasets"
-# export TRANSFORMERS_CACHE="$LOCAL_SCRATCH/hf/transformers"
-# export TRITON_CACHE_DIR="$LOCAL_SCRATCH/triton"
-# export TORCH_EXTENSIONS_DIR="$LOCAL_SCRATCH/torch_extensions"
-# export WANDB_DIR="$LOCAL_SCRATCH/wandb"
 
 
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
+    sft_dataset = 'medmcqa' #options: ['medmcqa','hellaswag', 'metamathqa']
     #0.5B models, metamathqa dataset
     # config_file_paths = [
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.0001-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.001-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.01-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.5-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.0-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay1.5-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay3.0-seed42-metamathqa.yaml',
-    #     # 'config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay10.0-seed42-metamathqa.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
     #    ]
 
-    # # 1B models, metamathqa dataset
-    config_file_paths = [
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.0001-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.001-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.01-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.1-seed42-metamathqa.yaml',
-        'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay0.5-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay1.5-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay3.0-seed42-metamathqa.yaml',
-        # 'config_hub/custom_configs/ft_metamathqa/llama-1B-20BT-weightdecay10.0-seed42-metamathqa.yaml',
-    ]
-
-
-    #0.5B models, hellaswag dataset
+    # 1B models, metamathqa dataset
     # config_file_paths = [
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay0.0001-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay0.001-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay0.01-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay0.1-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay0.5-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay1.0-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay1.5-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay3.0-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-0.5B-10BT-weightdecay10.0-seed42-hellaswag.yaml',
-    #    ]
-
-    # #1B models, hellaswag dataset
-    # config_file_paths = [
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay0.0001-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay0.001-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay0.01-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay0.1-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay0.5-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay1.0-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay1.5-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay3.0-seed42-hellaswag.yaml',
-    #     # 'config_hub/custom_configs/ft_hellaswag/llama-1B-20BT-weightdecay10.0-seed42-hellaswag.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
     # ]
+
 
     #run each experiment, which has a different combination of arguments from single_args
     for config_file_path in config_file_paths:
@@ -352,8 +308,8 @@ def run_exp01_finetune_llama():
                         log_file=f'exp01_finetune_llama/log_{name}',
                         partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='16', time_hrs='6', memory_gb='64', #0.5B and 1B models
-                        dependency_type_and_job_id='after:50575021'
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', #0.5B and 1B models
+                        # dependency_type_and_job_id='after:52034998'
                         )
         #actual run times
         #demo (0.5B-10BT, FT on alpacaendemo) -- 2 GPUs, 1 minute
@@ -510,10 +466,10 @@ def run_exp03_vary_wd_during_ft():
 
 
 if __name__ == "__main__":
-    # run_exp01_finetune_llama()
+    run_exp01_finetune_llama()
 
     # create_config_files_for_exp02() # create config files, does not submit jobs
     # run_exp02_finetune_models_pretrained_on_finefineweb()
 
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
-    run_exp03_vary_wd_during_ft()
+    # run_exp03_vary_wd_during_ft()

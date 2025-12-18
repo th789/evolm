@@ -22,6 +22,7 @@ pretrain/models
 
 finetune/llama-factory/data/metamathqa.json
 finetune/llama-factory/data/hellaswag.json
+finetune/llama-factory/data/medmcqa.json
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev
