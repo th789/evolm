@@ -308,6 +308,7 @@ class ZebraLogicEvaluator(Evaluator):
         return solution
 
 
+### evaluator for MedMCQA -- answer is format (The answer is X.)
 class MedMCQAEvaluator(Evaluator):
     def __init__(self, *args) -> None:
         super().__init__(*args)
@@ -318,70 +319,103 @@ class MedMCQAEvaluator(Evaluator):
     def _extract_answer_from_gold_solution(self, solution: str):
         return solution
 
-    def validate_model_completion(self, completion: str) -> bool:
-        if not isinstance(completion, str):
-            return False
-
-        if self.answer_extraction_format == "answer colon":
-            if "Answer:" in completion or "answer:" in completion:
-                return True
-            else:
-                return False
-        elif self.answer_extraction_format == "answer is":
-            if "answer is" in completion or "Answer is" in completion:
-                return True
-            else:
-                return False
-        elif self.answer_extraction_format == "both":
-            if "Answer:" in completion or "answer:" in completion or "answer is" in completion or "Answer is" in completion:
-                return True
-            else:
-                return False
-        else:
-            raise ValueError(f"Invalid answer extraction format {self.answer_extraction_format}")
-
-
-    #redefine/override _extract_answer_from_model_completion() defined in Evaluator class
     def _extract_answer_from_model_completion(self, completion: str) -> str | None:
-        def extract_from_answer_colon(text):
-            match = re.search(r'Answer:\s*([A-Za-z])', text, re.IGNORECASE)
-            #if "Answer: X" or "answer: X" is in the text, return X
-            if match:
-                return match.group(1)
+        ans = super()._extract_answer_from_model_completion(completion)
+        ### case 1: if answer is None, return None
+        if not ans:
             return None
 
-        def extract_from_answer_is(c):
-            #Format of answer -- The answer is: A. / The answer is A.
-            split = c.split("answer is")
-            if len(split) > 1:
-                answer = split[-1].strip()
-                if ":" in answer:
-                    answer = answer.split(":")[-1].strip()
-                if "." in answer:
-                    answer = answer.split(".")[0].strip()
-                #remove trailing punctuation from answer
-                answer = answer.rstrip(".,;!?")
-                return answer
-            else:
-                return None
+        ans = ans.strip()
+        ### case 2: if answer is a string that starts with mulitple choice letter, return the first A/B/C/D letter
+        m = re.match(r"^\s*([ABCD])\b", ans, flags=re.IGNORECASE) # Keep only the first A/B/C/D token (handles "A.", "A) ...", "A - ...")
+        if m:
+            return m.group(1).upper()
 
-        if self.answer_extraction_format == "answer colon":
-            return extract_from_answer_colon(completion)
-        elif self.answer_extraction_format == "answer is":
-            return extract_from_answer_is(completion)
-        elif self.answer_extraction_format == "both":
+        ### case 3: if answer is a string that does not start with a multiple choice letter, trim punctuation
+        return ans.rstrip(".,;!?").strip() # fallback: just trim punctuation
 
-            answer_colon_ans = extract_from_answer_colon(completion)
-            if answer_colon_ans:
-                return answer_colon_ans
 
-            answer_is_ans = extract_from_answer_is(completion)
-            if answer_is_ans:
-                return answer_is_ans
+### evaluator for MedMCQA -- answer colon format (Answer: X)
+# class MedMCQAEvaluator(Evaluator):
+#     def __init__(self, answer_extraction_format, num_last_chars_for_eval=128) -> None:
+#         # MedMCQAEvaluator supports "answer colon" format in addition to base formats
+#         assert answer_extraction_format in [
+#             "answer is",
+#             "both",
+#             "answer colon",
+#         ], f"Invalid answer extraction format {answer_extraction_format}."
+#         self.answer_extraction_format = answer_extraction_format
+#         self.num_last_chars_for_eval = num_last_chars_for_eval
 
-            return None
-        else:
-            raise ValueError(f"Invalid answer extraction format {self.answer_extraction_format}")
+#     def _check_answers_equiv(self, answer_a: str, answer_b: str):
+#         return answer_a.lower() == answer_b.lower()
+
+#     def _extract_answer_from_gold_solution(self, solution: str):
+#         return solution
+
+#     def validate_model_completion(self, completion: str) -> bool:
+#         if not isinstance(completion, str):
+#             return False
+
+#         if self.answer_extraction_format == "answer colon":
+#             if "Answer:" in completion or "answer:" in completion:
+#                 return True
+#             else:
+#                 return False
+#         elif self.answer_extraction_format == "answer is":
+#             if "answer is" in completion or "Answer is" in completion:
+#                 return True
+#             else:
+#                 return False
+#         elif self.answer_extraction_format == "both":
+#             if "Answer:" in completion or "answer:" in completion or "answer is" in completion or "Answer is" in completion:
+#                 return True
+#             else:
+#                 return False
+#         else:
+#             raise ValueError(f"Invalid answer extraction format {self.answer_extraction_format}")
+
+#     #redefine/override _extract_answer_from_model_completion() defined in Evaluator class
+#     def _extract_answer_from_model_completion(self, completion: str) -> str | None:
+#         def extract_from_answer_colon(text):
+#             match = re.search(r'Answer:\s*([A-Za-z])', text, re.IGNORECASE)
+#             #if "Answer: X" or "answer: X" is in the text, return X
+#             if match:
+#                 return match.group(1)
+#             return None
+
+#         def extract_from_answer_is(c):
+#             #Format of answer -- The answer is: A. / The answer is A.
+#             split = c.split("answer is")
+#             if len(split) > 1:
+#                 answer = split[-1].strip()
+#                 if ":" in answer:
+#                     answer = answer.split(":")[-1].strip()
+#                 if "." in answer:
+#                     answer = answer.split(".")[0].strip()
+#                 #remove trailing punctuation from answer
+#                 answer = answer.rstrip(".,;!?")
+#                 return answer
+#             else:
+#                 return None
+
+#         if self.answer_extraction_format == "answer colon":
+#             return extract_from_answer_colon(completion)
+#         elif self.answer_extraction_format == "answer is":
+#             return extract_from_answer_is(completion)
+#         elif self.answer_extraction_format == "both":
+
+#             answer_colon_ans = extract_from_answer_colon(completion)
+#             if answer_colon_ans:
+#                 return answer_colon_ans
+
+#             answer_is_ans = extract_from_answer_is(completion)
+#             if answer_is_ans:
+#                 return answer_is_ans
+
+#             return None
+#         else:
+#             raise ValueError(f"Invalid answer extraction format {self.answer_extraction_format}")
 
     
 

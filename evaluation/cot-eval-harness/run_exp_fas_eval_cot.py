@@ -127,6 +127,7 @@ def run_bash_script_provided(bash_script: str,
                                time_hrs: str = None,
                                time_days: str = None,
                                memory_gb: str = None,
+                               dependency_type_and_job_id: str = None,
                                ):
     """
     Notes
@@ -170,6 +171,8 @@ def run_bash_script_provided(bash_script: str,
     flags.append(f"--time={time_days}-0{time_hrs}:0{time_mins}")
     #memory
     flags.append(f"--mem={memory_gb}gb") if memory_gb else None
+    #dependency
+    flags.append(f"--dependency={dependency_type_and_job_id}") if dependency_type_and_job_id else None
 
     sbatch_options = "sbatch " + " ".join(flags)
 
@@ -182,45 +185,51 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = "hellaswag" #options: ["metamathqa", "hellaswag"]
+    sft_dataset = "medmcqa" #options: ["metamathqa", "hellaswag", "medmcqa"]
     # 0.5B models
     # model_dirs=[
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}",
-    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}",
-    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}",
     # ]
 
     # 1B models
-    model_dirs=[
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}",
-    ]
+    # model_dirs=[
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}",
+    # ]
 
     datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        "CRUXEval",
-        "BoardgameQA500",
-        "TabMWP",
-        "StrategyQA500",
+        "medmcqa",
     ]
+
+    # datasets = [
+    #     "GSM8KPlatinum",
+    #     "MATHLevel1",
+    #     "MATHLevel2",
+    #     "MATHLevel3",
+    #     "MATHLevel4",
+    #     "MATHHard",
+    #     "CRUXEval",
+    #     "BoardgameQA500",
+    #     "TabMWP",
+    #     "StrategyQA500",
+    # ]
+
+
 
     for model_dir, dataset in product(model_dirs, datasets):
 
@@ -234,7 +243,10 @@ def run_exp01_eval_cot():
             job_name=job_name,
             log_file=f"exp01_eval_ft_models/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
-            n_gpus_a100_80gb='1', time_hrs='10', memory_gb='64' #change settings in bash script depending on model size
+            n_gpus_a100_80gb='1', time_hrs='20', memory_gb='64', #!!! change settings in bash script depending on model size
+            # partition='gpu_test',
+            # n_gpus_any='1', time_mins='30', memory_gb='64',
+            # dependency_type_and_job_id='afterok:52306109',
             )
 
         print(f'job_name = {job_name}')  
@@ -344,7 +356,7 @@ def run_exp03_eval_cot_models_vary_wd_during_ft():
 
 if __name__ == "__main__":
     
-    # run_exp01_eval_cot()
+    run_exp01_eval_cot()
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 

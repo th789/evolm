@@ -29,7 +29,7 @@ mamba activate lm-eval-cot-og
 ### --------------- NOTE ---------------
 # For 0.5B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
 # because vllm api cannot handle custom head size = 48
-        # --batch_size 32 \
+        # --batch_size 64 \
         # --api hf \
 
 # For 1B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
@@ -62,8 +62,8 @@ function collect_responses__greedy() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 64 \
+        --api hf \
         # --force
 
 }
@@ -85,8 +85,8 @@ function collect_responses__n16() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 64 \
+        --api hf \
         # --force
 
 }
