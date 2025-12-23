@@ -419,6 +419,34 @@ class MedMCQAEvaluator(Evaluator):
 
     
 
+### evaluator for MedMCQA -- answer is format (The answer is X.)
+class PubMedQAEvaluator(Evaluator):
+    def __init__(self, *args) -> None:
+        super().__init__(*args)
+
+    def _check_answers_equiv(self, answer_a: str, answer_b: str):
+        return answer_a.lower() == answer_b.lower()
+
+    def _extract_answer_from_gold_solution(self, solution: str):
+        #get last word of gt_solution -- always ends with "Therefore, the answer is ___."
+        solution = solution.split("Therefore, the answer is ")[-1].rstrip('.')
+        return solution
+
+    def _extract_answer_from_model_completion(self, completion: str) -> str | None:
+        ans = super()._extract_answer_from_model_completion(completion)
+        ### case 1: if answer is None, return None
+        if not ans:
+            return None
+
+        ### case 2: if answer is a string, return the first word in the answer
+             # first word should be 'yes', 'maybe', or 'no'
+             # return the first word in the answer whatever it is
+        ans = ans.strip()
+        ans = ans.split()[0] #split into individual words, get first word
+        ans = ans.rstrip(".,;!?") #remove trailing punctuation from answer
+        return ans
+
+
 
 def get_evaluator(task_name: str, answer_extraction_format: str) -> Evaluator:
     if any(
@@ -439,7 +467,10 @@ def get_evaluator(task_name: str, answer_extraction_format: str) -> Evaluator:
     elif any(x in task_name for x in ["ZebraLogic", "CommonsenseQA"]):
         return ZebraLogicEvaluator(answer_extraction_format)
     elif any(x in task_name for x in ["medmcqa"]):
-        return MedMCQAEvaluator(answer_extraction_format)
+        # return MedMCQAEvaluator(answer_extraction_format)
+        return PubMedQAEvaluator(answer_extraction_format)
+    elif any(x in task_name for x in ["pubmedqa"]):
+        return PubMedQAEvaluator(answer_extraction_format)
 
     else:
         raise ValueError(f"Task name {task_name} not found in the evaluator mapping")
