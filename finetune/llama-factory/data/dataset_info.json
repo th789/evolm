@@ -11,6 +11,9 @@
   "medmcqa": {
     "file_name": "medmcqa.json"
   },
+  "pubmedqa": {
+    "file_name": "pubmedqa.json"
+  },
   "alpaca_en_demo": {
     "file_name": "alpaca_en_demo.json"
   },
