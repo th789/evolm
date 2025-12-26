@@ -185,7 +185,7 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'pubmedqa' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa']
+    sft_dataset = 'race' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race']
 
     # 0.5B models
     # model_dirs=[
@@ -202,24 +202,22 @@ def run_exp01_eval_cot():
 
     # 1B models
     # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}",
     # ]
 
     datasets = [
-        "pubmedqa",
+        sft_dataset
     ]
 
-    # datasets = [
-    #     "medmcqa",
-    # ]
+
 
     # datasets = [
     #     "GSM8KPlatinum",
@@ -249,10 +247,11 @@ def run_exp01_eval_cot():
             log_file=f"exp01_eval_ft_models/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
             #!!!!! change settings in bash script depending on model size
-            n_gpus_a100_80gb='1', time_hrs='20', memory_gb='64', 
+            #!!!!! change settings in bash script depending on whether to collect responses,  evaluate, or both
+            n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:52306109',
+            # dependency_type_and_job_id='afterok:53069587',
             )
 
         print(f'job_name = {job_name}')  

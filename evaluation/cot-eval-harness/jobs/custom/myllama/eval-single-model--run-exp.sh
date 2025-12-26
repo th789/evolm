@@ -31,6 +31,10 @@ mamba activate lm-eval-cot-og
 # because vllm api cannot handle custom head size = 48
         # --batch_size 64 \
         # --api hf \
+        
+        #for MetaMathQA, MMLUProcot, and RACE datasets -- smaller batch size
+        # --batch_size 32 \
+        # --api hf \
 
 # For 1B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
         # --batch_size 500 \
@@ -62,8 +66,8 @@ function collect_responses__greedy() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 32 \
+        --api hf \
         # --force
 
 }
@@ -85,8 +89,8 @@ function collect_responses__n16() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 500 \
-        --api vllm \
+        --batch_size 32 \
+        --api hf \
         # --force
 
 }
@@ -148,15 +152,15 @@ orm_ckpt_dir=Skywork/Skywork-Reward-Llama-3.1-8B-v0.2
 
 # greedy
 model_id_for_saving=$(basename "$model_ckpt_dir")--greedy
-# printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
-# collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+printf "\nRunning collect_responses__greedy, model=$model_ckpt_dir"
+collect_responses__greedy ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for greedy, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 
 #n16
 model_id_for_saving=$(basename "$model_ckpt_dir")--n16
-# printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
-# collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
+printf "\nRunning collect_responses__n16, model=$model_ckpt_dir"
+collect_responses__n16 ${dataset_name} ${model_ckpt_dir} ${model_id_for_saving} ${prompt_config_file}
 printf "\nRunning evaluate_responses for n16, model=$model_ckpt_dir"
 evaluate_responses ${dataset_name} ${model_id_for_saving} ${prompt_config_file} ${orm_ckpt_dir}
 

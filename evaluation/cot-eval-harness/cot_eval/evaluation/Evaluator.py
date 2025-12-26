@@ -308,6 +308,8 @@ class ZebraLogicEvaluator(Evaluator):
         return solution
 
 
+
+#answeris format, 2nd evaluator
 ### evaluator for MedMCQA -- answer is format (The answer is X.)
 class MedMCQAEvaluator(Evaluator):
     def __init__(self, *args) -> None:
@@ -325,14 +327,40 @@ class MedMCQAEvaluator(Evaluator):
         if not ans:
             return None
 
-        ans = ans.strip()
-        ### case 2: if answer is a string that starts with mulitple choice letter, return the first A/B/C/D letter
-        m = re.match(r"^\s*([ABCD])\b", ans, flags=re.IGNORECASE) # Keep only the first A/B/C/D token (handles "A.", "A) ...", "A - ...")
-        if m:
-            return m.group(1).upper()
+        ### case 2: if answer is a string, return the first word in the answer
+             # first word should be 'yes', 'maybe', or 'no'
+             # return the first word in the answer whatever it is
+        #remove trailing whitespace, split into individual words, get first word, remove trailing punctuation from answer
+        ans = ans.strip().split()[0].rstrip(".,;!?")
+        return ans
 
-        ### case 3: if answer is a string that does not start with a multiple choice letter, trim punctuation
-        return ans.rstrip(".,;!?").strip() # fallback: just trim punctuation
+
+# #answeris format, 1st evaluator
+# ### evaluator for MedMCQA -- answer is format (The answer is X.)
+# class MedMCQAEvaluator(Evaluator):
+#     def __init__(self, *args) -> None:
+#         super().__init__(*args)
+
+#     def _check_answers_equiv(self, answer_a: str, answer_b: str):
+#         return answer_a.lower() == answer_b.lower()
+
+#     def _extract_answer_from_gold_solution(self, solution: str):
+#         return solution
+
+#     def _extract_answer_from_model_completion(self, completion: str) -> str | None:
+#         ans = super()._extract_answer_from_model_completion(completion)
+#         ### case 1: if answer is None, return None
+#         if not ans:
+#             return None
+
+#         ans = ans.strip()
+#         ### case 2: if answer is a string that starts with mulitple choice letter, return the first A/B/C/D letter
+#         m = re.match(r"^\s*([ABCD])\b", ans, flags=re.IGNORECASE) # Keep only the first A/B/C/D token (handles "A.", "A) ...", "A - ...")
+#         if m:
+#             return m.group(1).upper()
+
+#         ### case 3: if answer is a string that does not start with a multiple choice letter, trim punctuation
+#         return ans.rstrip(".,;!?").strip() # fallback: just trim punctuation
 
 
 ### evaluator for MedMCQA -- answer colon format (Answer: X)
@@ -441,9 +469,8 @@ class PubMedQAEvaluator(Evaluator):
         ### case 2: if answer is a string, return the first word in the answer
              # first word should be 'yes', 'maybe', or 'no'
              # return the first word in the answer whatever it is
-        ans = ans.strip()
-        ans = ans.split()[0] #split into individual words, get first word
-        ans = ans.rstrip(".,;!?") #remove trailing punctuation from answer
+        #remove trailing whitespace, split into individual words, get first word, remove trailing punctuation from answer
+        ans = ans.strip().split()[0].rstrip(".,;!?")
         return ans
 
 
@@ -466,10 +493,9 @@ def get_evaluator(task_name: str, answer_extraction_format: str) -> Evaluator:
         return CRUXEvaluator(answer_extraction_format)
     elif any(x in task_name for x in ["ZebraLogic", "CommonsenseQA"]):
         return ZebraLogicEvaluator(answer_extraction_format)
-    elif any(x in task_name for x in ["medmcqa"]):
-        # return MedMCQAEvaluator(answer_extraction_format)
-        return PubMedQAEvaluator(answer_extraction_format)
-    elif any(x in task_name for x in ["pubmedqa"]):
+    elif any(x in task_name for x in ["medmcqa", "mmluprocot"]):
+        return MedMCQAEvaluator(answer_extraction_format)
+    elif any(x in task_name for x in ["pubmedqa", "race"]):
         return PubMedQAEvaluator(answer_extraction_format)
 
     else:
