@@ -14,6 +14,12 @@
   "pubmedqa": {
     "file_name": "pubmedqa.json"
   },
+  "mmluprocot": {
+    "file_name": "mmluprocot.json"
+  },
+  "race": {
+    "file_name": "race.json"
+  },
   "alpaca_en_demo": {
     "file_name": "alpaca_en_demo.json"
   },

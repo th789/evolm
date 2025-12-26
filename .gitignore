@@ -25,6 +25,8 @@ finetune/llama-factory/data/hellaswag.json
 finetune/llama-factory/data/medmcqa.json
 finetune/llama-factory/data/medmcqa_answercolon.json
 finetune/llama-factory/data/pubmedqa.json
+finetune/llama-factory/data/mmluprocot.json
+finetune/llama-factory/data/race.json
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev
