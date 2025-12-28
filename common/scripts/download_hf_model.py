@@ -14,6 +14,7 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "zhenting/myllama-0.5B-10BT"
 model_id = "zhenting/myllama-4B-80BT"
 
+
 # Modify the following paths to your own directory
 download_path = os.path.join(model_dir, model_id) #! <-- change this to the path you want to download the model to
 
