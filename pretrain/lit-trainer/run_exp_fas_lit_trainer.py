@@ -351,7 +351,7 @@ def run_exp02_pretrain_llama():
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.1-seed42.yaml',
-            'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.5-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.5-seed42.yaml',
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.0-seed42.yaml',
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.5-seed42.yaml',
             # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay3.0-seed42.yaml',

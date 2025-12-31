@@ -319,6 +319,67 @@ def run_exp01_finetune_llama():
         print(f'job_name = {name}, options = {name}')  
 
 
+def run_exp01_finetune_llama_additional_seeds():
+    
+    # bash script
+    def create_bash_script(config_file_path: str) -> str:
+        bash_script_complete = (
+        f'FILENAME=$(mktemp) ; '
+        f'echo "#!/bin/sh' #note starting quote
+        f'\nmodule load python'
+        f'\nmodule load cuda/12.9.1-fasrc01'
+        f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
+        )
+        return bash_script_complete
+
+
+    sft_dataset = 'medmcqa' #options: ['metamathqa', 'hellaswag','medmcqa', pubmedqa', 'mmluprocot', 'race']
+    ft_seed = 5701 #[8107, 5701]
+
+    #0.5B models, metamathqa dataset
+    config_file_paths = [
+        f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+       ]
+
+    # # 1B models, metamathqa dataset
+    # config_file_paths = [
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}-ftseed{ft_seed}.yaml',
+    # ]
+
+
+    #run each experiment, which has a different combination of arguments from single_args
+    for config_file_path in config_file_paths:
+        bash_script = create_bash_script(config_file_path)
+        name = os.path.splitext(os.path.basename(config_file_path))[0]
+        
+        run_bash_script_simplified(bash_script=bash_script, 
+                        job_name=name,
+                        log_file=f'exp01_finetune_llama/log_{name}',
+                        partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
+                        #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', #0.5B and 1B models
+                        # dependency_type_and_job_id='after:52127215'
+                        )
+
+        print(f'job_name = {name}, options = {name}')  
 
 
 
@@ -466,7 +527,10 @@ def run_exp03_vary_wd_during_ft():
 
 
 if __name__ == "__main__":
-    run_exp01_finetune_llama()
+    # run_exp01_finetune_llama()
+
+    # run_exp01_finetune_llama_additional_seeds()
+
 
     # create_config_files_for_exp02() # create config files, does not submit jobs
     # run_exp02_finetune_models_pretrained_on_finefineweb()
