@@ -116,6 +116,11 @@ def load_config(model_args: "ModelArguments") -> "PretrainedConfig":
     Loads model config.
     """
     init_kwargs = _get_init_kwargs(model_args)
+    
+    # Register custom config classes before loading -- add olmo2 to config_mapping
+    from olmo2.configuration_olmo2 import Olmo2Config
+    AutoConfig.register("olmo2", Olmo2Config, exist_ok=True)
+    
     return AutoConfig.from_pretrained(model_args.model_name_or_path, **init_kwargs)
 
 
@@ -131,6 +136,16 @@ def load_model(
     """
     init_kwargs = _get_init_kwargs(model_args)
     config = load_config(model_args)
+    
+    # Register custom model classes before loading -- add olmo2 to AutoModelForCausalLM mapping
+    if config.model_type == "olmo2":
+        try:
+            from olmo2.configuration_olmo2 import Olmo2Config
+            from olmo2.modeling_olmo2 import Olmo2ForCausalLM
+            AutoModelForCausalLM.register(Olmo2Config, Olmo2ForCausalLM, exist_ok=True)
+        except ImportError as e:
+            logger.debug(f"Could not import Olmo2ForCausalLM: {e}. Skipping registration.")
+    
     patch_config(config, tokenizer, model_args, init_kwargs, is_trainable)
     apply_liger_kernel(config, model_args, is_trainable, require_logits=(finetuning_args.stage not in ["pt", "sft"]))
 
