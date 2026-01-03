@@ -12,8 +12,9 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "meta-llama/Llama-2-7b-hf" #! <-- change this to the model ID you want to download from HF
 # model_id = "zhenting/myllama-1B-20BT"
 # model_id = "zhenting/myllama-0.5B-10BT"
-model_id = "zhenting/myllama-4B-80BT"
-
+# model_id = "zhenting/myllama-4B-80BT"
+# model_id = "sbordt/OLMo-2-1B-Decayed-Early"
+model_id = "sbordt/OLMo-2-1B-WD1"
 
 # Modify the following paths to your own directory
 download_path = os.path.join(model_dir, model_id) #! <-- change this to the path you want to download the model to
