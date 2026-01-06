@@ -185,9 +185,9 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'race' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race']
+    sft_dataset = 'mmluprocot' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race']
 
-    # 0.5B models
+    # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}",
@@ -200,7 +200,7 @@ def run_exp01_eval_cot():
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}",
     # ]
 
-    # 1B models
+    # 1B models, llama -- eval-single-model--run-exp.sh: use vllm option 
     # model_dirs=[
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}",
@@ -213,11 +213,21 @@ def run_exp01_eval_cot():
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}",
     # ]
 
-    datasets = [
-        sft_dataset
-    ]
+    # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
+    # model_dirs=[
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
+    # ]
 
+    # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
+    # ]
 
+    # datasets = [
+    #     sft_dataset
+    # ]
 
     # datasets = [
     #     "GSM8KPlatinum",
@@ -226,12 +236,11 @@ def run_exp01_eval_cot():
     #     "MATHLevel3",
     #     "MATHLevel4",
     #     "MATHHard",
-    #     "CRUXEval",
-    #     "BoardgameQA500",
-    #     "TabMWP",
-    #     "StrategyQA500",
+    #     # "CRUXEval",
+    #     # "BoardgameQA500",
+    #     # "TabMWP",
+    #     # "StrategyQA500",
     # ]
-
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -251,7 +260,7 @@ def run_exp01_eval_cot():
             n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:53069587',
+            dependency_type_and_job_id='afterok:54363324',
             )
 
         print(f'job_name = {job_name}')  
@@ -306,7 +315,7 @@ def run_exp01_eval_cot_additional_ft_seeds():
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
             #!!!!! change settings in bash script depending on model size
             #!!!!! change settings in bash script depending on whether to collect responses,  evaluate, or both
-            n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
+            n_gpus_a100_80gb='1', time_hrs='12', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
             # dependency_type_and_job_id='after:53576770',
@@ -418,8 +427,8 @@ def run_exp03_eval_cot_models_vary_wd_during_ft():
 
 if __name__ == "__main__":
     
-    # run_exp01_eval_cot()
-    run_exp01_eval_cot_additional_ft_seeds()
+    run_exp01_eval_cot()
+    # run_exp01_eval_cot_additional_ft_seeds()
 
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
