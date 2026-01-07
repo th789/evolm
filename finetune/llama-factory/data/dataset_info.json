@@ -20,6 +20,9 @@
   "race": {
     "file_name": "race.json"
   },
+  "simplescaling": {
+    "file_name": "simplescaling.json"
+  },
   "alpaca_en_demo": {
     "file_name": "alpaca_en_demo.json"
   },
