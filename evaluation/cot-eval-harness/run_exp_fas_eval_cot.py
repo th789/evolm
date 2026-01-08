@@ -185,7 +185,7 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'simplescaling' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'mmluprocot' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
 
     # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
@@ -220,27 +220,27 @@ def run_exp01_eval_cot():
     # ]
 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
-    # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}",
-    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
-    # ]
-
-    # datasets = [
-    #     sft_dataset
-    # ]
+    model_dirs=[
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
+    ]
 
     datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        # "CRUXEval",
-        # "BoardgameQA500",
-        # "TabMWP",
-        # "StrategyQA500",
+        sft_dataset
     ]
+
+    # datasets = [
+    #     "GSM8KPlatinum",
+    #     "MATHLevel1",
+    #     "MATHLevel2",
+    #     "MATHLevel3",
+    #     "MATHLevel4",
+    #     "MATHHard",
+    #     # "CRUXEval",
+    #     # "BoardgameQA500",
+    #     # "TabMWP",
+    #     # "StrategyQA500",
+    # ]
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -260,7 +260,7 @@ def run_exp01_eval_cot():
             n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:54535928',
+            dependency_type_and_job_id='afterok:54550133',
             )
 
         print(f'job_name = {job_name}')  

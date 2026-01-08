@@ -263,7 +263,7 @@ def run_exp01_finetune_llama():
 
     sft_dataset = 'simplescaling' #options: ['metamathqa', 'hellaswag','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
     
-    #0.5B models, llama
+    # #0.5B models, llama
     # config_file_paths = [
     #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
     #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
@@ -290,16 +290,16 @@ def run_exp01_finetune_llama():
     # ]
 
     # olmo models
-    config_file_paths = [
-        # f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
-    ]
+    # config_file_paths = [
+    #     # f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
+    # ]
 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
-    # config_file_paths = [
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
-    # ]
+    config_file_paths = [
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+    ]
 
 
 
@@ -323,11 +323,11 @@ def run_exp01_finetune_llama():
                         
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='12', memory_gb='64', 
+                        # partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', 
                         #model: 4B llama
-                        # partition='seas_gpu,gpu',
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='15', memory_gb='64', #olmo models
+                        partition='seas_gpu,gpu',
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='20', memory_gb='64', #olmo models
                         # dependency_type_and_job_id='after:52127215'
                         )
         #actual run times

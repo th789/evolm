@@ -66,8 +66,8 @@ function collect_responses__greedy() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 32 \
-        --api hf \
+        --batch_size 500 \
+        --api vllm \
         # --force
 
 }
@@ -89,8 +89,8 @@ function collect_responses__n16() {
         --max_new_tokens 2048 \
         --apply_chat_template \
         --out_root ${OUT_ROOT} \
-        --batch_size 32 \
-        --api hf \
+        --batch_size 500 \
+        --api vllm \
         # --force
 
 }
