@@ -260,7 +260,7 @@ def run_exp01_eval_cot():
             n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            dependency_type_and_job_id='afterok:54550133',
+            dependency_type_and_job_id='afterok:54608775',
             )
 
         print(f'job_name = {job_name}')  
