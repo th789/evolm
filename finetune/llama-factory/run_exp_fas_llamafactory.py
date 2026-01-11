@@ -264,17 +264,17 @@ def run_exp01_finetune_llama():
     sft_dataset = 'simplescaling' #options: ['metamathqa', 'hellaswag','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
     
     # # #0.5B models, llama
-    config_file_paths = [
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
-       ]
+    # config_file_paths = [
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
+    #    ]
 
     # 1B models, llama
     # config_file_paths = [
@@ -286,14 +286,18 @@ def run_exp01_finetune_llama():
     #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
     #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
     #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
     # ]
 
     # olmo models
-    # config_file_paths = [
-    #     # f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/olmo/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
-    # ]
+    config_file_paths = [
+        #30BT (1x chinchilla)
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
+        #210BT (7x chinchilla)
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
+    ]
 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
     # config_file_paths = [
@@ -336,6 +340,7 @@ def run_exp01_finetune_llama():
         #1B-20BT models, FT on metamathqa for 3 epochs -- 4 GPUs, 4.5 hours
 
         print(f'job_name = {name}, options = {name}')  
+
 
 
 def run_exp01_finetune_llama_additional_seeds():
