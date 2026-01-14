@@ -185,7 +185,7 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'mmluprocot' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'simplescaling' #options: ['metamathqa', 'hellaswag', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
 
     # # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
@@ -217,7 +217,8 @@ def run_exp01_eval_cot():
     model_dirs=[
         #30BT (1x chinchilla)
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.1-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
         #210BT (7x chinchilla)
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-seed42-{sft_dataset}",
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-seed42-{sft_dataset}",
@@ -229,22 +230,22 @@ def run_exp01_eval_cot():
     #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
     # ]
 
-    datasets = [
-        sft_dataset
-    ]
-
     # datasets = [
-    #     "GSM8KPlatinum",
-    #     "MATHLevel1",
-    #     "MATHLevel2",
-    #     "MATHLevel3",
-    #     "MATHLevel4",
-    #     "MATHHard",
-    #     # "CRUXEval",
-    #     # "BoardgameQA500",
-    #     # "TabMWP",
-    #     # "StrategyQA500",
+    #     sft_dataset
     # ]
+
+    datasets = [
+        "GSM8KPlatinum",
+        "MATHLevel1",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
+        "MATHHard",
+        # "CRUXEval",
+        # "BoardgameQA500",
+        # "TabMWP",
+        # "StrategyQA500",
+    ]
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -261,10 +262,10 @@ def run_exp01_eval_cot():
             partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
             #!!!!! change settings in bash script depending on model size
             #!!!!! change settings in bash script depending on whether to collect responses,  evaluate, or both
-            n_gpus_a100_80gb='1', time_hrs='24', memory_gb='64', 
+            n_gpus_a100_80gb='1', time_hrs='6', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:54996339',
+            dependency_type_and_job_id='afterok:55290679',
             )
 
         print(f'job_name = {job_name}')  

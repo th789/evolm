@@ -17,7 +17,8 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "sbordt/OLMo-2-1B-WD1"
 # model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"
 # model_id = "sbordt/OLMo-2-1B-1x"
-model_id = "sbordt/OLMo-2-1B-1x-WD1"
+# model_id = "sbordt/OLMo-2-1B-1x-WD1"
+model_id = "sbordt/OLMo-2-1B-1x-WD03"
 
 # Modify the following paths to your own directory
 download_path = os.path.join(model_dir, model_id) #! <-- change this to the path you want to download the model to
