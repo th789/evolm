@@ -7,16 +7,17 @@ print("Data will be saved to:", storage_dir)
 
 # ------------- fineweb -------------
 # allow_patterns = ["sample/350BT/*"]
-# # allow_patterns = ["sample/100BT/*"]
+# allow_patterns = ["sample/100BT/*"]
+allow_patterns = ["data/CC-MAIN-2025-26/*"]
 
-# snapshot_download(
-#     repo_id="HuggingFaceFW/fineweb-edu",
-#     local_dir=f"{storage_dir}/fineweb",    #! <-- change this to your local dir for saving the dataset
-#     repo_type="dataset",
-#     force_download=True,
-#     allow_patterns=allow_patterns,
-#     max_workers=8, # 64
-# )
+snapshot_download(
+    repo_id="HuggingFaceFW/fineweb-edu",
+    local_dir=f"{storage_dir}/fineweb",    #! <-- change this to your local dir for saving the dataset
+    repo_type="dataset",
+    force_download=True,
+    allow_patterns=allow_patterns,
+    max_workers=8, # 64
+)
 # -----------------------------------
 
 # ------------- finemath -------------

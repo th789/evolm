@@ -141,7 +141,7 @@ def run_bash_script_simplified(bash_script: str,
                                time_hrs: str = None,
                                time_days: str = None,
                                memory_gb: str = None,
-                               dependency_job_id: str = None,
+                               dependency_type_and_job_id: str = None,
                                ):
     # remove existing log file
     os.system('rm -f ' + log_file)
@@ -206,7 +206,7 @@ def run_bash_script_simplified(bash_script: str,
     #memory
     flags.append(f"--mem={memory_gb}gb") if memory_gb else None
     #dependency
-    flags.append(f"--dependency=afterok:{dependency_job_id}") if dependency_job_id else None
+    flags.append(f"--dependency={dependency_type_and_job_id}") if dependency_type_and_job_id else None
 
     sbatch_options = "sbatch " + " ".join(flags) + " " + "$FILENAME"
 
@@ -237,6 +237,8 @@ def run_exp00_pretrain_pythia():
         f'\nexport WANDB_PROJECT=overtraining'
         f'\nmodule load python'
         f'\nmamba activate litgpt-e'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nexport FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics0.01_litgpt/pretrain" ' #specify any path for ffw -- since this experiment does not actually use ffw
         f'\nsrun litgpt pretrain {bash_script_args}" > $FILENAME' #note ending quote
         )
         return bash_script_complete
@@ -254,7 +256,11 @@ def run_exp00_pretrain_pythia():
         run_bash_script(bash_script=bash_script, 
                         job_name=name, 
                         log_file=f'exp00_pretrain_pythia/log_{name}', 
-                        device='n_gpus_a100_sxm4_80gb', n_nodes='1', n_gpus='2', ntasks_per_node='2', cpus_per_task='24', time_hrs='1', memory_gb='64')
+                        #2 GPUs
+                        # device='n_gpus_a100_sxm4_80gb', n_nodes='1', n_gpus='2', n_tasks_per_node='2', cpus_per_task='24', time_hrs='1', memory_gb='64'
+                        #1 GPU
+                        device='n_gpus_a100_sxm4_80gb', n_nodes='1', n_gpus='1', n_tasks_per_node='1', cpus_per_task='12', time_hrs='1', memory_gb='32'
+                        )
 
         print(f'job_name = {name}, options = {arg_combo}')  
 
@@ -344,20 +350,20 @@ def run_exp02_pretrain_llama():
     #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
     #                ]
     # }
-    #1B models
-    single_args = {
-        'config': [
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0001-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.1-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.5-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.0-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.5-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay3.0-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay10.0-seed42.yaml',
-                   ]
-    }
+    # #1B models
+    # single_args = {
+    #     'config': [
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.1-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.5-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay1.5-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay3.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay10.0-seed42.yaml',
+    #                ]
+    # }
     ### ----------------------------------------------------------------------
 
 
@@ -378,6 +384,93 @@ def run_exp02_pretrain_llama():
         print(f'job_name = {name}, options = {arg_combo}')  
 
 
+
+
+def run_exp06_compute_val_loss():
+
+    # bash script
+    def create_bash_script(config_file_path: str) -> str:
+        bash_script_complete = (
+        f'FILENAME=$(mktemp) ; '
+        f'echo "#!/bin/sh' #note starting quote
+        f'\necho "Start time: $(date +"%Y-%m-%d %H:%M:%S")"'
+        f'\nexport WANDB_API_KEY=b10df87569c5fdcef6d7b86acf29819b378fe28d'
+        f'\nexport WANDB_ENTITY=th789-harvard'
+        f'\nexport WANDB_PROJECT=overtraining'
+        f'\nmodule load python'
+        f'\nmamba activate litgpt-e'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nexport FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics0.01_litgpt/pretrain" ' #specify any path for ffw -- since this experiment does not actually use ffw
+        f'\nsrun litgpt pretrain --config {config_file_path}'
+        f'\necho "End time: $(date +"%Y-%m-%d %H:%M:%S")" " > $FILENAME' #note ending quote
+        )
+        return bash_script_complete
+
+    ### ------------------- compute val loss ------------------------
+
+    ### start here : add pythia
+    # config_lst = [
+    #     # 'config_hub/custom_configs/val/pythia-14m-val.yaml', #pythia does not work due to data imcompatibilty
+    #     'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.1-seed42-val.yaml',
+    #     ]
+
+    # # # #0.5B models    
+    # config_lst = [
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.0001-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.001-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.01-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.1-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.5-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay1.0-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay1.5-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay3.0-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay10.0-seed42-val.yaml',
+    #     ]
+
+    # # #1B models
+    # config_lst = [
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.0001-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.001-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.01-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.1-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.5-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay1.0-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay1.5-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay3.0-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay10.0-seed42-val.yaml',
+    #     ]
+
+    # #4B models
+    # config_lst = [
+    #     'config_hub/custom_configs/val/llama-4B-80BT-weightdecay0.1-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-4B-80BT-weightdecay1.0-seed42-val.yaml',
+    #     ]
+    
+ 
+
+    ### ----------------------------------------------------------------------
+
+
+
+    #run each experiment, which has a different combination of arguments from single_args
+    for config in config_lst:
+
+        bash_script = create_bash_script(config)
+
+        job_name = config.split('/')[-1].replace('.yaml', '') #get string after last / and remove .yaml
+
+        run_bash_script_simplified(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f'exp06_val/log_{job_name}',
+            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            # n_gpus_any='1', time_hrs='1', memory_gb='32' #pythia demo -- DOES NOT WORK
+            # n_gpus_any='1', time_hrs='2', memory_gb='64', # 0.5B + 1B models
+            n_gpus_any='1', time_hrs='6', memory_gb='64', # 4B models
+            # dependency_type_and_job_id='afterok:56451233'
+            )
+
+        print(f'job_name = {job_name}')
 
 
 
@@ -614,7 +707,8 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    run_exp02_pretrain_llama()
+    # run_exp02_pretrain_llama()
+    run_exp06_compute_val_loss()
 
 
     # run_exp03_prepare_data_finefineweb() 
