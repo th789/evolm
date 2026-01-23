@@ -13,12 +13,13 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "zhenting/myllama-1B-20BT"
 # model_id = "zhenting/myllama-0.5B-10BT"
 # model_id = "zhenting/myllama-4B-80BT"
-# model_id = "sbordt/OLMo-2-1B-Decayed-Early" #now called sbordt/OLMo-2-1B-7x
-# model_id = "sbordt/OLMo-2-1B-WD1"           #now called sbordt/OLMo-2-1B-7x-WD1
+# model_id = "sbordt/OLMo-2-1B-Decayed-Early" #now called sbordt/OLMo-2-1B-7x         #olmo-140x-wd0.1
+# model_id = "sbordt/OLMo-2-1B-WD1"           #now called sbordt/OLMo-2-1B-7x-WD1     #olmo-140x-wd1.0
 # model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"
-# model_id = "sbordt/OLMo-2-1B-1x"
-# model_id = "sbordt/OLMo-2-1B-1x-WD1"
-model_id = "sbordt/OLMo-2-1B-1x-WD03"
+# model_id = "sbordt/OLMo-2-1B-1x"                                                    #olmo-20x-wd0.1
+# model_id = "sbordt/OLMo-2-1B-1x-WD1"                                                #olmo-20x-wd1.0
+# model_id = "sbordt/OLMo-2-1B-1x-WD03"                                               #olmo-20x-wd0.3
+model_id = "sbordt/OLMo-2-1B-7x-WD03"                                                 #olmo-140x-wd0.3
 
 # Modify the following paths to your own directory
 download_path = os.path.join(model_dir, model_id) #! <-- change this to the path you want to download the model to
