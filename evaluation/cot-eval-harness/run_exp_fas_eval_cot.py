@@ -220,9 +220,9 @@ def run_exp01_eval_cot():
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
         #210BT (7x chinchilla)
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-seed42-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-seed42-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-seed42-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
     ]
 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
@@ -235,6 +235,7 @@ def run_exp01_eval_cot():
         sft_dataset
     ]
 
+    #for metamathqa and simplescaling
     # datasets = [
     #     "GSM8KPlatinum",
     #     "MATHLevel1",
@@ -266,7 +267,7 @@ def run_exp01_eval_cot():
             n_gpus_a100_80gb='1', time_hrs='8', memory_gb='64', 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            dependency_type_and_job_id='afterok:56561969',
+            # dependency_type_and_job_id='afterok:56723020',
             )
 
         print(f'job_name = {job_name}')  

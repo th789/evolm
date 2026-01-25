@@ -261,7 +261,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'simplescaling' #options: ['metamathqa', 'hellaswag','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
     
     # # #0.5B models, llama
     # config_file_paths = [
