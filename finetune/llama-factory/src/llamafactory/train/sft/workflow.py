@@ -23,7 +23,7 @@ from ...extras.logging import get_logger
 from ...extras.misc import calculate_tps, get_logits_processor
 from ...extras.ploting import plot_loss
 from ...model import load_model, load_tokenizer
-from ..trainer_utils import create_modelcard_and_push
+from ..trainer_utils import _get_decay_parameter_names, create_modelcard_and_push
 from .metric import ComputeAccuracy, ComputeSimilarity, eval_logit_processor
 from .trainer import CustomSeq2SeqTrainer
 
@@ -76,6 +76,44 @@ def run_sft(
     elif finetuning_args.compute_accuracy:
         metric_module["compute_metrics"] = ComputeAccuracy()
         metric_module["preprocess_logits_for_metrics"] = eval_logit_processor
+    
+
+    ### --------------- print info on weight decay during finetuning before sharding --------------- ###
+
+    if training_args.do_train:
+        # Pre-sharding parameter stats (before DeepSpeed/FSDP wrapping)
+        decay_param_names = set(_get_decay_parameter_names(model))
+        decay_numel = 0
+        nodecay_numel = 0
+        decay_count = 0
+        nodecay_count = 0
+        total_trainable_numel = 0
+        total_trainable_count = 0
+
+        for name, param in model.named_parameters():
+            if not param.requires_grad:
+                continue
+            numel = param.numel()
+            total_trainable_numel += numel
+            total_trainable_count += 1
+            if name in decay_param_names:
+                decay_numel += numel
+                decay_count += 1
+            else:
+                nodecay_numel += numel
+                nodecay_count += 1
+
+        print(" ******************* Pre-sharding param stats ******************* ")
+        print(f"trainable params: {total_trainable_count} | numel: {total_trainable_numel}")
+        print(
+            f"weight_decay (train args): {training_args.weight_decay} | "
+            f"decay params: {decay_count} (numel: {decay_numel}) | "
+            f"no_decay params: {nodecay_count} (numel: {nodecay_numel})"
+        )
+        print(" **************************************************************************** ")
+
+    ### --------------- --------------- --------------- --------------- --------------- ---------------
+
 
     # Initialize our Trainer
     trainer = CustomSeq2SeqTrainer(
@@ -89,18 +127,18 @@ def run_sft(
         **metric_module,
     )
 
-    #print args to confirm weight decay during finetuning
-    print(" ******************* Check weight decay during finetuning ******************* ")
+    # #print args to confirm weight decay during finetuning
+    # print(" ******************* Check weight decay during finetuning ******************* ")
 
-    print("\nTraining args:")
-    print(training_args)
+    # print("\nTraining args:")
+    # print(training_args)
 
-    print("\nFinetuning args:")
-    print(finetuning_args)
+    # print("\nFinetuning args:")
+    # print(finetuning_args)
 
-    print("\nTrainer args.weight_decay:", trainer.args.weight_decay)
+    # print("\nTrainer args.weight_decay:", trainer.args.weight_decay)
 
-    print(" **************************************************************************** ")
+    # print(" **************************************************************************** ")
 
 
     # Keyword arguments for `model.generate`
@@ -125,43 +163,31 @@ def run_sft(
             plot_loss(training_args.output_dir, keys=["loss", "eval_loss", "eval_accuracy"])
 
         #print args to confirm weight decay during finetuning
-        print(" ******************* Check weight decay during finetuning ******************* ")
+        print(" ******************* Check weight decay during finetuning (after sharding) ******************* ")
 
-        print("\nParam groups:")
+        # print("\nParam groups:")
 
-        for i, group in enumerate(trainer.optimizer.param_groups):
-            print(f"Param group {i}: weight_decay = {group.get('weight_decay', None)}")   
+        # for i, group in enumerate(trainer.optimizer.param_groups):
+        #     print(f"Param group {i}: weight_decay = {group.get('weight_decay', None)}")   
 
 
-        # Build a mapping from parameter object to name for direct matches
-        param_to_name = {p: n for n, p in trainer.model.named_parameters()}
-        
-        # Build a mapping from tensor data pointer to name (for wrapped parameters)
-        # This works even when parameters are wrapped (e.g., PEFT/LoRA)
-        data_ptr_to_name = {}
-        for name, p in trainer.model.named_parameters():
-            if hasattr(p, 'data') and p.data is not None:
-                data_ptr_to_name[p.data.data_ptr()] = name
+        # Use unwrapped model for consistent parameter names
+        model_for_names = trainer.model.module if hasattr(trainer.model, "module") else trainer.model
 
         for i, group in enumerate(trainer.optimizer.param_groups):
             print(f"\n=== Group {i} ===")
             print("weight_decay:", group.get("weight_decay"))
 
-            names = []
-            for p in group["params"]:
-                # Try direct match first (works for unwrapped parameters)
-                if p in param_to_name:
-                    names.append(param_to_name[p])
-                # Try matching by underlying tensor data pointer (works for wrapped parameters)
-                elif hasattr(p, 'data') and p.data is not None:
-                    data_ptr = p.data.data_ptr()
-                    if data_ptr in data_ptr_to_name:
-                        names.append(data_ptr_to_name[data_ptr])
+            # Under ZeRO-3, group params can be sharded/flattened on each rank.
+            group_numel = sum(getattr(p, "ds_numel", p.numel()) for p in group["params"])
+            print(f"group params: {len(group['params'])}")
+            print(f"group numel: {group_numel}")
 
-            for name in names:
-                print(name)
-
-            print(f"total params: {len(names)}")
+        # Count over model parameters for global totals (works with ZeRO-3 via ds_numel).
+        model_named_params = list(model_for_names.named_parameters())
+        total_numel = sum(getattr(p, "ds_numel", p.numel()) for _, p in model_named_params)
+        print(f"total params (model): {len(model_named_params)}")
+        print(f"total numel (model): {total_numel}")
 
 
         print(" **************************************************************************** ")

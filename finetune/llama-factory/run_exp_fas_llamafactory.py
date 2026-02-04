@@ -553,8 +553,84 @@ def run_exp03_vary_wd_during_ft():
 
 
 
+
+
+#exp01 -- finetune llama models -- finetune 0.5B-10BT and 1B-20BT (pretrained on fineweb dataset) on metamathqa dataset
+#note
+#sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4
+def run_exp04_finetune_llama_sweep_hyperparams():
+    
+    # bash script
+    def create_bash_script(config_file_path: str, model_path: str) -> str:
+        bash_script_complete = (
+        f'FILENAME=$(mktemp) ; '
+        f'echo "#!/bin/sh' #note starting quote
+        f'\nmodule load python'
+        f'\nmodule load cuda/12.9.1-fasrc01'
+        f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}'                           ### perform ft
+        f'\npython w_delete_ft_ckpt.py --model_path {model_path}" > $FILENAME' #note ending quote ### delete ckpt folders after ft
+        )
+        return bash_script_complete
+
+    # wd_pt_lst = [0.1, 0.5, 1.0]
+    # lr_lst = ['1.0e-5', '3.0e-5', '6.0e-4']
+    # bs_lst = [8, 16, 32]
+    # wd_ft_lst = [0.0, 0.1, 1.0]
+
+    model_size = 'llama-1B-20BT'
+    sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+
+    wd_pt_lst = [0.1]      #[0.1, 0.5, 1.0]
+    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
+    bs_lst = [32]          #[8, 16, 32]
+    wd_ft_lst = [0.0, 0.1]      #[0.0, 0.1, 1.0]
+
+    combos = list(product(wd_pt_lst, wd_ft_lst, lr_lst, bs_lst))
+
+    #create config_file_paths + model_folders based on input arguments above
+    config_file_paths = []
+    model_paths = []
+    for combo in combos:
+        wd_pt, wd_ft, lr, bs = combo
+        # print(f'wd_pt = {wd_pt}, wd_ft = {wd_ft}, lr = {lr}, bs = {bs}')
+        config_file_path = f'config_hub/custom_configs/sweep_hyperparams/ft_{sft_dataset}/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}.yaml'
+        config_file_paths.append(config_file_path)
+
+        model_path = f'/n/netscratch/doshi-velez_lab/Everyone/models/sweep/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}'
+        model_paths.append(model_path)
+
+
+
+
+    #run each experiment
+    for config_file_path, model_path in zip(config_file_paths, model_paths):
+        bash_script = create_bash_script(config_file_path, model_path)
+        name = os.path.splitext(os.path.basename(config_file_path))[0]
+        
+        run_bash_script_simplified(bash_script=bash_script, 
+                        job_name=name,
+                        log_file=f'exp04_finetune_sweep_hyperparams/log_{name}',
+                        #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
+                        #model: 0.5B llama, 1B llama, 1B olmo
+                        partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', memory_gb='64', 
+                        #model: 4B llama
+                        # partition='seas_gpu,gpu',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
+                        # dependency_type_and_job_id='after:52127215'
+                        )
+        #actual run times
+        #0.5B-10BT models, FT on simplescaling for 3 epochs -- 4 GPUs, XXX hours
+        #1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, XXX hours
+
+        print(f'job_name = {name}, options = {name}')  
+
+
+
 if __name__ == "__main__":
-    run_exp01_finetune_llama()
+    # run_exp01_finetune_llama()
     # run_exp01_finetune_llama_additional_seeds()
 
 
@@ -563,3 +639,5 @@ if __name__ == "__main__":
 
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
     # run_exp03_vary_wd_during_ft()
+
+    run_exp04_finetune_llama_sweep_hyperparams()
