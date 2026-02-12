@@ -572,7 +572,52 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}'                           ### perform ft
         f'\npython w_delete_ft_ckpt.py --model_path {model_path}" > $FILENAME' #note ending quote ### delete ckpt folders after ft
         )
+
         return bash_script_complete
+
+#         bash_script = f"""#!/bin/sh
+# module load python
+# module load cuda/12.9.1-fasrc01
+# mamba activate llamafactory
+
+# export SCRATCHJOB='/n/netscratch/doshi-velez_lab/Everyone/scratch_ft'
+# mkdir -p "$SCRATCHJOB"/hf "$SCRATCHJOB"/ds "$SCRATCHJOB"/triton "$SCRATCHJOB"/wandb
+# export HF_HOME="$SCRATCHJOB"/hf
+# export TRANSFORMERS_CACHE="$SCRATCHJOB"/hf/transformers
+# export HF_DATASETS_CACHE="$SCRATCHJOB"/hf/datasets
+# export TRITON_CACHE_DIR="$SCRATCHJOB"/triton
+# export WANDB_DIR="$SCRATCHJOB"/wandb
+
+# source /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh
+# FORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}
+# python w_delete_ft_ckpt.py --model_path {model_path}
+# """
+#         wrap_filename = f'FILENAME=$(mktemp) ; echo "{bash_script}" > $FILENAME'
+#         return wrap_filename
+    
+#         bash_script_complete = f"""FILENAME=$(mktemp) ; echo "#!/bin/sh
+# module load python
+# module load cuda/12.9.1-fasrc01
+# mamba activate llamafactory
+
+# export SCRATCHJOB='/scratch'
+# mkdir -p $SCRATCHJOB/hf
+# mkdir -p $SCRATCHJOB/df
+# mkdir -p $SCRATCHJOB/triton
+# mkdir -p $SCRATCHJOB/wandb
+
+# export HF_HOME=$SCRATCHJOB/hf
+# export TRANSFORMERS_CACHE=$SCRATCHJOB/hf/transformers
+# export HF_DATASETS_CACHE=$SCRATCHJOB/hf/datasets
+# export TRITON_CACHE_DIR=$SCRATCHJOB/triton
+# export WANDB_DIR=$SCRATCHJOB/wandb
+
+# source /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh
+# FORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}
+# python w_delete_ft_ckpt.py --model_path {model_path}" > $FILENAME
+# """
+#         return bash_script_complete
+        
 
     # wd_pt_lst = [0.1, 0.5, 1.0]
     # lr_lst = ['1.0e-5', '3.0e-5', '6.0e-4']
@@ -582,18 +627,119 @@ def run_exp04_finetune_llama_sweep_hyperparams():
     model_size = 'llama-1B-20BT'
     sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
 
-    wd_pt_lst = [0.1]      #[0.1, 0.5, 1.0]
-    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
-    bs_lst = [32]          #[8, 16, 32]
-    wd_ft_lst = [0.0, 0.1]      #[0.0, 0.1, 1.0]
+    # wd_pt_lst = [1.0]                #[0.1, 0.5, 1.0]
+    # lr_lst = ['6.0e-4']              #['1.0e-5', '3.0e-5', '6.0e-4']
+    # bs_lst = [32]                     #[8, 16, 32]
+    # wd_ft_lst = [0.0, 0.1]      #[0.0, 0.1, 1.0]
 
-    combos = list(product(wd_pt_lst, wd_ft_lst, lr_lst, bs_lst))
+    # combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
+
+
+    # combos = [
+    #     #lr = 1.0e-5
+    #     # (0.1, '1.0e-5', 8, 0.0),
+    #     # (0.1, '1.0e-5', 8, 0.1),
+    #     # (0.1, '1.0e-5', 8, 1.0),
+    #     # (0.1, '1.0e-5', 16, 0.0), #default
+    #     # (0.1, '1.0e-5', 16, 0.1),
+    #     # (0.1, '1.0e-5', 16, 1.0),
+    #     # (0.1, '1.0e-5', 32, 0.0),
+    #     # (0.1, '1.0e-5', 32, 0.1),
+    #     # (0.1, '1.0e-5', 32, 1.0),
+    #     #lr = 3.0e-5
+    #     # (0.1, '3.0e-5', 8, 0.0),
+    #     # (0.1, '3.0e-5', 8, 0.1),
+    #     # (0.1, '3.0e-5', 8, 1.0),
+    #     # (0.1, '3.0e-5', 16, 0.0),
+    #     # (0.1, '3.0e-5', 16, 0.1),
+    #     # (0.1, '3.0e-5', 16, 1.0),
+    #     (0.1, '3.0e-5', 32, 0.0),
+    #     # (0.1, '3.0e-5', 32, 0.1),
+    #     # (0.1, '3.0e-5', 32, 1.0),
+    #     #lr = 6.0e-4'
+    #     # (0.1, '6.0e-4', 8, 0.0),
+    #     # (0.1, '6.0e-4', 8, 0.1),
+    #     # (0.1, '6.0e-4', 8, 1.0),
+    #     # (0.1, '6.0e-4', 16, 0.0),
+    #     # (0.1, '6.0e-4', 16, 0.1),
+    #     # (0.1, '6.0e-4', 16, 1.0),
+    #     # (0.1, '6.0e-4', 32, 0.0),
+    #     # (0.1, '6.0e-4', 32, 0.1),
+    #     # (0.1, '6.0e-4', 32, 1.0),
+    # ]
+
+    # combos = [
+    #     #lr = 1.0e-5
+    #     # (1.0, '1.0e-5', 8, 0.0),
+    #     # (1.0, '1.0e-5', 8, 0.1),
+    #     # (1.0, '1.0e-5', 8, 1.0),
+    #     # (1.0, '1.0e-5', 16, 0.0), #default
+    #     # (1.0, '1.0e-5', 16, 0.1),
+    #     # # (1.0, '1.0e-5', 16, 1.0),
+    #     # # (1.0, '1.0e-5', 32, 0.0),
+    #     # (1.0, '1.0e-5', 32, 0.1),
+    #     # # (1.0, '1.0e-5', 32, 1.0),
+    #     # # #lr = 3.0e-5
+    #     # # (1.0, '3.0e-5', 8, 0.0),
+    #     # (1.0, '3.0e-5', 8, 0.1),
+    #     # (1.0, '3.0e-5', 8, 1.0),
+    #     # (1.0, '3.0e-5', 16, 0.0),
+    #     # (1.0, '3.0e-5', 16, 0.1),
+    #     # # (1.0, '3.0e-5', 16, 1.0),
+    #     # (1.0, '3.0e-5', 32, 0.0),
+    #     # (1.0, '3.0e-5', 32, 0.1),
+    #     # (1.0, '3.0e-5', 32, 1.0),
+    #     # # #lr = 6.0e-4'
+    #     # (1.0, '6.0e-4', 8, 0.0),
+    #     # (1.0, '6.0e-4', 8, 0.1),
+    #     # (1.0, '6.0e-4', 8, 1.0),
+    #     # (1.0, '6.0e-4', 16, 0.0),
+    #     # (1.0, '6.0e-4', 16, 0.1),
+    #     # (1.0, '6.0e-4', 16, 1.0),
+    #     # (1.0, '6.0e-4', 32, 0.0),
+    #     # (1.0, '6.0e-4', 32, 0.1),
+    #     # (1.0, '6.0e-4', 32, 1.0),
+    # ]
+
+    wd_pt = 0.5
+    combos = [
+        #lr = 1.0e-5
+        # (wd_pt, '1.0e-5', 8, 0.0),
+        # (wd_pt, '1.0e-5', 8, 0.1),
+        # (wd_pt, '1.0e-5', 8, 1.0),
+        # (1.0, '1.0e-5', 16, 0.0), #default
+        # (wd_pt, '1.0e-5', 16, 0.1),
+        # (wd_pt, '1.0e-5', 16, 1.0),
+        # (wd_pt, '1.0e-5', 32, 0.0),
+        # (wd_pt, '1.0e-5', 32, 0.1),
+        # (wd_pt, '1.0e-5', 32, 1.0),
+        #lr = 3.0e-5
+        # (wd_pt, '3.0e-5', 8, 0.0),
+        # (wd_pt, '3.0e-5', 8, 0.1),
+        # (wd_pt, '3.0e-5', 8, 1.0),
+        # (wd_pt, '3.0e-5', 16, 0.0),
+        (wd_pt, '3.0e-5', 16, 0.1),
+        # (wd_pt, '3.0e-5', 16, 1.0),
+        # (wd_pt, '3.0e-5', 32, 0.0),
+        # (wd_pt, '3.0e-5', 32, 0.1),
+        # (wd_pt, '3.0e-5', 32, 1.0),
+        # # #lr = 6.0e-4'
+        # (wd_pt, '6.0e-4', 8, 0.0),
+        # (wd_pt, '6.0e-4', 8, 0.1),
+        # (wd_pt, '6.0e-4', 8, 1.0),
+        # (wd_pt, '6.0e-4', 16, 0.0),
+        # (wd_pt, '6.0e-4', 16, 0.1),
+        # (wd_pt, '6.0e-4', 16, 1.0),
+        # (wd_pt, '6.0e-4', 32, 0.0),
+        # (wd_pt, '6.0e-4', 32, 0.1),
+        # (wd_pt, '6.0e-4', 32, 1.0),
+    ]
 
     #create config_file_paths + model_folders based on input arguments above
     config_file_paths = []
     model_paths = []
     for combo in combos:
-        wd_pt, wd_ft, lr, bs = combo
+        wd_pt, lr, bs, wd_ft = combo
         # print(f'wd_pt = {wd_pt}, wd_ft = {wd_ft}, lr = {lr}, bs = {bs}')
         config_file_path = f'config_hub/custom_configs/sweep_hyperparams/ft_{sft_dataset}/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}.yaml'
         config_file_paths.append(config_file_path)
@@ -614,16 +760,16 @@ def run_exp04_finetune_llama_sweep_hyperparams():
                         log_file=f'exp04_finetune_sweep_hyperparams/log_{name}',
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
+                        partition='seas_gpu,gpu,gpu_requeue',
+                        # partition='gpu',
                         n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', memory_gb='64', 
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
-                        # dependency_type_and_job_id='after:52127215'
+                        # dependency_type_and_job_id='afterok:59589966'
                         )
-        #actual run times
-        #0.5B-10BT models, FT on simplescaling for 3 epochs -- 4 GPUs, XXX hours
-        #1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, XXX hours
+        #run times
+        #1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, 2 hours
 
         print(f'job_name = {name}, options = {name}')  
 
