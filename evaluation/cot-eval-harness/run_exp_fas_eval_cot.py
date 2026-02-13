@@ -432,15 +432,86 @@ def run_exp03_eval_cot_models_vary_wd_during_ft():
         print(f'job_name = {job_name}')  
 
 
+
+#exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
+def run_exp04_eval_cot_ft_sweep():
+
+    # # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
+    # 1B models, llama -- eval-single-model--run-exp.sh: use vllm option 
+    # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
+    # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
+
+    model_size = 'llama-1B-20BT'
+    sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+
+    wd_pt_lst = [1.0]      #[0.1, 0.5, 1.0]
+    lr_lst = ['3.0e-5', '6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
+    bs_lst = [8, 16, 32]          #[8, 16, 32]
+    wd_ft_lst = [0.0, 0.1, 1.0]      #[0.0, 0.1, 1.0]
+
+    combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
+    
+    model_dirs=[]
+    for combo in combos:
+        wd_pt, lr, bs, wd_ft = combo
+        model_dir = f"/n/netscratch/doshi-velez_lab/Everyone/models/sweep/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}"
+        model_dirs.append(model_dir)
+
+
+    #for metamathqa and simplescaling
+    datasets = [
+        "GSM8KPlatinum",
+        "MATHLevel1",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
+        "MATHHard",
+        # "CRUXEval",
+        # "BoardgameQA500",
+        # "TabMWP",
+        # "StrategyQA500",
+    ]
+
+    # #for other sft datasets
+    # datasets = [
+    #     sft_dataset
+    # ]
+
+
+    for model_dir, dataset in product(model_dirs, datasets):
+
+        out_root = "eval_output"
+        bash_script = f"jobs/custom/myllama/eval-single-model--run-exp.sh {model_dir} {dataset} {out_root}"
+
+        job_name = "eval_" + os.path.basename(model_dir) + "_" + dataset
+
+        run_bash_script_provided(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f"exp04_eval_ft_models_sweep/log_{job_name}",
+            partition='seas_gpu,gpu,gpu_requeue',
+            #!!!!! change settings in bash script depending on model size
+            #!!!!! change settings in bash script depending on whether to collect responses, evaluate, or both
+            n_gpus_a100_80gb='1', time_hrs='4', memory_gb='64', 
+            # partition='gpu_test',
+            # n_gpus_any='1', time_mins='30', memory_gb='64',
+            # dependency_type_and_job_id='afterok:59996610',
+            )
+
+        print(f'job_name = {job_name}')  
+
+
+
+
 if __name__ == "__main__":
     
-    run_exp01_eval_cot()
+    # run_exp01_eval_cot()
     # run_exp01_eval_cot_additional_ft_seeds()
 
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 
-
+    run_exp04_eval_cot_ft_sweep()
 
 
 
