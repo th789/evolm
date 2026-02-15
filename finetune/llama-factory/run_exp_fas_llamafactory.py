@@ -606,7 +606,7 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
         # (wd_pt, '1.0e-5', 16, 0.1),
         # (wd_pt, '1.0e-5', 16, 1.0),
-        # (wd_pt, '1.0e-5', 32, 0.0),
+        (wd_pt, '1.0e-5', 32, 0.0),
         # (wd_pt, '1.0e-5', 32, 0.1),
         # (wd_pt, '1.0e-5', 32, 1.0),
         #lr = 3.0e-5
