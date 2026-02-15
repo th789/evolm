@@ -252,6 +252,7 @@ def run_exp01_finetune_llama():
         f'\nmodule load python'
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
         )
@@ -355,6 +356,7 @@ def run_exp01_finetune_llama_additional_seeds():
         f'\nmodule load python'
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
         )
@@ -467,6 +469,7 @@ def run_exp02_finetune_models_pretrained_on_finefineweb():
         f'\nmodule load python'
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
         )
@@ -515,6 +518,7 @@ def run_exp03_vary_wd_during_ft():
         f'\nmodule load python'
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}" > $FILENAME' #note ending quote
         )
@@ -568,6 +572,7 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         f'\nmodule load python'
         f'\nmodule load cuda/12.9.1-fasrc01'
         f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
         f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
         f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}'                           ### perform ft
         f'\npython w_delete_ft_ckpt.py --model_path {model_path}" > $FILENAME' #note ending quote ### delete ckpt folders after ft
@@ -592,105 +597,39 @@ def run_exp04_finetune_llama_sweep_hyperparams():
     # combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
 
     ### method 2 to specify arguments -- by hand, more control
+    wd_pt = 0.1
     combos = [
         #lr = 1.0e-5
-        (0.1, '1.0e-5', 8, 0.0),
-        (0.1, '1.0e-5', 8, 0.1),
-        # (0.1, '1.0e-5', 8, 1.0),
-        # # # # # (0.1, '1.0e-5', 16, 0.0), #default
-        # (0.1, '1.0e-5', 16, 0.1),
-        # (0.1, '1.0e-5', 16, 1.0),
-        # (0.1, '1.0e-5', 32, 0.0),
-        # (0.1, '1.0e-5', 32, 0.1),
-        # (0.1, '1.0e-5', 32, 1.0),
+        # (wd_pt, '1.0e-5', 8, 0.0),
+        # (wd_pt, '1.0e-5', 8, 0.1),
+        # (wd_pt, '1.0e-5', 8, 1.0),
+        # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
+        # (wd_pt, '1.0e-5', 16, 0.1),
+        # (wd_pt, '1.0e-5', 16, 1.0),
+        # (wd_pt, '1.0e-5', 32, 0.0),
+        # (wd_pt, '1.0e-5', 32, 0.1),
+        # (wd_pt, '1.0e-5', 32, 1.0),
         #lr = 3.0e-5
-        # (0.1, '3.0e-5', 8, 0.0),
-        # (0.1, '3.0e-5', 8, 0.1),
-        # (0.1, '3.0e-5', 8, 1.0),
-        # (0.1, '3.0e-5', 16, 0.0),
-        # (0.1, '3.0e-5', 16, 0.1),
-        # (0.1, '3.0e-5', 16, 1.0),
-        # (0.1, '3.0e-5', 32, 0.0),
-        # (0.1, '3.0e-5', 32, 0.1),
-        # (0.1, '3.0e-5', 32, 1.0),
-        #lr = 6.0e-4'
-        # (0.1, '6.0e-4', 8, 0.0),
-        # (0.1, '6.0e-4', 8, 0.1),
-        # (0.1, '6.0e-4', 8, 1.0),
-        # (0.1, '6.0e-4', 16, 0.0),
-        # (0.1, '6.0e-4', 16, 0.1),
-        # (0.1, '6.0e-4', 16, 1.0),
-        # (0.1, '6.0e-4', 32, 0.0),
-        # (0.1, '6.0e-4', 32, 0.1),
-        # (0.1, '6.0e-4', 32, 1.0),
+        # (wd_pt, '3.0e-5', 8, 0.0),
+        # (wd_pt, '3.0e-5', 8, 0.1),
+        # (wd_pt, '3.0e-5', 8, 1.0),
+        # (wd_pt, '3.0e-5', 16, 0.0),
+        # (wd_pt, '3.0e-5', 16, 0.1),
+        # (wd_pt, '3.0e-5', 16, 1.0),
+        # (wd_pt, '3.0e-5', 32, 0.0),
+        # (wd_pt, '3.0e-5', 32, 0.1),
+        # (wd_pt, '3.0e-5', 32, 1.0),
+        # # #lr = 6.0e-4'
+        # (wd_pt, '6.0e-4', 8, 0.0),
+        # (wd_pt, '6.0e-4', 8, 0.1),
+        # (wd_pt, '6.0e-4', 8, 1.0),
+        # (wd_pt, '6.0e-4', 16, 0.0),
+        # (wd_pt, '6.0e-4', 16, 0.1),
+        # (wd_pt, '6.0e-4', 16, 1.0),
+        # (wd_pt, '6.0e-4', 32, 0.0),
+        # (wd_pt, '6.0e-4', 32, 0.1),
+        # (wd_pt, '6.0e-4', 32, 1.0),
     ]
-
-    # combos = [
-    #     #lr = 1.0e-5
-    #     # (1.0, '1.0e-5', 8, 0.0),
-    #     # (1.0, '1.0e-5', 8, 0.1),
-    #     # (1.0, '1.0e-5', 8, 1.0),
-    #     # (1.0, '1.0e-5', 16, 0.0), #default
-    #     # (1.0, '1.0e-5', 16, 0.1),
-    #     # # (1.0, '1.0e-5', 16, 1.0),
-    #     # # (1.0, '1.0e-5', 32, 0.0),
-    #     # (1.0, '1.0e-5', 32, 0.1),
-    #     # # (1.0, '1.0e-5', 32, 1.0),
-    #     # # #lr = 3.0e-5
-    #     # # (1.0, '3.0e-5', 8, 0.0),
-    #     # (1.0, '3.0e-5', 8, 0.1),
-    #     # (1.0, '3.0e-5', 8, 1.0),
-    #     # (1.0, '3.0e-5', 16, 0.0),
-    #     # (1.0, '3.0e-5', 16, 0.1),
-    #     # # (1.0, '3.0e-5', 16, 1.0),
-    #     # (1.0, '3.0e-5', 32, 0.0),
-    #     # (1.0, '3.0e-5', 32, 0.1),
-    #     # (1.0, '3.0e-5', 32, 1.0),
-    #     # # #lr = 6.0e-4'
-    #     # (1.0, '6.0e-4', 8, 0.0),
-    #     # (1.0, '6.0e-4', 8, 0.1),
-    #     # (1.0, '6.0e-4', 8, 1.0),
-    #     # (1.0, '6.0e-4', 16, 0.0),
-    #     # (1.0, '6.0e-4', 16, 0.1),
-    #     # (1.0, '6.0e-4', 16, 1.0),
-    #     # (1.0, '6.0e-4', 32, 0.0),
-    #     # (1.0, '6.0e-4', 32, 0.1),
-    #     # (1.0, '6.0e-4', 32, 1.0),
-    # ]
-
-    # wd_pt = 0.5
-    # combos = [
-    #     #lr = 1.0e-5
-    #     # (wd_pt, '1.0e-5', 8, 0.0),
-    #     # (wd_pt, '1.0e-5', 8, 0.1),
-    #     # (wd_pt, '1.0e-5', 8, 1.0),
-    #     # (1.0, '1.0e-5', 16, 0.0), #default
-    #     # (wd_pt, '1.0e-5', 16, 0.1),
-    #     # (wd_pt, '1.0e-5', 16, 1.0),
-    #     # (wd_pt, '1.0e-5', 32, 0.0),
-    #     # (wd_pt, '1.0e-5', 32, 0.1),
-    #     # (wd_pt, '1.0e-5', 32, 1.0),
-    #     #lr = 3.0e-5
-    #     # (wd_pt, '3.0e-5', 8, 0.0),
-    #     # (wd_pt, '3.0e-5', 8, 0.1),
-    #     # (wd_pt, '3.0e-5', 8, 1.0),
-    #     # (wd_pt, '3.0e-5', 16, 0.0),
-    #     # (wd_pt, '3.0e-5', 16, 0.1),
-    #     # (wd_pt, '3.0e-5', 16, 1.0),
-    #     # (wd_pt, '3.0e-5', 32, 0.0),
-    #     # (wd_pt, '3.0e-5', 32, 0.1),
-    #     # (wd_pt, '3.0e-5', 32, 1.0),
-    #     # # #lr = 6.0e-4'
-    #     # (wd_pt, '6.0e-4', 8, 0.0),
-    #     # (wd_pt, '6.0e-4', 8, 0.1),
-    #     # (wd_pt, '6.0e-4', 8, 1.0),
-    #     # (wd_pt, '6.0e-4', 16, 0.0),
-    #     # (wd_pt, '6.0e-4', 16, 0.1),
-    #     # (wd_pt, '6.0e-4', 16, 1.0),
-    #     # (wd_pt, '6.0e-4', 32, 0.0),
-    #     # (wd_pt, '6.0e-4', 32, 0.1),
-    #     # (wd_pt, '6.0e-4', 32, 1.0),
-    # ]
 
     #create config_file_paths + model_folders based on input arguments above
     config_file_paths = []
@@ -721,11 +660,12 @@ def run_exp04_finetune_llama_sweep_hyperparams():
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
                         partition='seas_gpu,gpu,gpu_requeue',
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', time_mins='30', memory_gb='64', 
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', time_mins='30', memory_gb='64', #for llama-1B (all settings) and olmo-1B (bs=8 and bs=16)
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', time_mins='30', memory_gb='64', #for olmo-1B (bs=8 and bs=32)
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
-                        dependency_type_and_job_id='afterok:60396180'
+                        # dependency_type_and_job_id='afterok:60402644'
                         )
         #run times
         #llama-1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, 2 hours
