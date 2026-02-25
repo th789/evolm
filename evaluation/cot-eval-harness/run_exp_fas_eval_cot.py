@@ -441,11 +441,14 @@ def run_exp04_eval_cot_ft_sweep():
     # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
 
-    model_size = 'llama-1B-20BT'
-    sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    # model_size = 'llama-1B-20BT'
+    # sft_dataset = 'simplescaling'
 
-    wd_pt_lst = [1.0]      #[0.1, 0.5, 1.0]
-    lr_lst = ['3.0e-5', '6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
+    model_size = 'olmo-1B-30BT'
+    sft_dataset = 'metamathqa'
+
+    wd_pt_lst = [0.1, 1.0, 0.3]      #[0.1, 0.5, 1.0]
+    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
     bs_lst = [8, 16, 32]          #[8, 16, 32]
     wd_ft_lst = [0.0, 0.1, 1.0]      #[0.0, 0.1, 1.0]
 
@@ -454,7 +457,10 @@ def run_exp04_eval_cot_ft_sweep():
     model_dirs=[]
     for combo in combos:
         wd_pt, lr, bs, wd_ft = combo
-        model_dir = f"/n/netscratch/doshi-velez_lab/Everyone/models/sweep/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}"
+        if model_size in ['olmo-1B-210BT', 'olmo-1B-30BT']:
+            model_dir = f"/n/netscratch/doshi-velez_lab/Everyone/models/sweep/{model_size}-weightdecay{wd_pt}-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}"
+        else:
+            model_dir = f"/n/netscratch/doshi-velez_lab/Everyone/models/sweep/{model_size}-weightdecay{wd_pt}-seed42-{sft_dataset}--sweep-lr{lr}-bs{bs}-wdft{wd_ft}"
         model_dirs.append(model_dir)
 
 
@@ -492,7 +498,8 @@ def run_exp04_eval_cot_ft_sweep():
             partition='seas_gpu,gpu,gpu_requeue',
             #!!!!! change settings in bash script depending on model size
             #!!!!! change settings in bash script depending on whether to collect responses, evaluate, or both
-            n_gpus_a100_80gb='1', time_hrs='4', memory_gb='64', 
+            # n_gpus_a100_80gb='1', time_hrs='4', memory_gb='64', #llama-1B, simplescaling
+            n_gpus_a100_80gb='1', time_hrs='3', memory_gb='64', #olmo-1B, metamathqa
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
             # dependency_type_and_job_id='afterok:59996610',
