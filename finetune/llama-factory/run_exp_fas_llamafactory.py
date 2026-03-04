@@ -581,12 +581,17 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         return bash_script_complete
 
 
-
+    #FT sweep 1
     # model_size = 'llama-1B-20BT'
-    # sft_dataset = 'simplescalingmetamathqa'
+    # sft_dataset = 'simplescaling'
 
+    #FT sweep 2
+    # model_size = 'olmo-1B-30BT'
+    # sft_dataset = 'metamathqa'
+
+    #FT sweep 3
     model_size = 'olmo-1B-30BT'
-    sft_dataset = 'metamathqa'
+    sft_dataset = 'simplescaling'
 
     ### method 1 to specify arguments -- using product of lists
     # arguments to run                 #full list of options
@@ -597,14 +602,14 @@ def run_exp04_finetune_llama_sweep_hyperparams():
     # combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
 
     ### method 2 to specify arguments -- by hand, more control
-    wd_pt = 0.3
+    wd_pt = 1.0
     combos = [
         #lr = 1.0e-5
         # (wd_pt, '1.0e-5', 8, 0.0),
         # (wd_pt, '1.0e-5', 8, 0.1),
         # (wd_pt, '1.0e-5', 8, 1.0),
-        # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
-        # (wd_pt, '1.0e-5', 16, 0.1),
+        # # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
+        (wd_pt, '1.0e-5', 16, 0.1),
         # (wd_pt, '1.0e-5', 16, 1.0),
         # (wd_pt, '1.0e-5', 32, 0.0),
         # (wd_pt, '1.0e-5', 32, 0.1),
@@ -620,7 +625,7 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         # (wd_pt, '3.0e-5', 32, 0.1),
         # (wd_pt, '3.0e-5', 32, 1.0),
         # # #lr = 6.0e-4'
-        (wd_pt, '6.0e-4', 8, 0.0),
+        # (wd_pt, '6.0e-4', 8, 0.0),
         # (wd_pt, '6.0e-4', 8, 0.1),
         # (wd_pt, '6.0e-4', 8, 1.0),
         # (wd_pt, '6.0e-4', 16, 0.0),
@@ -660,7 +665,8 @@ def run_exp04_finetune_llama_sweep_hyperparams():
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
                         partition='seas_gpu,gpu,gpu_requeue',
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='8', time_mins='30', memory_gb='64', #for llama-1B and olmo-1B
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='8', time_mins='30', memory_gb='64', #FT olmo-1B on metamathqa
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='4', memory_gb='64', #FT olmo-1B on simplescaling
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
