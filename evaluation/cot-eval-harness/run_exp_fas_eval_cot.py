@@ -441,14 +441,20 @@ def run_exp04_eval_cot_ft_sweep():
     # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
 
+    #FT sweep 1
     # model_size = 'llama-1B-20BT'
     # sft_dataset = 'simplescaling'
 
-    model_size = 'olmo-1B-30BT'
-    sft_dataset = 'metamathqa'
+    #FT sweep 2
+    # model_size = 'olmo-1B-30BT'
+    # sft_dataset = 'metamathqa'
 
-    wd_pt_lst = [0.1, 1.0, 0.3]      #[0.1, 0.5, 1.0]
-    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
+    #FT sweep 3
+    model_size = 'olmo-1B-30BT'
+    sft_dataset = 'simplescaling'
+
+    wd_pt_lst = [0.1, 0.3, 1.0]      #[0.1, 0.5, 1.0]
+    lr_lst = ['3.0e-5', '6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
     bs_lst = [8, 16, 32]          #[8, 16, 32]
     wd_ft_lst = [0.0, 0.1, 1.0]      #[0.0, 0.1, 1.0]
 
