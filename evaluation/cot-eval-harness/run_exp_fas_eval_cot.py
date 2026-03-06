@@ -453,10 +453,10 @@ def run_exp04_eval_cot_ft_sweep():
     model_size = 'olmo-1B-30BT'
     sft_dataset = 'simplescaling'
 
-    wd_pt_lst = [0.1, 0.3, 1.0]      #[0.1, 0.5, 1.0]
-    lr_lst = ['3.0e-5', '6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
-    bs_lst = [8, 16, 32]          #[8, 16, 32]
-    wd_ft_lst = [0.0, 0.1, 1.0]      #[0.0, 0.1, 1.0]
+    wd_pt_lst = [0.1]      #[0.1, 0.5, 1.0]
+    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
+    bs_lst = [32]          #[8, 16, 32]
+    wd_ft_lst = [0.0]      #[0.0, 0.1, 1.0]
 
     combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
     
@@ -472,12 +472,12 @@ def run_exp04_eval_cot_ft_sweep():
 
     #for metamathqa and simplescaling
     datasets = [
-        "GSM8KPlatinum",
+        # "GSM8KPlatinum",
         "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
+        # "MATHLevel2",
+        # "MATHLevel3",
+        # "MATHLevel4",
+        # "MATHHard",
         # "CRUXEval",
         # "BoardgameQA500",
         # "TabMWP",
