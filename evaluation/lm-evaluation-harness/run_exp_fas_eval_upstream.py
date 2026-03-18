@@ -274,20 +274,22 @@ def run_exp01_eval_single_model_single_task():
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_single_model_all_tasks():
 
+    #--------------------------- OLD RUNS --------------------------------
 
-    ##### exp01: models pretrained on fineweb dataset
-    model_sizes = ["1B-10BT"] #["0.5B-10BT", "1B-20BT"]
-    wd_lst = [1.5] #[0.0001, 0.001, 0.01, 0.1, 1.0, 3.0, 10.0]
+    # ##### exp01: models pretrained on fineweb dataset
+    # model_sizes = ["1B-10BT"] #["0.5B-10BT", "1B-20BT"]
+    # wd_lst = [1.5] #[0.0001, 0.001, 0.01, 0.1, 1.0, 3.0, 10.0]
     
+
     #pretrained models
     # model_dirs=[
     #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/llama-{model_size}-weightdecay{wd}-seed42/final-hf" for model_size, wd in product(model_sizes, wd_lst)
     # ]
 
-    # #finetuned models
-    model_dirs=[
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa" for model_size, wd in product(model_sizes, wd_lst)
-    ]
+    # # #finetuned models
+    # model_dirs=[
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-{model_size}-weightdecay{wd}-seed42-metamathqa" for model_size, wd in product(model_sizes, wd_lst)
+    # ]
 
 
     ##### exp02: models pretrained on finefineweb dataset, my subsets
@@ -314,14 +316,78 @@ def run_exp01_eval_single_model_all_tasks():
     #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/vary_wd_during_ft/llama-1B-20BT-weightdecay{wd_pt}-seed42-metamathqa-ftweightdecay{wd_ft}" for wd_pt, wd_ft in product(wd_pt_lst, wd_ft_lst)
     # ]
 
+    #---------------------------------------------------------------------------------
+
+    ### plasticity-stability experiments
+
+    model_dict = {
+        # "llama-4B-80BT": [0.1],
+        # "olmo-1B-210BT": [0.1],
+        #full wds below
+        # "llama-0.5B-10BT": [0.1], #[0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0], #[0.1, 1.0, 3.0, 10.0], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
+        "llama-1B-20BT": [0.1], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
+        # "llama-4B-80BT": [0.1, 1.0], #[0.1, 1.0],
+        # "olmo-1B-30BT": [0.1], #[0.1, 0.3, 0.6, 1.0],
+        # "olmo-1B-210BT": [1.0], #[0.1, 0.3, 1.0],
+    }
+    
+
+    ### pretrained models
+    # for model_name, wd_lst in model_dict.items():
+    #     if model_name in ["llama-0.5B-10BT", "llama-1B-20BT"]:
+    #         model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/{model_name}-weightdecay{wd}-seed42/final-hf" for wd in wd_lst]
+    #     elif model_name in ["llama-4B-80BT"]:
+    #         model_dirs = []
+    #         for wd in wd_lst:
+    #             if wd == 0.1:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/zhenting/myllama-4B-80BT")
+    #             elif wd == 1.0:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/hlzhang109/llama-4B-80BT-weightdecay1.0-seed42")
+    #     elif model_name in ["olmo-1B-30BT"]:
+    #         model_dirs = []
+    #         for wd in wd_lst:
+    #             if wd == 0.1:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x")
+    #             elif wd == 0.3:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD03")
+    #             elif wd == 0.6:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD06")
+    #             elif wd == 1.0:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD1")
+    #     elif model_name in ["olmo-1B-210BT"]:
+    #         model_dirs = []
+    #         for wd in wd_lst:
+    #             if wd == 0.1:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-Decayed-Early")
+    #                 # model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x")
+    #             elif wd == 0.3:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x-WD03")
+    #             elif wd == 1.0:
+    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-WD1")
+    #     else:
+    #         raise ValueError(f"Model name {model_name} not found")
+
+    ### finetuned models
+    sft_dataset = "simplescaling" #["metamathqa", "medmcqa", "pubmedqa", "mmluprocot", "race", "simplescaling"]
+    for model_name, wd_lst in model_dict.items():
+        if model_name in ["llama-0.5B-10BT", "llama-1B-20BT", "llama-4B-80BT"]:
+            model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-seed42-{sft_dataset}" for wd in wd_lst]
+        elif model_name in ["olmo-1B-30BT", "olmo-1B-210BT"]:
+            model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-{sft_dataset}" for wd in wd_lst]
+
+
 
     for model_dir in model_dirs:
 
         bash_script = f"jobs/eval-single--run-exp.sh {model_dir}"
 
+        #pretrained models
         if "evolm/pretrain/lit-trainer/models" in model_dir:
             job_name = "eval_pt_" + os.path.basename(os.path.dirname(model_dir)) #model name is second to last folder in model_dir
+        elif "evolm/models/hf_ckpts" in model_dir:
+            job_name = "eval_pt_" + os.path.basename(model_dir) #model name is second to last folder in model_dir
         
+        #finetuned models
         elif "evolm/finetune/llama-factory/llamafactory_out" in model_dir:
             job_name = "eval_ft_" + os.path.basename(model_dir) #model name is last folder in model_dir
 
@@ -329,7 +395,7 @@ def run_exp01_eval_single_model_all_tasks():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_single_model_all_tasks/log_{job_name}",
-            # partition='seas_gpu,gpu,gpu_requeue,serial_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32'
+            # partition='seas_gpu,gpu,gpu_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32'
             # partition='seas_gpu,gpu', n_gpus_any='1', time_hrs='1', memory_gb='32'
             partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32'
             )

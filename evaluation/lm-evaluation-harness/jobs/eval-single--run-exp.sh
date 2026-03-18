@@ -27,19 +27,30 @@ export CUDA_VISIBLE_DEVICES=0
 zeroshot_tasks="hellaswag,winogrande,piqa,openbookqa,arc_easy,arc_challenge,mathqa"
 
 #set up output directory -- based on whether model is pretrained or finetuned
-if [[ "$model_id" == *"evolm/pretrain/lit-trainer/models"* ]]; then #pretrained model
+#pretrained model: llama-0.5B and llama-1B
+if [[ "$model_id" == *"evolm/pretrain/lit-trainer/models"* ]]; then 
     model_name=$(basename "$(dirname "$model_id")") #second to last folder of model_id
-    subfolder=$(basename "$(dirname "$(dirname "$model_id")")") #third to last folder of model_id
-    OUTPUT_DIR="./eval_output/pretrained/$subfolder/$model_name"
+    OUTPUT_DIR="./eval_output/pretrained/$model_name"
+#pretrained model: llama-4B and olmo-1B-20x, olmo-1B-140x
+elif [[ "$model_id" == *"evolm/models/hf_ckpts"* ]]; then 
+    model_name=$(basename "$model_id") # last folder of model_id
+    OUTPUT_DIR="./eval_output/pretrained/$model_name"
+#finetuned model: llama-factory
 elif [[ "$model_id" == *"evolm/finetune/llama-factory/llamafactory_out"* ]]; then #finetuned model
     model_name=$(basename "$model_id") #last folder of model_id
-    subfolder=$(basename "$(dirname "$model_id")") #second to last folder of model_id
-    OUTPUT_DIR="./eval_output/finetuned/$subfolder/$model_name"
+    OUTPUT_DIR="./eval_output/finetuned/$model_name"
+fi
+
+
+model_args="pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5,max_num_batched_tokens=8192"
+# Force slow tokenizer to avoid Fast tokenizer config bug for OLMo.
+if [[ "$model_id" == *"OLMo"* || "$model_id" == *"olmo"* ]]; then
+    model_args="${model_args},tokenizer_mode=slow"
 fi
 
 
 lm_eval --model vllm \
-    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5 \
+    --model_args "${model_args}" \
     --tasks $zeroshot_tasks \
     --num_fewshot 0 \
     --output_path "$OUTPUT_DIR" \
