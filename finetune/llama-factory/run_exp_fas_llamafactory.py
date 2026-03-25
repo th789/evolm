@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'simplescaling' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'medmcqa' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -295,10 +295,11 @@ def run_exp01_finetune_llama():
         #30BT (1x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
         #210BT (7x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
     ]
 
@@ -330,8 +331,9 @@ def run_exp01_finetune_llama():
                         
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,serial_requeue,gpu_requeue',
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', 
+                        partition='seas_gpu,gpu,gpu_requeue',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', 
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', 
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
@@ -681,6 +683,77 @@ def run_exp04_finetune_llama_sweep_hyperparams():
 
 
 
+
+
+#exp01 -- finetune llama models -- finetune 0.5B-10BT and 1B-20BT (pretrained on fineweb dataset) on metamathqa dataset
+#note
+#sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4
+def run_exp05_finetune_llama_vary_lr_in_pt():
+    
+    # bash script
+    def create_bash_script(config_file_path: str, model_path: str) -> str:
+        bash_script_complete = (
+        f'FILENAME=$(mktemp) ; '
+        f'echo "#!/bin/sh' #note starting quote
+        f'\nmodule load python'
+        f'\nmodule load cuda/12.9.1-fasrc01'
+        f'\nmamba activate llamafactory'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/w_set_cache_dirs_to_node_scratch.sh'
+        f'\nsource /n/home07/than157/desktop/done-large_projects/learn-better/load_private_vars.sh' 
+        f'\nFORCE_TORCHRUN=1 llamafactory-cli train {config_file_path}'                           ### perform ft
+        f'\npython w_delete_ft_ckpt.py --model_path {model_path}" > $FILENAME' #note ending quote ### delete ckpt folders after ft
+        )
+
+        return bash_script_complete
+
+
+    model_size = 'olmo-1B-30BT'
+    sft_dataset = 'medmcqa'
+
+
+    wd_pt_lst = [1.0] #options: [0.1, 0.6, 1.0]
+    lr_pt_lst = ['2e-4', '8e-4']
+    combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_pt_lst))
+
+    #create config_file_paths + model_folders based on input arguments above
+    config_file_paths = []
+    model_paths = []
+
+    for combo in combos:
+        wd_pt, lr_pt = combo
+
+        if model_size in ['olmo-1B-30BT']:
+            config_file_path = f'config_hub/custom_configs/ft_{sft_dataset}/{model_size}-weightdecay{wd_pt}-lr{lr_pt}-{sft_dataset}.yaml'
+            model_path = f'/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_size}-weightdecay{wd_pt}-lr{lr_pt}-{sft_dataset}'
+
+        config_file_paths.append(config_file_path)
+        model_paths.append(model_path)
+
+
+
+    #run each experiment
+    for config_file_path, model_path in zip(config_file_paths, model_paths):
+        bash_script = create_bash_script(config_file_path, model_path)
+        name = os.path.splitext(os.path.basename(config_file_path))[0]
+        
+        run_bash_script_simplified(bash_script=bash_script, 
+                        job_name=name,
+                        log_file=f'exp05_finetune_llama_vary_lr_in_pt/log_{name}',
+                        #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
+                        #model: 0.5B llama, 1B llama, 1B olmo
+                        partition='seas_gpu,gpu,gpu_requeue',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', time_mins='30', memory_gb='64', #FT olmo-1B on metamathqa
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', #FT olmo-1B on simplescaling
+                        # dependency_type_and_job_id='after:60548099'
+                        )
+        #run times
+        #llama-1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, 2 hours
+        #olmo-1B-30BT models, FT on metamathqa for 3 epochs -- 4 GPUs, 5 hours
+
+
+        print(f'job_name = {name}, options = {name}')  
+
+
 if __name__ == "__main__":
     # run_exp01_finetune_llama()
     # run_exp01_finetune_llama_additional_seeds()
@@ -692,4 +765,6 @@ if __name__ == "__main__":
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
     # run_exp03_vary_wd_during_ft()
 
-    run_exp04_finetune_llama_sweep_hyperparams()
+    # run_exp04_finetune_llama_sweep_hyperparams()
+
+    run_exp05_finetune_llama_vary_lr_in_pt()

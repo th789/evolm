@@ -185,7 +185,7 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'race' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'simplescaling' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
 
     # # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
@@ -214,15 +214,24 @@ def run_exp01_eval_cot():
     # ]
 
     # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
+    # model_dirs=[
+    #     #30BT (1x chinchilla)
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.1-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.6-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
+    #     #210BT (7x chinchilla)
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
+    # ]
+
+    # 1.5B olmo models VARY LR IN PT-- eval-single-model--run-exp.sh: use vllm option 
+    wd_pt = 0.6
+    lr_pt = '2e-4' #options: ['2e-4', '8e-4']
     model_dirs=[
         #30BT (1x chinchilla)
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.1-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
-        #210BT (7x chinchilla)
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
+        f'/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay{wd_pt}-lr{lr_pt}-{sft_dataset}'
     ]
 
     # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
@@ -231,23 +240,24 @@ def run_exp01_eval_cot():
     #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
     # ]
 
-    datasets = [
-        sft_dataset
-    ]
+    #####eval datasets
+    # datasets = [
+    #     sft_dataset
+    # ]
 
     #for metamathqa and simplescaling
-    # datasets = [
-    #     "GSM8KPlatinum",
-    #     "MATHLevel1",
-    #     "MATHLevel2",
-    #     "MATHLevel3",
-    #     "MATHLevel4",
-    #     "MATHHard",
-    #     # "CRUXEval",
-    #     # "BoardgameQA500",
-    #     # "TabMWP",
-    #     # "StrategyQA500",
-    # ]
+    datasets = [
+        "GSM8KPlatinum",
+        "MATHLevel1",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
+        "MATHHard",
+        # "CRUXEval",
+        # "BoardgameQA500",
+        # "TabMWP",
+        # "StrategyQA500",
+    ]
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -261,13 +271,16 @@ def run_exp01_eval_cot():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_ft_models/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
+            # partition='gpu_test',
             #!!!!! change settings in bash script depending on model size
             #!!!!! change settings in bash script depending on whether to collect responses, evaluate, or both
-            n_gpus_a100_80gb='1', time_hrs='8', memory_gb='64', 
+            # n_gpus_any='1', time_hrs='12', memory_gb='64',  #gpu_test: metamathqa, simplescaling -- olmo
+            n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64',  #metamathqa, simplescaling -- olmo
+            # n_gpus_a100_80gb='1', time_hrs='5', time_mins='30', memory_gb='64', #medmcqa -- olmo
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:56723020',
+            # dependency_type_and_job_id='afterok:1534428',
             )
 
         print(f'job_name = {job_name}')  
@@ -518,13 +531,14 @@ def run_exp04_eval_cot_ft_sweep():
 
 if __name__ == "__main__":
     
-    # run_exp01_eval_cot()
+    run_exp01_eval_cot() #original PT models + olmo models with varying LR in PT
     # run_exp01_eval_cot_additional_ft_seeds()
 
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 
-    run_exp04_eval_cot_ft_sweep()
+    # run_exp04_eval_cot_ft_sweep()
+
 
 
 

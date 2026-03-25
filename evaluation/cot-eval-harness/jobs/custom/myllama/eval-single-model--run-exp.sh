@@ -20,10 +20,66 @@ echo "=== GPU Hardware ==="
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 nvidia-smi
 
-# set up env
-module load python
-module load cuda/12.9.1-fasrc01
-mamba activate lm-eval-cot-og
+# # set up env
+# module load python
+# module load cuda/12.9.1-fasrc01
+# mamba activate lm-eval-cot-og
+
+
+
+### --------------to fix intermittent module/NFS hiccups (causing "/bin/bash: /n/sw/helmod-rocky8/apps/lmod/lmod/init/bash: Stale file handle") -----------------------
+
+# set up env (robust to intermittent module/NFS hiccups)
+retry_cmd() {
+    local max_attempts=$1
+    shift
+    local attempt=1
+    until "$@"; do
+        if [ "$attempt" -ge "$max_attempts" ]; then
+            return 1
+        fi
+        attempt=$((attempt + 1))
+        sleep 5
+    done
+}
+
+if ! command -v module >/dev/null 2>&1; then
+    if [ -f /n/sw/helmod-rocky8/apps/lmod/lmod/init/bash ]; then
+        # Lmod init can fail on stale NFS handles; retry a few times.
+        retry_cmd 3 source /n/sw/helmod-rocky8/apps/lmod/lmod/init/bash || {
+            echo "ERROR: Failed to initialize Lmod." >&2
+            exit 1
+        }
+    elif [ -f /etc/profile.d/modules.sh ]; then
+        source /etc/profile.d/modules.sh
+    fi
+fi
+
+retry_cmd 3 module load python || { echo "ERROR: module load python failed." >&2; exit 1; }
+retry_cmd 3 module load cuda/12.9.1-fasrc01 || { echo "ERROR: module load cuda failed." >&2; exit 1; }
+
+if ! command -v mamba >/dev/null 2>&1; then
+    for conda_sh in \
+        "$HOME/mambaforge/etc/profile.d/conda.sh" \
+        "$HOME/miniforge3/etc/profile.d/conda.sh" \
+        "$HOME/miniconda3/etc/profile.d/conda.sh" \
+        "$HOME/anaconda3/etc/profile.d/conda.sh"; do
+        if [ -f "$conda_sh" ]; then
+            source "$conda_sh"
+            break
+        fi
+    done
+fi
+
+retry_cmd 3 mamba activate lm-eval-cot-og || { echo "ERROR: mamba activate failed." >&2; exit 1; }
+
+if ! command -v python >/dev/null 2>&1; then
+    echo "ERROR: python not found after environment setup." >&2
+    exit 1
+fi
+
+### -------------------------------------
+
 
 
 ### --------------- NOTE ---------------

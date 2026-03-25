@@ -12,17 +12,30 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "meta-llama/Llama-2-7b-hf" #! <-- change this to the model ID you want to download from HF
 # model_id = "zhenting/myllama-1B-20BT"
 # model_id = "zhenting/myllama-0.5B-10BT"
-# model_id = "zhenting/myllama-4B-80BT"
-# model_id = "sbordt/OLMo-2-1B-Decayed-Early" #now called sbordt/OLMo-2-1B-7x         #olmo-140x-wd0.1
-# model_id = "sbordt/OLMo-2-1B-WD1"           #now called sbordt/OLMo-2-1B-7x-WD1     #olmo-140x-wd1.0
-model_id = "sbordt/OLMo-2-1B-7x" #same as sbordt/OLMo-2-1B-Decayed-Early above        #olmo-140x-wd0.1
 
-# model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"
+# model_id = "zhenting/myllama-4B-80BT"                                               #llama-4B-80BT-wd0.1
+# model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"                         #llama-4B-80BT-wd1.0
+
+#####olmo-1B, default learning rate (4e-4)
 # model_id = "sbordt/OLMo-2-1B-1x"                                                    #olmo-20x-wd0.1
-# model_id = "sbordt/OLMo-2-1B-1x-WD1"                                                #olmo-20x-wd1.0
 # model_id = "sbordt/OLMo-2-1B-1x-WD03"                                               #olmo-20x-wd0.3
 # model_id = "sbordt/OLMo-2-1B-1x-WD06"                                               #olmo-20x-wd0.6
-# model_id = "sbordt/OLMo-2-1B-7x-WD03"                                                 #olmo-140x-wd0.3
+# model_id = "sbordt/OLMo-2-1B-1x-WD1"                                                #olmo-20x-wd1.0
+# model_id = "sbordt/OLMo-2-1B-Decayed-Early"     #now called sbordt/OLMo-2-1B-7x         #olmo-140x-wd0.1
+# model_id = "sbordt/OLMo-2-1B-WD1"               #now called sbordt/OLMo-2-1B-7x-WD1     #olmo-140x-wd1.0
+# model_id = "sbordt/OLMo-2-1B-7x-WD03"                                                   #olmo-140x-wd0.3
+
+#####olmo-1B, varying learning rate
+# model_id = "sbordt/OLMo-2-1B-1x-WD01-LR02"        #olmo-20x-wd0.1-lr2e-4
+# model_id = "sbordt/OLMo-2-1B-1x-WD01-LR08"        #olmo-20x-wd0.1-lr8e-4
+# model_id = "sbordt/OLMo-2-1B-1x-WD06-LR02"        #olmo-20x-wd0.1-lr2e-4
+# model_id = "sbordt/OLMo-2-1B-1x-WD06-LR08"        #olmo-20x-wd0.1-lr8e-4
+# model_id = "sbordt/OLMo-2-1B-1x-WD1-LR02"         #olmo-20x-wd1.0-lr2e-4
+model_id = "sbordt/OLMo-2-1B-1x-WD1-LR08"         #olmo-20x-wd1.0-lr8e-4
+
+
+
+
 
 # Modify the following paths to your own directory
 download_path = os.path.join(model_dir, model_id) #! <-- change this to the path you want to download the model to
