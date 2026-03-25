@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'medmcqa' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag']
+    sft_dataset = 'safety' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -293,10 +293,10 @@ def run_exp01_finetune_llama():
     # olmo models
     config_file_paths = [
         #30BT (1x chinchilla)
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
         f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
         #210BT (7x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
@@ -331,9 +331,9 @@ def run_exp01_finetune_llama():
                         
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,gpu_requeue',
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', 
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', 
+                        partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #metamathqa -- olmo
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='1', time_mins='30', memory_gb='64',  #hellaswag, piqa, safety -- olmo
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
@@ -755,7 +755,7 @@ def run_exp05_finetune_llama_vary_lr_in_pt():
 
 
 if __name__ == "__main__":
-    # run_exp01_finetune_llama()
+    run_exp01_finetune_llama()
     # run_exp01_finetune_llama_additional_seeds()
 
 
@@ -767,4 +767,4 @@ if __name__ == "__main__":
 
     # run_exp04_finetune_llama_sweep_hyperparams()
 
-    run_exp05_finetune_llama_vary_lr_in_pt()
+    # run_exp05_finetune_llama_vary_lr_in_pt()
