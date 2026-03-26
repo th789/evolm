@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'mmluprocot' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety']
+    sft_dataset = 'hellaswag' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -295,8 +295,8 @@ def run_exp01_finetune_llama():
         #30BT (1x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
         #210BT (7x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
