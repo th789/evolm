@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'safety' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety']
+    sft_dataset = 'mmluprocot' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -293,10 +293,10 @@ def run_exp01_finetune_llama():
     # olmo models
     config_file_paths = [
         #30BT (1x chinchilla)
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
         f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
         #210BT (7x chinchilla)
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
@@ -332,12 +332,13 @@ def run_exp01_finetune_llama():
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
                         partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #metamathqa -- olmo
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='1', time_mins='30', memory_gb='64',  #hellaswag, piqa, safety -- olmo
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #olmo: metamathqa
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', time_mins='30', memory_gb='64',  #olmo: pubmedqa, mmluprocot
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #olmo: hellaswag, piqa, safety -- very quick<20min
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
-                        # dependency_type_and_job_id='after:52127215'
+                        dependency_type_and_job_id='after:1895004'
                         )
         #actual run times
         #demo (0.5B-10BT, FT on alpacaendemo) -- 2 GPUs, 1 minute
@@ -708,11 +709,11 @@ def run_exp05_finetune_llama_vary_lr_in_pt():
 
 
     model_size = 'olmo-1B-30BT'
-    sft_dataset = 'medmcqa'
+    sft_dataset = 'mmluprocot'
 
 
-    wd_pt_lst = [1.0] #options: [0.1, 0.6, 1.0]
-    lr_pt_lst = ['2e-4', '8e-4']
+    wd_pt_lst = [0.1, 0.6, 1.0] #options: [0.1, 0.6, 1.0]
+    lr_pt_lst = ['2e-4', '8e-4'] #options: ['2e-4', '8e-4']
     combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_pt_lst))
 
     #create config_file_paths + model_folders based on input arguments above
@@ -741,14 +742,12 @@ def run_exp05_finetune_llama_vary_lr_in_pt():
                         log_file=f'exp05_finetune_llama_vary_lr_in_pt/log_{name}',
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,gpu_requeue',
+                        partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', time_mins='30', memory_gb='64', #FT olmo-1B on metamathqa
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', #FT olmo-1B on simplescaling
-                        # dependency_type_and_job_id='after:60548099'
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', #FT olmo-1B on simplescaling+race
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', time_mins='30', memory_gb='64', #FT olmo-1B on pubmedqa+mmluprocot
+                        dependency_type_and_job_id='after:1895004'
                         )
-        #run times
-        #llama-1B-20BT models, FT on simplescaling for 3 epochs -- 4 GPUs, 2 hours
-        #olmo-1B-30BT models, FT on metamathqa for 3 epochs -- 4 GPUs, 5 hours
 
 
         print(f'job_name = {name}, options = {name}')  
