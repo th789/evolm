@@ -185,7 +185,7 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'simplescaling' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'mmluprocot' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
 
     # # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
@@ -227,7 +227,7 @@ def run_exp01_eval_cot():
     # ]
 
     # 1.5B olmo models VARY LR IN PT-- eval-single-model--run-exp.sh: use vllm option 
-    wd_pt = 0.6
+    wd_pt = 0.1
     lr_pt = '2e-4' #options: ['2e-4', '8e-4']
     model_dirs=[
         #30BT (1x chinchilla)
@@ -241,23 +241,23 @@ def run_exp01_eval_cot():
     # ]
 
     #####eval datasets
-    # datasets = [
-    #     sft_dataset
-    # ]
+    datasets = [
+        sft_dataset
+    ]
 
     #for metamathqa and simplescaling
-    datasets = [
-        "GSM8KPlatinum",
-        "MATHLevel1",
-        "MATHLevel2",
-        "MATHLevel3",
-        "MATHLevel4",
-        "MATHHard",
-        # "CRUXEval",
-        # "BoardgameQA500",
-        # "TabMWP",
-        # "StrategyQA500",
-    ]
+    # datasets = [
+    #     "GSM8KPlatinum",
+    #     "MATHLevel1",
+    #     "MATHLevel2",
+    #     "MATHLevel3",
+    #     "MATHLevel4",
+    #     "MATHHard",
+    #     # "CRUXEval",
+    #     # "BoardgameQA500",
+    #     # "TabMWP",
+    #     # "StrategyQA500",
+    # ]
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -276,11 +276,14 @@ def run_exp01_eval_cot():
             #!!!!! change settings in bash script depending on model size
             #!!!!! change settings in bash script depending on whether to collect responses, evaluate, or both
             # n_gpus_any='1', time_hrs='12', memory_gb='64',  #gpu_test: metamathqa, simplescaling -- olmo
-            n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64',  #metamathqa, simplescaling -- olmo
+            # n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64',  #metamathqa, simplescaling, race -- olmo
             # n_gpus_a100_80gb='1', time_hrs='5', time_mins='30', memory_gb='64', #medmcqa -- olmo
+            # n_gpus_a100_80gb='1', time_hrs='1', memory_gb='64',  #pubmedqa -- olmo
+            n_gpus_a100_80gb='1', time_hrs='1', time_mins='30', memory_gb='64',  #mmluprocot -- olmo
+
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            # dependency_type_and_job_id='afterok:1534428',
+            dependency_type_and_job_id='afterok:1898304',
             )
 
         print(f'job_name = {job_name}')  

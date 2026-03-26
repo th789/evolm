@@ -39,6 +39,10 @@ elif [[ "$model_id" == *"evolm/models/hf_ckpts"* ]]; then
 elif [[ "$model_id" == *"evolm/finetune/llama-factory/llamafactory_out"* ]]; then #finetuned model
     model_name=$(basename "$model_id") #last folder of model_id
     OUTPUT_DIR="./eval_output/finetuned/$model_name"
+#models finetuned on new non-cot tasks (hellaswag/piqa)
+elif [[ "$model_id" == *"models/ft_new_tasks"* ]]; then #finetuned model
+    model_name=$(basename "$model_id") #last folder of model_id
+    OUTPUT_DIR="./eval_output/finetuned_new_tasks/$model_name"
 fi
 
 

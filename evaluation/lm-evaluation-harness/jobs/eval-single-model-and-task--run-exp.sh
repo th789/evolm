@@ -33,17 +33,24 @@ export CUDA_VISIBLE_DEVICES=0
 #set up output directory -- based on whether model is pretrained or finetuned
 if [[ "$model_id" == *"evolm/pretrain/lit-trainer/models"* ]]; then #pretrained model
     model_name=$(basename "$(dirname "$model_id")") #second to last folder of model_id
-    subfolder=$(basename "$(dirname "$(dirname "$model_id")")") #third to last folder of model_id
-    OUTPUT_DIR="./eval_output/pretrained/$subfolder/$model_name/$zeroshot_tasks"
+    OUTPUT_DIR="./eval_output/pretrained/$model_name/$zeroshot_tasks"
 elif [[ "$model_id" == *"evolm/finetune/llama-factory/llamafactory_out"* ]]; then #finetuned model
     model_name=$(basename "$model_id") #last folder of model_id
-    subfolder=$(basename "$(dirname "$model_id")") #second to last folder of model_id
-    OUTPUT_DIR="./eval_output/finetuned/$subfolder/$model_name/$zeroshot_tasks"
+    OUTPUT_DIR="./eval_output/finetuned/$model_name/$zeroshot_tasks"
+elif [[ "$model_id" == *"models/ft_new_tasks"* ]]; then #finetuned model
+    model_name=$(basename "$model_id") #last folder of model_id
+    OUTPUT_DIR="./eval_output/finetuned_new_tasks/$model_name/$zeroshot_tasks"
 fi
 
 
+model_args="pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6,max_model_len=2048,max_num_batched_tokens=2048"
+# Force slow tokenizer to avoid Fast tokenizer config bug for OLMo.
+if [[ "$model_id" == *"OLMo"* || "$model_id" == *"olmo"* ]]; then
+    model_args="${model_args},tokenizer_mode=slow"
+fi
+
 lm_eval --model vllm \
-    --model_args pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.6,max_model_len=2048,max_num_batched_tokens=2048 \
+    --model_args "${model_args}" \
     --tasks $zeroshot_tasks \
     --num_fewshot 0 \
     --output_path "$OUTPUT_DIR" \

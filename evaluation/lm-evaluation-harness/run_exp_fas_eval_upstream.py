@@ -405,6 +405,36 @@ def run_exp01_eval_single_model_all_tasks():
         print(f'job_name = {job_name}')  
 
 
+
+def run_exp02_eval_single_all_tasks__new_ft_tasks():
+
+    ##### models
+    model_lst = [
+        # "olmo-1B-30BT-weightdecay0.1",
+        "olmo-1B-30BT-weightdecay0.3",
+        # "olmo-1B-30BT-weightdecay0.6",
+        # "olmo-1B-30BT-weightdecay1.0",
+    ]
+    task_lst = ["hellaswag"] #options:["hellaswag", "piqa"]   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
+
+    for model, task in product(model_lst, task_lst):        
+        #define bash script arguments
+        model_dir = f"/n/netscratch/doshi-velez_lab/Everyone/models/ft_new_tasks/{model}-{task}"
+        bash_script = f"jobs/eval-single--run-exp.sh {model_dir}"
+        
+        job_name = f"eval_up_{model}_{task}"
+        
+        run_bash_script_provided(
+            bash_script=bash_script,
+            job_name=job_name,
+            log_file=f"exp02_eval_single_model_all_tasks__new_ft_tasks/log_{job_name}",
+            # partition='seas_gpu,gpu,gpu_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32',
+            partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32'
+            )
+
+        print(f'job_name = {job_name}')  
+
+
 if __name__ == "__main__":
     #exp01
     # run_exp01_eval_single_model_single_task() #for exp01, 0.5B or 1B models -- one job: one model + one task
@@ -415,9 +445,8 @@ if __name__ == "__main__":
 
     #exp02 -- pick one
     # run_exp01_eval_many_models_all_tasks() #for exp02, 1B models -- one job: multiple models + all tasks -- not good because some evals fail and some succedd in same run
-    run_exp01_eval_single_model_all_tasks() #for exp02 + exp03, which only has 1B models
+    # run_exp01_eval_single_model_all_tasks() #for exp02 + exp03, which only has 1B models
 
 
-
-
-
+    # exp02 -- FT model on hellaswag/piqa and eval on hellaswag/piqa
+    run_exp02_eval_single_all_tasks__new_ft_tasks()
