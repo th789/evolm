@@ -30,6 +30,9 @@ finetune/llama-factory/data/race.json
 finetune/llama-factory/data/simplescaling.json
 finetune/llama-factory/data/safety.json
 finetune/llama-factory/data/piqa.json
+finetune/llama-factory/data/safetymixed300.json
+finetune/llama-factory/data/safetymixed1000.json
+finetune/llama-factory/data/safetymixed2000.json
 
 evaluation/cot-eval-harness/eval_output
 evaluation/cot-eval-harness/eval_output_dev

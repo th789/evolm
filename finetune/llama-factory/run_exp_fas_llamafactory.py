@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'safetymixed300' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety', 'safetymixed300']
+    sft_dataset = 'safetymixed1000' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'safety', 'safetymixed300', 'safetymixed1000', 'safetymixed2000']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -335,7 +335,7 @@ def run_exp01_finetune_llama():
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #olmo: metamathqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', time_mins='30', memory_gb='64',  #olmo: pubmedqa, mmluprocot
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #olmo: hellaswag, piqa, safety -- very quick<20min
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='45', memory_gb='64',  #olmo: safetymixed300
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #olmo: safetymixed300, safetymixed1000, safetymixed2000
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
