@@ -26,6 +26,15 @@
   "piqa": {
     "file_name": "piqa.json"
   },  
+  "arc_easy": {
+    "file_name": "arc_easy.json"
+  },  
+  "arc_challenge": {
+    "file_name": "arc_challenge.json"
+  },  
+  "winogrande": {
+    "file_name": "winogrande.json"
+  },  
   "safety": {
     "file_name": "safety.json"
   },  
