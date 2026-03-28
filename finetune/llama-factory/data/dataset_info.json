@@ -29,6 +29,9 @@
   "safety": {
     "file_name": "safety.json"
   },  
+  "safetymixed300": {
+    "file_name": "safetymixed300.json"
+  },  
   "alpaca_en_demo": {
     "file_name": "alpaca_en_demo.json"
   },
