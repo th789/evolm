@@ -418,7 +418,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
         "olmo-1B-30BT-weightdecay0.6",
         "olmo-1B-30BT-weightdecay1.0",
     ]
-    task_lst = ["arc_challenge"] #options:["hellaswag", "piqa", 'arc_easy', 'arc_challenge', 'winogrande']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
+    task_lst = ["arc_easy"] #options:["hellaswag", "piqa", 'arc_easy', 'arc_challenge', 'winogrande']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
 
     for model, task in product(model_lst, task_lst):        
         #define bash script arguments
@@ -433,7 +433,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
             log_file=f"exp02_eval_single_model_all_tasks__new_ft_tasks/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,gpu_h200', n_gpus_any='1', time_mins='30', memory_gb='32', #olmo: all ft models
             # partition='gpu_test', n_gpus_any='1', time_mins='30', memory_gb='32', #olmo: all ft models
-            dependency_type_and_job_id='afterok:2262241,2262242,2262243,2262255'
+            # dependency_type_and_job_id='afterok:2262241,2262242,2262243,2262255'
             )
 
         print(f'job_name = {job_name}')  
