@@ -41,6 +41,9 @@
   "safetymixed300": {
     "file_name": "safetymixed300.json"
   },  
+  "safetymixed500": {
+    "file_name": "safetymixed500.json"
+  },  
   "safetymixed1000": {
     "file_name": "safetymixed1000.json"
   },  
