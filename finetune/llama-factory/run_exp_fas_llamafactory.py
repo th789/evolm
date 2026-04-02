@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'safetymixed500' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'arc_easy', 'arc_challenge', 'winogrande', 'safety', 'safetymixed300', 'safetymixed500', 'safetymixed1000', 'safetymixed2000']
+    sft_dataset = 'arc_challenge' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'arc_easy', 'arc_challenge', 'winogrande', 'safety', 'safetymixed300', 'safetymixed500', 'safetymixed1000', 'safetymixed2000']
     
     # # #0.5B models, llama
     # config_file_paths = [
@@ -588,13 +588,13 @@ def run_exp04_finetune_llama_sweep_hyperparams():
     # model_size = 'llama-1B-20BT'
     # sft_dataset = 'simplescaling'
 
-    #FT sweep 2
-    # model_size = 'olmo-1B-30BT'
-    # sft_dataset = 'metamathqa'
+    # FT sweep 2
+    model_size = 'olmo-1B-30BT'
+    sft_dataset = 'metamathqa'
 
     #FT sweep 3
-    model_size = 'olmo-1B-30BT'
-    sft_dataset = 'simplescaling'
+    # model_size = 'olmo-1B-30BT'
+    # sft_dataset = 'simplescaling'
 
     ### method 1 to specify arguments -- using product of lists
     # arguments to run                 #full list of options
@@ -611,13 +611,13 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         # (wd_pt, '1.0e-5', 8, 0.0),
         # (wd_pt, '1.0e-5', 8, 0.1),
         # (wd_pt, '1.0e-5', 8, 1.0),
-        # # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
-        (wd_pt, '1.0e-5', 16, 0.1),
+        # # # # # # # # (1.0, '1.0e-5', 16, 0.0), #default
+        # (wd_pt, '1.0e-5', 16, 0.1),
         # (wd_pt, '1.0e-5', 16, 1.0),
         # (wd_pt, '1.0e-5', 32, 0.0),
         # (wd_pt, '1.0e-5', 32, 0.1),
         # (wd_pt, '1.0e-5', 32, 1.0),
-        #lr = 3.0e-5
+        # #lr = 3.0e-5
         # (wd_pt, '3.0e-5', 8, 0.0),
         # (wd_pt, '3.0e-5', 8, 0.1),
         # (wd_pt, '3.0e-5', 8, 1.0),
@@ -628,15 +628,15 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         # (wd_pt, '3.0e-5', 32, 0.1),
         # (wd_pt, '3.0e-5', 32, 1.0),
         # # #lr = 6.0e-4'
-        # (wd_pt, '6.0e-4', 8, 0.0),
-        # (wd_pt, '6.0e-4', 8, 0.1),
-        # (wd_pt, '6.0e-4', 8, 1.0),
-        # (wd_pt, '6.0e-4', 16, 0.0),
-        # (wd_pt, '6.0e-4', 16, 0.1),
-        # (wd_pt, '6.0e-4', 16, 1.0),
-        # (wd_pt, '6.0e-4', 32, 0.0),
-        # (wd_pt, '6.0e-4', 32, 0.1),
-        # (wd_pt, '6.0e-4', 32, 1.0),
+        (wd_pt, '6.0e-5', 8, 0.0),
+        (wd_pt, '6.0e-5', 8, 0.1),
+        (wd_pt, '6.0e-5', 8, 1.0),
+        (wd_pt, '6.0e-5', 16, 0.0),
+        (wd_pt, '6.0e-5', 16, 0.1),
+        (wd_pt, '6.0e-5', 16, 1.0),
+        (wd_pt, '6.0e-5', 32, 0.0),
+        (wd_pt, '6.0e-5', 32, 0.1),
+        (wd_pt, '6.0e-5', 32, 1.0),
     ]
 
     #create config_file_paths + model_folders based on input arguments above
@@ -667,9 +667,9 @@ def run_exp04_finetune_llama_sweep_hyperparams():
                         log_file=f'exp04_finetune_sweep_hyperparams/log_{name}',
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         #model: 0.5B llama, 1B llama, 1B olmo
-                        partition='seas_gpu,gpu,gpu_requeue',
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='8', time_mins='30', memory_gb='64', #FT olmo-1B on metamathqa
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='4', memory_gb='64', #FT olmo-1B on simplescaling
+                        partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', time_mins='30', memory_gb='64', #FT olmo-1B on metamathqa
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', time_mins='30', memory_gb='64', #FT olmo-1B on simplescaling
                         #model: 4B llama
                         # partition='seas_gpu,gpu',
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
