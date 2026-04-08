@@ -462,17 +462,17 @@ def run_exp04_eval_cot_ft_sweep():
     # sft_dataset = 'simplescaling'
 
     #FT sweep 2
-    # model_size = 'olmo-1B-30BT'
-    # sft_dataset = 'metamathqa'
+    model_size = 'olmo-1B-30BT'
+    sft_dataset = 'metamathqa'
 
     #FT sweep 3
-    model_size = 'olmo-1B-30BT'
-    sft_dataset = 'simplescaling'
+    # model_size = 'olmo-1B-30BT'
+    # sft_dataset = 'simplescaling'
 
-    wd_pt_lst = [0.1]      #[0.1, 0.5, 1.0]
-    lr_lst = ['6.0e-4']    #['1.0e-5', '3.0e-5', '6.0e-4']
-    bs_lst = [32]          #[8, 16, 32]
-    wd_ft_lst = [0.0]      #[0.0, 0.1, 1.0]
+    wd_pt_lst = [0.1, 0.3, 1.0]      #[0.1, 0.5, 1.0]
+    lr_lst = ['6.0e-5']    #['1.0e-5', '3.0e-5', '6.0e-5']
+    bs_lst = [8, 16, 32]          #[8, 16, 32]
+    wd_ft_lst = [0.0, 0.1, 1.0]      #[0.0, 0.1, 1.0]
 
     combos = list[tuple[float, float, str, int]](product(wd_pt_lst, lr_lst, bs_lst, wd_ft_lst))
     
@@ -488,12 +488,12 @@ def run_exp04_eval_cot_ft_sweep():
 
     #for metamathqa and simplescaling
     datasets = [
-        # "GSM8KPlatinum",
+        "GSM8KPlatinum",
         "MATHLevel1",
-        # "MATHLevel2",
-        # "MATHLevel3",
-        # "MATHLevel4",
-        # "MATHHard",
+        "MATHLevel2",
+        "MATHLevel3",
+        "MATHLevel4",
+        "MATHHard",
         # "CRUXEval",
         # "BoardgameQA500",
         # "TabMWP",
@@ -534,13 +534,13 @@ def run_exp04_eval_cot_ft_sweep():
 
 if __name__ == "__main__":
     
-    run_exp01_eval_cot() #original PT models + olmo models with varying LR in PT
+    # run_exp01_eval_cot() #original PT models + olmo models with varying LR in PT
     # run_exp01_eval_cot_additional_ft_seeds()
 
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 
-    # run_exp04_eval_cot_ft_sweep()
+    run_exp04_eval_cot_ft_sweep()
 
 
 

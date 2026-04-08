@@ -629,14 +629,14 @@ def run_exp04_finetune_llama_sweep_hyperparams():
         # (wd_pt, '3.0e-5', 32, 1.0),
         # # #lr = 6.0e-4'
         (wd_pt, '6.0e-5', 8, 0.0),
-        (wd_pt, '6.0e-5', 8, 0.1),
-        (wd_pt, '6.0e-5', 8, 1.0),
-        (wd_pt, '6.0e-5', 16, 0.0),
-        (wd_pt, '6.0e-5', 16, 0.1),
-        (wd_pt, '6.0e-5', 16, 1.0),
-        (wd_pt, '6.0e-5', 32, 0.0),
-        (wd_pt, '6.0e-5', 32, 0.1),
-        (wd_pt, '6.0e-5', 32, 1.0),
+        # (wd_pt, '6.0e-5', 8, 0.1),
+        # (wd_pt, '6.0e-5', 8, 1.0),
+        # (wd_pt, '6.0e-5', 16, 0.0),
+        # (wd_pt, '6.0e-5', 16, 0.1),
+        # (wd_pt, '6.0e-5', 16, 1.0),
+        # (wd_pt, '6.0e-5', 32, 0.0),
+        # (wd_pt, '6.0e-5', 32, 0.1),
+        # (wd_pt, '6.0e-5', 32, 1.0),
     ]
 
     #create config_file_paths + model_folders based on input arguments above
@@ -754,7 +754,7 @@ def run_exp05_finetune_llama_vary_lr_in_pt():
 
 
 if __name__ == "__main__":
-    run_exp01_finetune_llama()
+    # run_exp01_finetune_llama()
     # run_exp01_finetune_llama_additional_seeds()
 
 
@@ -764,6 +764,6 @@ if __name__ == "__main__":
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
     # run_exp03_vary_wd_during_ft()
 
-    # run_exp04_finetune_llama_sweep_hyperparams()
+    run_exp04_finetune_llama_sweep_hyperparams()
 
     # run_exp05_finetune_llama_vary_lr_in_pt()
