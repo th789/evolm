@@ -337,22 +337,24 @@ def run_exp02_pretrain_llama():
 
     ### ------------------- pretrain models on FineWeb ------------------------
     #0.5B models
-    # single_args = {
-    #     'config': [
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.5-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.5-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay3.0-seed42.yaml',
-    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
-    #                ]
-    # }
+    single_args = {
+        'config': [
+            'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.5-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.5-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay3.0-seed42.yaml',
+            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
+                   ]
+    }
     # #1B models
     # single_args = {
     #     'config': [
+    #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0-seed42.yaml',
     #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0001-seed42.yaml',
     #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.001-seed42.yaml',
     #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.01-seed42.yaml',
@@ -377,8 +379,8 @@ def run_exp02_pretrain_llama():
                         job_name=name,
                         log_file=f'exp02_pretrain_llama/log_{name}',
                         device='n_gpus_a100',
-                        # n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='1', memory_gb='64' #0.5B models
-                        n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='128' #1B models
+                        n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='1', memory_gb='64' #0.5B models
+                        # n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='128' #1B models
                         )
 
         print(f'job_name = {name}, options = {arg_combo}')  
@@ -707,8 +709,8 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    # run_exp02_pretrain_llama()
-    run_exp06_compute_val_loss()
+    run_exp02_pretrain_llama()
+    # run_exp06_compute_val_loss()
 
 
     # run_exp03_prepare_data_finefineweb() 
