@@ -6,9 +6,9 @@ print("Starting data download...")
 print("Data will be saved to:", storage_dir)
 
 # ------------- fineweb -------------
-# allow_patterns = ["sample/350BT/*"]
+allow_patterns = ["sample/350BT/*"]
 # allow_patterns = ["sample/100BT/*"]
-allow_patterns = ["data/CC-MAIN-2025-26/*"]
+# allow_patterns = ["data/CC-MAIN-2025-26/*"]
 
 snapshot_download(
     repo_id="HuggingFaceFW/fineweb-edu",

@@ -15,11 +15,11 @@ module load python
 mamba activate litgpt-e
 
 #prepare train dataset
-# # Make sure that the second path argument ends with "train"
-# python litgpt/scripts/prepare_fineweb.py \
-#     /n/netscratch/doshi-velez_lab/Everyone/fineweb/sample/350BT \
-#     /n/netscratch/doshi-velez_lab/Everyone/fineweb_litgpt/350BT/pretrain/train \
-#     /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/meta-llama/Llama-2-7b-hf
+# Make sure that the second path argument ends with "train"
+python litgpt/scripts/prepare_fineweb.py \
+    /n/netscratch/doshi-velez_lab/Everyone/fineweb/sample/350BT \
+    /n/netscratch/doshi-velez_lab/Everyone/fineweb_litgpt/350BT/pretrain/train \
+    /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/meta-llama/Llama-2-7b-hf
 
 # # Make sure that the second path argument ends with "train"
 # python litgpt/scripts/prepare_fineweb.py \
@@ -28,8 +28,8 @@ mamba activate litgpt-e
 #     /path/to/hf_ckpts/Llama-2-7b-hf \
 
 #prepare val dataset
-# Make sure that the second path argument ends with "val"
-python litgpt/scripts/prepare_fineweb.py \
-    /n/netscratch/doshi-velez_lab/Everyone/fineweb/data/CC-MAIN-2025-26 \
-    /n/netscratch/doshi-velez_lab/Everyone/fineweb_litgpt/350BT/pretrain/val \
-    /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/meta-llama/Llama-2-7b-hf
+# # Make sure that the second path argument ends with "val"
+# python litgpt/scripts/prepare_fineweb.py \
+#     /n/netscratch/doshi-velez_lab/Everyone/fineweb/data/CC-MAIN-2025-26 \
+#     /n/netscratch/doshi-velez_lab/Everyone/fineweb_litgpt/350BT/pretrain/val \
+#     /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/meta-llama/Llama-2-7b-hf
