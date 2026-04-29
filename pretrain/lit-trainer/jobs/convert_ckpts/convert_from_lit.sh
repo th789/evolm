@@ -2,45 +2,55 @@
 
 # ----------- exp01: Models that are pretrained on FineWeb -----------
 #0.5B models
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.5-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay1.5-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay10.0-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay3.0-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay1.0-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.1-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.01-seed42
-# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.001-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.0-seed42
 # model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.0001-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.001-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.01-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.1-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay0.5-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay1.0-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay1.5-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay3.0-seed42
+# model_dir=models/pretrained/llama-0.5B-10BT-weightdecay10.0-seed42
 
 #1B models
-model_dir=models/pretrained/llama-1B-20BT-weightdecay0.5-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay1.5-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay10.0-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay3.0-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay1.0-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.1-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.01-seed42
-# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.001-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.0-seed42
 # model_dir=models/pretrained/llama-1B-20BT-weightdecay0.0001-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.001-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.01-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.1-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay0.5-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay1.0-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay1.5-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay3.0-seed42
+# model_dir=models/pretrained/llama-1B-20BT-weightdecay10.0-seed42
+
+#4B models
+model_dir=/n/netscratch/doshi-velez_lab/Everyone/models/pretrained/llama-4B-80BT-weightdecay0.0-seed42
 
 #FINEWEB_FOLDER_PATH_PV path is same for all models above, defined in load_private_vars.sh
-# --------------------------------------------------------------------
 
-# ----------- exp02: Models that are pretrained on curated subsets of FineFineWeb -----------
-percent_doi=0.001 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
-
-#1B models
-# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.0001-seed42"
-# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.001-seed42"
-# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.01-seed42"
-# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.1-seed42"
-# model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay1.0-seed42"
-
-#FINEWEB_FOLDER_PATH_PV path is different for each model, defined below
+#need to export this even though not using it here bc of the way litgpt is set up
+percent_doi=0.001 
 export FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics${percent_doi}_litgpt/pretrain"
 
+# --------------------------------------------------------------------
 
-# -------------------------------------------------------------------------------------------
+# # ----------- exp02: Models that are pretrained on curated subsets of FineFineWeb -----------
+# percent_doi=0.001 #options: [0.1, 0.05, 0.01, 0.005, 0.001]
+
+# #1B models
+# # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.0001-seed42"
+# # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.001-seed42"
+# # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.01-seed42"
+# # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay0.1-seed42"
+# # model_dir="models/pretrained/ffw/llama-1B-20BT-ffwmysubset20BT-mathematics${percent_doi}-weightdecay1.0-seed42"
+
+# #FINEWEB_FOLDER_PATH_PV path is different for each model, defined below
+# export FINEFINEWEB_FOLDER_PATH_PV="/n/netscratch/doshi-velez_lab/Everyone/ffw_mysubset20BT/mathematics${percent_doi}_litgpt/pretrain"
+
+
+# # -------------------------------------------------------------------------------------------
 
 
 name=final

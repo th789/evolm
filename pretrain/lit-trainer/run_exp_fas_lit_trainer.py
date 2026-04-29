@@ -103,6 +103,23 @@ def run_bash_script(bash_script: str,
             f'--exclude=holygpu8a31505,holygpu8a25306,holygpu8a25104 '
             f'$FILENAME'
         )
+    if device=='n_gpus_h200':
+        sbatch_options = (
+            f'sbatch '
+            f'--job-name={job_name} '
+            f'--partition=seas_gpu,gpu,gpu_h200 ' #seas_gpu has 2 day limit
+            # f'--partition=gpu,gpu_h200 ' #3 day limit
+            f'--nodes={n_nodes} '
+            f'--gres=gpu:{n_gpus} '
+            f'--constraint=h200 '
+            f'--ntasks-per-node={n_tasks_per_node} '
+            f'--cpus-per-task={cpus_per_task} '
+            f'--time={time_days}-00:00 '
+            f'--mem={memory_gb}gb '
+            f'--error=logs/{log_file}_jobid%j '
+            f'--output=logs/{log_file}_jobid%j '
+            f'$FILENAME'
+        )
     if device=='seas_cpu':
         sbatch_options = (
             f'sbatch '
@@ -336,22 +353,22 @@ def run_exp02_pretrain_llama():
         return bash_script_complete
 
     ### ------------------- pretrain models on FineWeb ------------------------
-    #0.5B models
-    single_args = {
-        'config': [
-            'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.5-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.5-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay3.0-seed42.yaml',
-            # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
-                   ]
-    }
-    # #1B models
+    # #0.5B models
+    # single_args = {
+    #     'config': [
+    #         'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.0001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.001-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.01-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.1-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay0.5-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay1.5-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay3.0-seed42.yaml',
+    #         # 'config_hub/custom_configs/pretrain/llama-0.5B-10BT-weightdecay10.0-seed42.yaml',
+    #                ]
+    # }
+    # # #1B models
     # single_args = {
     #     'config': [
     #         'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay0.0-seed42.yaml',
@@ -366,6 +383,12 @@ def run_exp02_pretrain_llama():
     #         # 'config_hub/custom_configs/pretrain/llama-1B-20BT-weightdecay10.0-seed42.yaml',
     #                ]
     # }
+    # #4B models
+    single_args = {
+        'config': [
+            'config_hub/custom_configs/pretrain/llama-4B-80BT-weightdecay0.0-seed42.yaml'
+                   ]
+    }
     ### ----------------------------------------------------------------------
 
 
@@ -378,9 +401,9 @@ def run_exp02_pretrain_llama():
         run_bash_script(bash_script=bash_script, 
                         job_name=name,
                         log_file=f'exp02_pretrain_llama/log_{name}',
-                        device='n_gpus_a100',
-                        n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='1', memory_gb='64' #0.5B models
-                        # n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='128' #1B models
+                        # device='n_gpus_a100', n_nodes='1', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='1', memory_gb='64' #0.5B models
+                        # device='n_gpus_a100', n_nodes='2', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='128' #1B models
+                        device='n_gpus_h200', n_nodes='4', n_gpus='4', n_tasks_per_node='4', cpus_per_task='16', time_days='2', memory_gb='256' #4B models
                         )
 
         print(f'job_name = {name}, options = {arg_combo}')  
