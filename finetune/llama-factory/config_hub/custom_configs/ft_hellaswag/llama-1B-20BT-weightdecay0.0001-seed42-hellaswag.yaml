@@ -16,7 +16,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: llamafactory_out/llama-1B-20BT-weightdecay0.0001-seed42-hellaswag
+output_dir: /n/netscratch/doshi-velez_lab/Everyone/models/ft_new_tasks/llama-1B-20BT-weightdecay0.0001-seed42-hellaswag
 logging_steps: 10
 save_steps: 20000
 plot_loss: false

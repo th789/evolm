@@ -8,7 +8,7 @@ finetuning_type: full
 deepspeed: config_hub/official_configs/deepspeed/ds_z3_config.json  # choices: [ds_z0_config.json, ds_z2_config.json, ds_z3_config.json]
 
 ### dataset
-dataset: safety
+dataset: piqa
 template: default
 cutoff_len: 2048
 max_samples: 1000000000
@@ -16,7 +16,7 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: /n/netscratch/doshi-velez_lab/Everyone/models/ft_new_tasks/olmo-1B-210BT-weightdecay1.0-safety
+output_dir: /n/netscratch/doshi-velez_lab/Everyone/models/ft_new_tasks/olmo-1B-210BT-weightdecay1.0-piqa
 logging_steps: 10
 save_steps: 20000
 plot_loss: false
@@ -36,5 +36,5 @@ do_eval: false
 
 ### wandb
 report_to: wandb
-run_name: olmo-1B-210BT-weightdecay1.0-safety
+run_name: olmo-1B-210BT-weightdecay1.0-piqa
 

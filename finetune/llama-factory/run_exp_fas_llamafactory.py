@@ -262,50 +262,53 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'arc_challenge' #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling', 'hellaswag', 'piqa', 'arc_easy', 'arc_challenge', 'winogrande', 'safety', 'safetymixed300', 'safetymixed500', 'safetymixed1000', 'safetymixed2000']
+    sft_dataset = 'hellaswag' 
+    #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling' 
+    # /// 'hellaswag', 'winogrande', 'piqa', 'arc_easy', 'arc_challenge', 
+    # /// 'safety', 'safetymixed300', 'safetymixed500', 'safetymixed1000', 'safetymixed2000']
     
-    # # #0.5B models, llama
+    # # # # #0.5B models, llama
     # config_file_paths = [
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
     #    ]
 
-    # 1B models, llama
-    # config_file_paths = [
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
-    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
-    # ]
-
-    # olmo models
+    ### 1B models, llama
     config_file_paths = [
-        #30BT (1x chinchilla)
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
-        #210BT (7x chinchilla)
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.0001-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.001-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.01-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.5-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay1.5-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay3.0-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay10.0-seed42-{sft_dataset}.yaml',
     ]
 
-    # 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
+    ### olmo models
     # config_file_paths = [
-    #     # f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
+    #     #30BT (1x chinchilla)
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.1-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.3-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.6-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay1.0-{sft_dataset}.yaml',
+    #     #210BT (7x chinchilla)
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.1-{sft_dataset}.yaml',
+    #     # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.3-{sft_dataset}.yaml',
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay1.0-{sft_dataset}.yaml',
+    # ]
+
+    ### 4B llama models -- eval-single-model--run-exp.sh: use vllm option 
+    # config_file_paths = [
+    #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.1-seed42-{sft_dataset}.yaml',
     #     f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}.yaml',
     # ]
 
@@ -328,16 +331,15 @@ def run_exp01_finetune_llama():
         run_bash_script_simplified(bash_script=bash_script, 
                         job_name=name,
                         log_file=f'exp01_finetune_llama/log_{name}',
-                        
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
-                        #model: 0.5B llama, 1B llama, 1B olmo
                         partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
+                        ###model: 0.5B llama, 1B llama, 1B olmo
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #olmo: metamathqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', time_mins='30', memory_gb='64',  #olmo: pubmedqa, mmluprocot
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #olmo: hellaswag, piqa, winogrande, arc_easy, arc_challenge, safety, safetymixed300, safetymixed1000, safetymixed2000 -- very quick<20min
-                        #model: 4B llama
-                        # partition='seas_gpu,gpu',
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #olmo/llama1B/llama0.5B: hellaswag, piqa, winogrande, arc_easy, arc_challenge, safety, safetymixed300, safetymixed1000, safetymixed2000 -- very quick<20min
+                        ###model: 4B llama
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='14', memory_gb='64',
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='2', memory_gb='64', #llama4B: hellaswag, piqa, winogrande, arc_easy, arc_challenge, safety, safetymixed300, safetymixed1000, safetymixed2000 -- quick
                         # dependency_type_and_job_id='after:1895004'
                         )
         #actual run times
@@ -754,7 +756,7 @@ def run_exp05_finetune_llama_vary_lr_in_pt():
 
 
 if __name__ == "__main__":
-    # run_exp01_finetune_llama()
+    run_exp01_finetune_llama()
     # run_exp01_finetune_llama_additional_seeds()
 
 
@@ -764,6 +766,6 @@ if __name__ == "__main__":
     #create config files for exp03 -- write_config_files__vary_wd_during_ft.ipynb
     # run_exp03_vary_wd_during_ft()
 
-    run_exp04_finetune_llama_sweep_hyperparams()
+    # run_exp04_finetune_llama_sweep_hyperparams()
 
     # run_exp05_finetune_llama_vary_lr_in_pt()

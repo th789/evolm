@@ -46,7 +46,8 @@ elif [[ "$model_id" == *"models/ft_new_tasks"* ]]; then #finetuned model
 fi
 
 
-model_args="pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5,max_num_batched_tokens=8192"
+# model_args="pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5,max_num_batched_tokens=8192"
+model_args="pretrained=${model_id},dtype=auto,gpu_memory_utilization=0.5,max_num_batched_tokens=2048" #for llama-0.5B models
 # Force slow tokenizer to avoid Fast tokenizer config bug for OLMo.
 if [[ "$model_id" == *"OLMo"* || "$model_id" == *"olmo"* ]]; then
     model_args="${model_args},tokenizer_mode=slow"

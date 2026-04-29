@@ -413,12 +413,41 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
 
     ##### models
     model_lst = [
-        "olmo-1B-30BT-weightdecay0.1",
-        "olmo-1B-30BT-weightdecay0.3",
-        "olmo-1B-30BT-weightdecay0.6",
-        "olmo-1B-30BT-weightdecay1.0",
+        # "llama-0.5B-10BT-weightdecay0.0001-seed42",
+        # "llama-0.5B-10BT-weightdecay0.001-seed42",
+        # "llama-0.5B-10BT-weightdecay0.01-seed42",
+        # "llama-0.5B-10BT-weightdecay0.1-seed42",
+        # "llama-0.5B-10BT-weightdecay0.5-seed42",
+        # "llama-0.5B-10BT-weightdecay1.0-seed42",
+        "llama-0.5B-10BT-weightdecay1.5-seed42",
+        # "llama-0.5B-10BT-weightdecay3.0-seed42",
+        # "llama-0.5B-10BT-weightdecay10.0-seed42",
+        
+        # "llama-1B-20BT-weightdecay0.0001-seed42",
+        # "llama-1B-20BT-weightdecay0.001-seed42",
+        # "llama-1B-20BT-weightdecay0.01-seed42",
+        # "llama-1B-20BT-weightdecay0.1-seed42",
+        # "llama-1B-20BT-weightdecay0.5-seed42",
+        # "llama-1B-20BT-weightdecay1.0-seed42",
+        # "llama-1B-20BT-weightdecay1.5-seed42",
+        # "llama-1B-20BT-weightdecay3.0-seed42",
+        # "llama-1B-20BT-weightdecay10.0-seed42",
+
+        # "llama-4B-80BT-weightdecay0.1-seed42",
+        # "llama-4B-80BT-weightdecay1.0-seed42",
+
+        # "olmo-1B-30BT-weightdecay0.1",
+        # "olmo-1B-30BT-weightdecay0.3",
+        # "olmo-1B-30BT-weightdecay0.6",
+        # "olmo-1B-30BT-weightdecay1.0",
+
+        # "olmo-1B-210BT-weightdecay0.1",
+        # "olmo-1B-210BT-weightdecay0.3",
+        # "olmo-1B-210BT-weightdecay1.0",
     ]
-    task_lst = ["arc_easy"] #options:["hellaswag", "piqa", 'arc_easy', 'arc_challenge', 'winogrande']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
+
+    #dataset/task that model was FT'd on
+    task_lst = ["hellaswag"] #options:["hellaswag", "piqa", 'arc_easy', 'arc_challenge', 'winogrande']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
 
     for model, task in product(model_lst, task_lst):        
         #define bash script arguments
@@ -452,5 +481,5 @@ if __name__ == "__main__":
     # run_exp01_eval_single_model_all_tasks() #for exp02 + exp03, which only has 1B models
 
 
-    # exp02 -- FT model on hellaswag/piqa and eval on hellaswag/piqa
+    # exp02 -- FT model on hellaswag/piqa/winogrande/arc_easy/arc_challenge and eval on these respective datasets
     run_exp02_eval_single_all_tasks__new_ft_tasks()
