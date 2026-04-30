@@ -441,6 +441,7 @@ def run_exp06_compute_val_loss():
 
     # # # #0.5B models    
     # config_lst = [
+    #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.0-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.0001-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.001-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay0.01-seed42-val.yaml',
@@ -452,8 +453,9 @@ def run_exp06_compute_val_loss():
     #     # 'config_hub/custom_configs/val/llama-0.5B-10BT-weightdecay10.0-seed42-val.yaml',
     #     ]
 
-    # # #1B models
+    # # # #1B models
     # config_lst = [
+    #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.0-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.0001-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.001-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-1B-20BT-weightdecay0.01-seed42-val.yaml',
@@ -467,7 +469,8 @@ def run_exp06_compute_val_loss():
 
     # #4B models
     # config_lst = [
-    #     'config_hub/custom_configs/val/llama-4B-80BT-weightdecay0.1-seed42-val.yaml',
+    #     'config_hub/custom_configs/val/llama-4B-80BT-weightdecay0.0-seed42-val.yaml',
+    #     # 'config_hub/custom_configs/val/llama-4B-80BT-weightdecay0.1-seed42-val.yaml',
     #     # 'config_hub/custom_configs/val/llama-4B-80BT-weightdecay1.0-seed42-val.yaml',
     #     ]
     
@@ -488,10 +491,10 @@ def run_exp06_compute_val_loss():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f'exp06_val/log_{job_name}',
-            partition='seas_gpu,gpu,gpu_requeue,serial_requeue',
+            partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
             # n_gpus_any='1', time_hrs='1', memory_gb='32' #pythia demo -- DOES NOT WORK
             # n_gpus_any='1', time_hrs='2', memory_gb='64', # 0.5B + 1B models
-            n_gpus_any='1', time_hrs='6', memory_gb='64', # 4B models
+            n_gpus_any='1', time_hrs='4', memory_gb='64', # 4B models
             # dependency_type_and_job_id='afterok:56451233'
             )
 
@@ -732,8 +735,8 @@ EOF
 if __name__ == "__main__":
     # run_exp00_pretrain_pythia()
     # run_exp01_prepare_data_fineweb()
-    run_exp02_pretrain_llama()
-    # run_exp06_compute_val_loss()
+    # run_exp02_pretrain_llama()
+    run_exp06_compute_val_loss()
 
 
     # run_exp03_prepare_data_finefineweb() 
