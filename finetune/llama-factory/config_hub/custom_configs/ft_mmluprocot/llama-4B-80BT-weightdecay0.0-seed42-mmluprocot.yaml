@@ -18,7 +18,7 @@ preprocessing_num_workers: 16
 ### output
 output_dir: llamafactory_out/llama-4B-80BT-weightdecay0.0-seed42-mmluprocot
 logging_steps: 10
-save_steps: 20000
+save_steps: 20000000
 plot_loss: false
 overwrite_output_dir: true
 

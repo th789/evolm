@@ -18,7 +18,7 @@ preprocessing_num_workers: 16
 ### output
 output_dir: llamafactory_out/llama-0.5B-10BT-weightdecay0.0-seed42-metamathqa
 logging_steps: 10
-save_steps: 20000
+save_steps: 20000000
 plot_loss: false
 overwrite_output_dir: true
 
