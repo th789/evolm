@@ -17,6 +17,7 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"                         #llama-4B-80BT-wd1.0
 
 #####olmo-1B, default learning rate (4e-4)
+model_id = "sbordt/OLMo-2-1B-1x-WD0"                                                    #olmo-20x-wd0.0
 # model_id = "sbordt/OLMo-2-1B-1x"                                                    #olmo-20x-wd0.1
 # model_id = "sbordt/OLMo-2-1B-1x-WD03"                                               #olmo-20x-wd0.3
 # model_id = "sbordt/OLMo-2-1B-1x-WD06"                                               #olmo-20x-wd0.6
@@ -31,7 +32,7 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "sbordt/OLMo-2-1B-1x-WD06-LR02"        #olmo-20x-wd0.1-lr2e-4
 # model_id = "sbordt/OLMo-2-1B-1x-WD06-LR08"        #olmo-20x-wd0.1-lr8e-4
 # model_id = "sbordt/OLMo-2-1B-1x-WD1-LR02"         #olmo-20x-wd1.0-lr2e-4
-model_id = "sbordt/OLMo-2-1B-1x-WD1-LR08"         #olmo-20x-wd1.0-lr8e-4
+# model_id = "sbordt/OLMo-2-1B-1x-WD1-LR08"         #olmo-20x-wd1.0-lr8e-4
 
 
 
