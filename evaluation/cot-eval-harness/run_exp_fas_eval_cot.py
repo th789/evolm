@@ -185,19 +185,31 @@ def run_bash_script_provided(bash_script: str,
 
 #exp01 -- evaluate 0.5B-10BT and 1B-20BT llama models that were pretrained on fineweb, then finetuned on metamathqa
 def run_exp01_eval_cot():
-    sft_dataset = 'mmluprocot' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+    sft_dataset = 'race' #options: ['metamathqa', 'medmcqa', 'pubmedqa', 'mmluprocot', 'race', 'simplescaling']
+
+
+    ### wd=0, all models
+    model_dirs=[
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0-seed42-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0-seed42-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.0-seed42-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.0-{sft_dataset}",
+        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.0-{sft_dataset}",
+    ]
+
 
     # # 0.5B models, llama -- eval-single-model--run-exp.sh: use hf option 
     # model_dirs=[
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.001-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.01-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.1-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.5-seed42-{sft_dataset}",
     #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.0-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}",
-    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay1.5-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay3.0-seed42-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay10.0-seed42-{sft_dataset}",
     # ]
 
     # 1B models, llama -- eval-single-model--run-exp.sh: use vllm option 
@@ -214,17 +226,17 @@ def run_exp01_eval_cot():
     # ]
 
     # 1.5B olmo models -- eval-single-model--run-exp.sh: use vllm option 
-    model_dirs=[
-        #30BT (1x chinchilla)
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.1-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.6-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
-        #210BT (7x chinchilla)
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-{sft_dataset}",
-        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
-    ]
+    # model_dirs=[
+    #     #30BT (1x chinchilla)
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.1-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.3-{sft_dataset}",
+    #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.6-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay1.0-{sft_dataset}",
+    #     #210BT (7x chinchilla)
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.1-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.3-{sft_dataset}",
+    #     # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay1.0-{sft_dataset}",
+    # ]
 
     # 1.5B olmo models VARY LR IN PT-- eval-single-model--run-exp.sh: use vllm option 
     # wd_pt = 0.1
@@ -240,12 +252,8 @@ def run_exp01_eval_cot():
     #     f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay1.0-seed42-{sft_dataset}",
     # ]
 
-    #####eval datasets
-    datasets = [
-        sft_dataset
-    ]
 
-    #for metamathqa and simplescaling
+    # # # for metamathqa and simplescaling
     # datasets = [
     #     "GSM8KPlatinum",
     #     "MATHLevel1",
@@ -258,6 +266,12 @@ def run_exp01_eval_cot():
     #     # "TabMWP",
     #     # "StrategyQA500",
     # ]
+
+    ####for other datasets
+    datasets = [
+        sft_dataset
+    ]
+
 
 
     for model_dir, dataset in product(model_dirs, datasets):
@@ -273,17 +287,28 @@ def run_exp01_eval_cot():
             log_file=f"exp01_eval_ft_models/log_{job_name}",
             partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
             # partition='gpu_test',
-            #!!!!! change settings in bash script depending on model size
-            #!!!!! change settings in bash script depending on whether to collect responses, evaluate, or both
+            ##### !!!!! NOTE for running 0.5B vs. other models !!!!! 
+                    # change settings in bash script depending on model size -- 0.5B vs. others
+                    # change settings in bash script depending on whether to collect responses, evaluate, or both
+            ##### llama-0.5B models #####
+            # n_gpus_a100_80gb='1', time_hrs='9', time_mins='30', memory_gb='64',  #llama0.5B: metamathqa, simplescaling
+            # n_gpus_a100_80gb='1', time_hrs='12', time_mins='30', memory_gb='64',  #llama0.5B: medmcqa
+            # n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64',  #llama0.5B: pubmedqa
+            # n_gpus_a100_80gb='1', time_hrs='7', memory_gb='64',  #llama0.5B: race, mmluprocot
+            ##### llama-1B + olmo-1B models #####
+            n_gpus_a100_80gb='1', time_hrs='8', memory_gb='64',  #all cot datasets
+            ##### llama-4B models: llama and olmo #####
+            # n_gpus_a100_80gb='1', time_hrs='5', memory_gb='64',  #all cot datasets
+            ######below = old
             # n_gpus_any='1', time_hrs='12', memory_gb='64',  #gpu_test: metamathqa, simplescaling -- olmo
             # n_gpus_a100_80gb='1', time_hrs='2', memory_gb='64',  #metamathqa, simplescaling, race -- olmo
             # n_gpus_a100_80gb='1', time_hrs='5', time_mins='30', memory_gb='64', #medmcqa -- olmo
             # n_gpus_a100_80gb='1', time_hrs='1', memory_gb='64',  #pubmedqa -- olmo
-            n_gpus_a100_80gb='1', time_hrs='1', time_mins='30', memory_gb='64',  #mmluprocot -- olmo
+            # n_gpus_a100_80gb='1', time_hrs='1', time_mins='30', memory_gb='64',  #mmluprocot -- olmo
 
             # partition='gpu_test',
             # n_gpus_any='1', time_mins='30', memory_gb='64',
-            dependency_type_and_job_id='afterok:2000078',
+            # dependency_type_and_job_id='afterok:2000078',
             )
 
         print(f'job_name = {job_name}')  
@@ -534,13 +559,13 @@ def run_exp04_eval_cot_ft_sweep():
 
 if __name__ == "__main__":
     
-    # run_exp01_eval_cot() #original PT models + olmo models with varying LR in PT
+    run_exp01_eval_cot() #original PT models + olmo models with varying LR in PT
     # run_exp01_eval_cot_additional_ft_seeds()
 
     # run_exp02_eval_cot_ffw_models()
     # run_exp03_eval_cot_models_vary_wd_during_ft()
 
-    run_exp04_eval_cot_ft_sweep()
+    # run_exp04_eval_cot_ft_sweep() #FT sweep: vary wd_pt, lr, bs, wd_ft for FT
 
 
 

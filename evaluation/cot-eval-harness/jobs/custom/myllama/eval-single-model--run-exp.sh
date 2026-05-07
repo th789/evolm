@@ -83,7 +83,9 @@ fi
 
 
 ### --------------- NOTE ---------------
-# For 0.5B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
+# NEED TO CHANGE BOTH FUNCTIONS! collect_responses__greedy() and collect_responses__n16()
+
+# For llama-0.5B moodels, use these args in collect_responses__greedy() AND collect_responses__n16()
 # because vllm api cannot handle custom head size = 48
         # --batch_size 64 \
         # --api hf \
@@ -92,7 +94,7 @@ fi
         # --batch_size 32 \
         # --api hf \
 
-# For 1B moodels, use these args in collect_responses__greedy() and collect_responses__n16()
+# For llama-1B, llama-4B, olmo-1B models, use these args in collect_responses__greedy() AND collect_responses__n16()
         # --batch_size 500 \
         # --api vllm \
         #can leave out these args because they are the default args in collect_responses.py
