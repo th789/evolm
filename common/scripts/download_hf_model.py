@@ -13,11 +13,14 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 # model_id = "zhenting/myllama-1B-20BT"
 # model_id = "zhenting/myllama-0.5B-10BT"
 
+
+#####llama-4B-80BT
+model_id = "th135/llama-4B-80BT-weightdecay0.0-seed42"                               #llama-4B-80BT-wd0.0
 # model_id = "zhenting/myllama-4B-80BT"                                               #llama-4B-80BT-wd0.1
 # model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"                         #llama-4B-80BT-wd1.0
 
 #####olmo-1B, default learning rate (4e-4)
-model_id = "sbordt/OLMo-2-1B-1x-WD0"                                                    #olmo-20x-wd0.0
+# model_id = "sbordt/OLMo-2-1B-1x-WD0"                                                    #olmo-20x-wd0.0
 # model_id = "sbordt/OLMo-2-1B-1x"                                                    #olmo-20x-wd0.1
 # model_id = "sbordt/OLMo-2-1B-1x-WD03"                                               #olmo-20x-wd0.3
 # model_id = "sbordt/OLMo-2-1B-1x-WD06"                                               #olmo-20x-wd0.6
