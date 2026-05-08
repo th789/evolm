@@ -330,7 +330,7 @@ def run_exp01_eval_single_model_all_tasks():
         # "llama-0.5B-10BT": [0.0], #[0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0], #[0.1, 1.0, 3.0, 10.0], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
         # "llama-1B-20BT": [0.0], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
         # "llama-4B-80BT": [0.0], #[0.1, 1.0],
-        "olmo-1B-30BT": [0.0], #[0.1, 0.3, 0.6, 1.0],
+        "olmo-1B-30BT": [0.6], #[0.1, 0.3, 0.6, 1.0],
         # "olmo-1B-210BT": [1.0], #[0.1, 0.3, 1.0],
     }
     
@@ -375,7 +375,7 @@ def run_exp01_eval_single_model_all_tasks():
     #         raise ValueError(f"Model name {model_name} not found")
 
     ### finetuned models
-    sft_dataset = "simplescaling" #["metamathqa", "medmcqa", "pubmedqa", "mmluprocot", "race", "simplescaling"]
+    sft_dataset = "race" #["metamathqa", "medmcqa", "pubmedqa", "mmluprocot", "race", "simplescaling"]
     for model_name, wd_lst in model_dict.items():
         if model_name in ["llama-0.5B-10BT", "llama-1B-20BT", "llama-4B-80BT"]:
             model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-seed42-{sft_dataset}" for wd in wd_lst]
@@ -403,7 +403,8 @@ def run_exp01_eval_single_model_all_tasks():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_single_model_all_tasks/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
+            # partition='seas_gpu,gpu,gpu_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
+            partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
             )
         
         #1B models: run in under 10 min
