@@ -15,7 +15,7 @@ model_dir = f"{project_dir}/models/hf_ckpts"
 
 
 #####llama-4B-80BT
-model_id = "th135/llama-4B-80BT-weightdecay0.0-seed42"                               #llama-4B-80BT-wd0.0
+# model_id = "th135/llama-4B-80BT-weightdecay0.0-seed42"                               #llama-4B-80BT-wd0.0
 # model_id = "zhenting/myllama-4B-80BT"                                               #llama-4B-80BT-wd0.1
 # model_id = "hlzhang109/llama-4B-80BT-weightdecay1.0-seed42"                         #llama-4B-80BT-wd1.0
 
@@ -25,6 +25,7 @@ model_id = "th135/llama-4B-80BT-weightdecay0.0-seed42"                          
 # model_id = "sbordt/OLMo-2-1B-1x-WD03"                                               #olmo-20x-wd0.3
 # model_id = "sbordt/OLMo-2-1B-1x-WD06"                                               #olmo-20x-wd0.6
 # model_id = "sbordt/OLMo-2-1B-1x-WD1"                                                #olmo-20x-wd1.0
+model_id = "sbordt/OLMo-2-1B-7x-WD0"                                                   #olmo-140x-wd0.0
 # model_id = "sbordt/OLMo-2-1B-Decayed-Early"     #now called sbordt/OLMo-2-1B-7x         #olmo-140x-wd0.1
 # model_id = "sbordt/OLMo-2-1B-WD1"               #now called sbordt/OLMo-2-1B-7x-WD1     #olmo-140x-wd1.0
 # model_id = "sbordt/OLMo-2-1B-7x-WD03"                                                   #olmo-140x-wd0.3
