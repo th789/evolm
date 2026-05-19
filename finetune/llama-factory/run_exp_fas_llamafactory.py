@@ -262,7 +262,7 @@ def run_exp01_finetune_llama():
     #demo w. small alpaca dataset (provided by llamafactory)
     # config_file_paths = ['config_hub/custom_configs/ft_metamathqa/llama-0.5B-10BT-weightdecay0.1-seed42-alpacaendemo.yaml']
 
-    sft_dataset = 'medmcqa' 
+    sft_dataset = 'safetymixed1000' 
     #options: ['metamathqa','medmcqa', pubmedqa', 'mmluprocot', 'race', 'simplescaling' 
     # /// 'hellaswag', 'winogrande', 'piqa', 'arc_easy', 'arc_challenge', 
     # /// 'safety', 'safetymixed300', 'safetymixed500', 'safetymixed1000', 'safetymixed2000'] #safety=old/bad no longer using
@@ -274,10 +274,10 @@ def run_exp01_finetune_llama():
         ###llama models
         # f'config_hub/custom_configs/ft_{sft_dataset}/llama-0.5B-10BT-weightdecay0.0-seed42-{sft_dataset}.yaml',
         # f'config_hub/custom_configs/ft_{sft_dataset}/llama-1B-20BT-weightdecay0.0-seed42-{sft_dataset}.yaml',
-        f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.0-seed42-{sft_dataset}.yaml',
+        # f'config_hub/custom_configs/ft_{sft_dataset}/llama-4B-80BT-weightdecay0.0-seed42-{sft_dataset}.yaml',
         ###olmo models
         # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-30BT-weightdecay0.0-{sft_dataset}.yaml',
-        # f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.0-{sft_dataset}.yaml',
+        f'config_hub/custom_configs/ft_{sft_dataset}/olmo-1B-210BT-weightdecay0.0-{sft_dataset}.yaml',
     ]
 
     # # # # #0.5B models, llama
@@ -347,14 +347,14 @@ def run_exp01_finetune_llama():
                         #note for sbatch: 4 GPUs (1 node): wnen nodes=1, ntasks-per-node must equal n_gpus --> so n_gpus = ntasks-per-node = 4 or 2
                         partition='seas_gpu,gpu,gpu_requeue,gpu_h200',
                         ###model: 0.5B llama, 1B llama, 1B olmo
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64',  #llama1B/llama0.5B/olmo: metamathqa
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='7', memory_gb='64',  #llama1B/llama0.5B/olmo: metamathqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='4', memory_gb='64',  #llama1B/llama0.5B/olmo: medmcqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='5', memory_gb='64',  #llama1B/llama0.5B/olmo: pubmedqa, mmluprocot
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='3', time_mins='30', memory_gb='64',  #olmo: race, simplescaling
-                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='30', memory_gb='64',  #llama1B/llama0.5B/olmo: hellaswag, winogrande, piqa, arc_easy, arc_challenge, safetymixed300, safetymixed500, safetymixed1000, safetymixed2000 -- very quick<20min
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='4', memory_gb='64',  #olmo: race, simplescaling
+                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_mins='45', memory_gb='64',  #llama1B/llama0.5B/olmo: hellaswag, winogrande, piqa, arc_easy, arc_challenge, safetymixed300, safetymixed500, safetymixed1000, safetymixed2000 -- very quick<20min
                         ###model: 4B llama
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='20', memory_gb='64', #llama4B: metamathqa
-                        n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='15', memory_gb='64', #llama4B: medmcqa
+                        # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='15', memory_gb='64', #llama4B: medmcqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='10', memory_gb='64', #llama4B: pubmedqa
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='6', memory_gb='64', #llama4B: race, simplescaling
                         # n_nodes='1', n_gpus_a100_80gb='4', n_tasks_per_node='4', cpus_per_task='12', time_hrs='9', memory_gb='64', #llama4B: mmluprocot

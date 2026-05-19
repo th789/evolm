@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-Decayed-Early
+model_name_or_path: /n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x-WD0
 
 ### method
 stage: sft
