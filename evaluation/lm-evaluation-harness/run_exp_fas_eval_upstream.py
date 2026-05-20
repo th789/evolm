@@ -330,57 +330,59 @@ def run_exp01_eval_single_model_all_tasks():
         # "llama-0.5B-10BT": [0.0], #[0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0], #[0.1, 1.0, 3.0, 10.0], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
         # "llama-1B-20BT": [0.0], #[0.0001, 0.001, 0.01, 0.1, 0.5, 1.0, 1.5, 3.0, 10.0],
         # "llama-4B-80BT": [0.0], #[0.1, 1.0],
-        "olmo-1B-30BT": [0.6], #[0.1, 0.3, 0.6, 1.0],
-        # "olmo-1B-210BT": [1.0], #[0.1, 0.3, 1.0],
+        # "olmo-1B-30BT": [0.6], #[0.1, 0.3, 0.6, 1.0],
+        "olmo-1B-210BT": [0.0], #[0.1, 0.3, 1.0],
     }
     
 
     # ## pretrained models
-    # for model_name, wd_lst in model_dict.items():
-    #     if model_name in ["llama-0.5B-10BT", "llama-1B-20BT"]:
-    #         model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/{model_name}-weightdecay{wd}-seed42/final-hf" for wd in wd_lst]
-    #     elif model_name in ["llama-4B-80BT"]:
-    #         model_dirs = []
-    #         for wd in wd_lst:
-    #             if wd == 0.1:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/zhenting/myllama-4B-80BT")
-    #             elif wd == 1.0:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/hlzhang109/llama-4B-80BT-weightdecay1.0-seed42")
-    #             elif wd == 0.0:
-    #                 model_dirs.append("/n/netscratch/doshi-velez_lab/Everyone/models/pretrained/llama-4B-80BT-weightdecay0.0-seed42/final-hf")
-    #     elif model_name in ["olmo-1B-30BT"]:
-    #         model_dirs = []
-    #         for wd in wd_lst:
-    #             if wd == 0.1:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x")
-    #             elif wd == 0.3:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD03")
-    #             elif wd == 0.6:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD06")
-    #             elif wd == 1.0:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD1")
-    #             elif wd == 0.0:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD0")
-    #     elif model_name in ["olmo-1B-210BT"]:
-    #         model_dirs = []
-    #         for wd in wd_lst:
-    #             if wd == 0.1:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-Decayed-Early")
-    #                 # model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x")
-    #             elif wd == 0.3:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x-WD03")
-    #             elif wd == 1.0:
-    #                 model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-WD1")
-    #     else:
-    #         raise ValueError(f"Model name {model_name} not found")
+    for model_name, wd_lst in model_dict.items():
+        if model_name in ["llama-0.5B-10BT", "llama-1B-20BT"]:
+            model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/pretrain/lit-trainer/models/pretrained/{model_name}-weightdecay{wd}-seed42/final-hf" for wd in wd_lst]
+        elif model_name in ["llama-4B-80BT"]:
+            model_dirs = []
+            for wd in wd_lst:
+                if wd == 0.1:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/zhenting/myllama-4B-80BT")
+                elif wd == 1.0:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/hlzhang109/llama-4B-80BT-weightdecay1.0-seed42")
+                elif wd == 0.0:
+                    model_dirs.append("/n/netscratch/doshi-velez_lab/Everyone/models/pretrained/llama-4B-80BT-weightdecay0.0-seed42/final-hf")
+        elif model_name in ["olmo-1B-30BT"]:
+            model_dirs = []
+            for wd in wd_lst:
+                if wd == 0.1:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x")
+                elif wd == 0.3:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD03")
+                elif wd == 0.6:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD06")
+                elif wd == 1.0:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD1")
+                elif wd == 0.0:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-1x-WD0")
+        elif model_name in ["olmo-1B-210BT"]:
+            model_dirs = []
+            for wd in wd_lst:
+                if wd == 0.0:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x-WD0")
+                elif wd == 0.1:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-Decayed-Early")
+                    # model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x")
+                elif wd == 0.3:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-7x-WD03")
+                elif wd == 1.0:
+                    model_dirs.append("/n/home07/than157/desktop/done-large_projects/learn-better/evolm/models/hf_ckpts/sbordt/OLMo-2-1B-WD1")
+        else:
+            raise ValueError(f"Model name {model_name} not found")
 
     ### finetuned models
-    sft_dataset = "race" #["metamathqa", "medmcqa", "pubmedqa", "mmluprocot", "race", "simplescaling"]
-    for model_name, wd_lst in model_dict.items():
-        if model_name in ["llama-0.5B-10BT", "llama-1B-20BT", "llama-4B-80BT"]:
-            model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-seed42-{sft_dataset}" for wd in wd_lst]
-        elif model_name in ["olmo-1B-30BT", "olmo-1B-210BT"]:
-            model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-{sft_dataset}" for wd in wd_lst]
+    # sft_dataset = "simplescaling" #["metamathqa", "medmcqa", "pubmedqa", "mmluprocot", "race", "simplescaling"]
+    # for model_name, wd_lst in model_dict.items():
+    #     if model_name in ["llama-0.5B-10BT", "llama-1B-20BT", "llama-4B-80BT"]:
+    #         model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-seed42-{sft_dataset}" for wd in wd_lst]
+    #     elif model_name in ["olmo-1B-30BT", "olmo-1B-210BT"]:
+    #         model_dirs = [f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/{model_name}-weightdecay{wd}-{sft_dataset}" for wd in wd_lst]
 
 
     for model_dir in model_dirs:
@@ -403,8 +405,8 @@ def run_exp01_eval_single_model_all_tasks():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp01_eval_single_model_all_tasks/log_{job_name}",
-            # partition='seas_gpu,gpu,gpu_requeue', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
-            partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
+            partition='seas_gpu,gpu,gpu_requeue,gpu_h200', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
+            # partition='gpu_test', n_gpus_any='1', time_hrs='1', memory_gb='32' #all PT + FT models
             )
         
         #1B models: run in under 10 min
@@ -417,7 +419,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
 
     ##### models
     model_lst = [
-        "llama-0.5B-10BT-weightdecay0.0-seed42",
+        # "llama-0.5B-10BT-weightdecay0.0-seed42",
         # "llama-0.5B-10BT-weightdecay0.0001-seed42",
         # "llama-0.5B-10BT-weightdecay0.001-seed42",
         # "llama-0.5B-10BT-weightdecay0.01-seed42",
@@ -428,7 +430,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
         # "llama-0.5B-10BT-weightdecay3.0-seed42",
         # "llama-0.5B-10BT-weightdecay10.0-seed42",
         
-        "llama-1B-20BT-weightdecay0.0-seed42",
+        # "llama-1B-20BT-weightdecay0.0-seed42",
         # "llama-1B-20BT-weightdecay0.0001-seed42",
         # "llama-1B-20BT-weightdecay0.001-seed42",
         # "llama-1B-20BT-weightdecay0.01-seed42",
@@ -439,16 +441,17 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
         # "llama-1B-20BT-weightdecay3.0-seed42",
         # "llama-1B-20BT-weightdecay10.0-seed42",
 
-        "llama-4B-80BT-weightdecay0.0-seed42",
+        # "llama-4B-80BT-weightdecay0.0-seed42",
         # "llama-4B-80BT-weightdecay0.1-seed42",
         # "llama-4B-80BT-weightdecay1.0-seed42",
 
-        "olmo-1B-30BT-weightdecay0.0",
+        # "olmo-1B-30BT-weightdecay0.0",
         # "olmo-1B-30BT-weightdecay0.1",
         # "olmo-1B-30BT-weightdecay0.3",
         # "olmo-1B-30BT-weightdecay0.6",
         # "olmo-1B-30BT-weightdecay1.0",
 
+        "olmo-1B-210BT-weightdecay0.0",
         # "olmo-1B-210BT-weightdecay0.1",
         # "olmo-1B-210BT-weightdecay0.1",
         # "olmo-1B-210BT-weightdecay0.3",
@@ -456,7 +459,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
     ]
 
     #dataset/task that model was FT'd on
-    task_lst = ['hellaswag', 'winogrande', 'piqa', 'arc_easy', 'arc_challenge'] #options: ['hellaswag', 'winogrande', 'piqa', 'arc_easy', 'arc_challenge']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
+    task_lst = ['arc_easy'] #options: ['hellaswag', 'winogrande', 'piqa', 'arc_easy', 'arc_challenge']   #tasks are used to specify model (not eval tasks) -- for each model, evaluate on all upstream tasks (even though only need one, it's just easier)
 
     for model, task in product(model_lst, task_lst):        
         #define bash script arguments
@@ -469,7 +472,7 @@ def run_exp02_eval_single_all_tasks__new_ft_tasks():
             bash_script=bash_script,
             job_name=job_name,
             log_file=f"exp02_eval_single_model_all_tasks__new_ft_tasks/log_{job_name}",
-            partition='seas_gpu,gpu,gpu_requeue,gpu_h200', n_gpus_any='1', time_mins='30', memory_gb='32', #all ft models
+            partition='seas_gpu,gpu,gpu_requeue,gpu_h200', n_gpus_any='1', time_hrs='1', memory_gb='32', #all ft models
             # partition='gpu_test', n_gpus_any='1', time_mins='30', memory_gb='32', #all ft models
             # dependency_type_and_job_id='afterok:2262241,2262242,2262243,2262255'
             )
@@ -487,8 +490,8 @@ if __name__ == "__main__":
 
     #exp02 -- pick one
     # run_exp01_eval_many_models_all_tasks() #for exp02, 1B models -- one job: multiple models + all tasks -- not good because some evals fail and some succedd in same run
-    run_exp01_eval_single_model_all_tasks() #PT models (old: for exp02 + exp03, which only has 1B models)
+    # run_exp01_eval_single_model_all_tasks() #PT models (old: for exp02 + exp03, which only has 1B models)
 
 
     # exp02 -- FT model on hellaswag/piqa/winogrande/arc_easy/arc_challenge and eval on these respective datasets
-    # run_exp02_eval_single_all_tasks__new_ft_tasks()
+    run_exp02_eval_single_all_tasks__new_ft_tasks()
