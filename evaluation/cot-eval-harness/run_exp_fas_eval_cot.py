@@ -191,9 +191,9 @@ def run_exp01_eval_cot():
     ### wd=0, all models
     model_dirs=[
         # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-0.5B-10BT-weightdecay0.0-seed42-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0-seed42-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.0-seed42-{sft_dataset}",
-        f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.0-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-1B-20BT-weightdecay0.0-seed42-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/llama-4B-80BT-weightdecay0.0-seed42-{sft_dataset}",
+        # f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-30BT-weightdecay0.0-{sft_dataset}",
         f"/n/home07/than157/desktop/done-large_projects/learn-better/evolm/finetune/llama-factory/llamafactory_out/olmo-1B-210BT-weightdecay0.0-{sft_dataset}",
     ]
 
@@ -297,7 +297,7 @@ def run_exp01_eval_cot():
             # n_gpus_a100_80gb='1', time_hrs='7', memory_gb='64',  #llama0.5B: race, mmluprocot
             ##### llama-1B + olmo-1B models #####
             n_gpus_a100_80gb='1', time_hrs='8', memory_gb='64',  #all cot datasets
-            ##### llama-4B models: llama and olmo #####
+            ##### llama-4B models #####
             # n_gpus_a100_80gb='1', time_hrs='5', memory_gb='64',  #all cot datasets
             ######below = old
             # n_gpus_any='1', time_hrs='12', memory_gb='64',  #gpu_test: metamathqa, simplescaling -- olmo
